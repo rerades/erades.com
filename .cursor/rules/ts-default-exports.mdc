@@ -1,15 +1,6 @@
 ---
-description:
-globs:
-alwaysApply: true
----
----
-description: Discourages the use of default exports except where required by the framework.
-autoAttach:
-  - include: '**/*.ts'
-    reason: Applies to all TypeScript files.
-  - include: '**/*.tsx'
-    reason: Applies to all TypeScript React files.
+globs: *.tsx,*.ts
+alwaysApply: false
 ---
 
 # Default Exports
