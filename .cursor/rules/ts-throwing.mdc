@@ -1,13 +1,6 @@
 ---
-description:
-globs:
-alwaysApply: true
----
----
-description: Encourages careful use of thrown errors and suggests result types for error handling in TypeScript files.
-autoAttach:
-  - include: '**/*.ts'
-    reason: Applies to all TypeScript files.
+globs: *.tsx,*.ts,*.astro
+alwaysApply: false
 ---
 
 # Throwing Errors and Result Types
@@ -27,9 +20,7 @@ type Result<T, E extends Error> =
 For example, when parsing JSON:
 
 ```ts
-const parseJson = (
-  input: string,
-): Result<unknown, Error> => {
+const parseJson = (input: string): Result<unknown, Error> => {
   try {
     return { ok: true, value: JSON.parse(input) };
   } catch (error) {

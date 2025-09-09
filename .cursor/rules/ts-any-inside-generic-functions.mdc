@@ -7,13 +7,6 @@ alwaysApply: true
 description: Enforces careful use of `any` inside generic functions, discouraging its use elsewhere.
 autoAttach:
 
-- include: '\*_/_.ts'
-  reason: Applies to all TypeScript files where generic functions may be used.
-- include: '\*_/_.astro'
-  reason: Applies to all Astro files where generic functions may be used.
-
----
-
 # Using `any` Inside Generic Functions
 
 When building generic functions, you may need to use `any` inside the function body. This is because TypeScript often cannot match your runtime logic to the logic done inside your types.

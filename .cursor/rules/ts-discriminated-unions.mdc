@@ -1,13 +1,6 @@
 ---
-description:
-globs:
-alwaysApply: true
----
----
-description: Enforces the use of discriminated unions to model data with multiple shapes and prevents the 'bag of optionals' problem.
-autoAttach:
-  - include: '**/*.ts'
-    reason: Applies to all TypeScript files.
+globs: *.ts,*.tsx,*.astro
+alwaysApply: false
 ---
 
 # Discriminated Unions
