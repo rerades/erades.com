@@ -1,6 +1,6 @@
 import { Display } from "./display.js";
 import { Particle } from "./particle.js";
-import { Data } from "./data/data1.js";
+import { loadRandomData } from "./randomData.js";
 import { tap, pipe, times } from "./fnUtils.js";
 
 // INITIAL DATA (Display, emitters, fields)
@@ -11,8 +11,8 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const disp = Display(canvas);
 
-// Emitters, fields
-const { emitters, fields } = Data;
+// Load random data
+const { emitters, fields } = await loadRandomData();
 
 // FUNCTIONS
 // ---------------------------------------
@@ -55,7 +55,6 @@ const linmitTO1000 = (part) => limitNumberOfParticles(1000)(part);
 // ----------------------------------------
 // Loop
 const requestFrame = (cont) => (dspl) => (flds) => (emttrs) => (prtcls) =>
-  // eslint-disable-next-line no-use-before-define
   cont && requestAnimationFrame(() => loop(cont, dspl, flds, emttrs, prtcls));
 
 // Particles
