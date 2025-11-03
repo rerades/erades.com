@@ -6,4 +6,5 @@ ignoredBuiltDependencies:
   - sharp
 
 onlyBuiltDependencies:
-  - "@tailwindcss/oxide"
+  - '@tailwindcss/oxide'
+  - inotify

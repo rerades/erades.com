@@ -1,0 +1,160 @@
+---
+title: "AI Rules: A Universal Taxonomy for AI Rules Governance"
+description: "AI Rules defines a universal metamodel and taxonomy for describing project rules in a structured and machine-readable way, designed to work alongside ai-rules-cli."
+pubDate: 2025-11-02
+tags:
+  - ai-rules
+  - governance
+  - taxonomy
+  - rules
+  - development
+  - best-practices
+categories:
+  - AI
+  - Tools
+draft: false
+heroImage: /ai-rules.png
+---
+
+**AI Rules** defines a **universal metamodel and taxonomy** for describing project rules in a structured and machine-readable way. It is designed to work together with **ai-rules-cli**, which consumes these definitions to initialize, validate, and evolve project rule sets.
+
+## Overview
+
+AI Rules provides a standard and consistent way to define, organize, and manage rules that govern behavior and development practices in software projects. This is especially valuable when working with AI assistants that need to understand and apply these rules consistently.
+
+## Metamodel
+
+The system defines a complete metamodel that includes:
+
+- **CLI-guided composition**: question tree that leads to rule selection
+- **Tag governance**: prevents taxonomic jungle
+- **Compatibility and conflicts**: management of requirements and conflicts between rules
+- **Audit**: traceability with provenance information, last review, and owner
+- **Controlled evolution**: SemVer along with maturity states
+
+## Taxonomy
+
+Rules are described using fixed facets (enums) and optional labeled fields to ensure predictable composition and filtering.
+
+### Main Facets (Enums)
+
+| Facet        | Values                                                           |
+| ------------- | ----------------------------------------------------------------- |
+| **Category**  | code, foundation, framework, security, testing, architecture, ... |
+| **Scope**     | global, repo, package, component, page, api, ci, cd               |
+| **Language**  | typescript, javascript, html, css, python, go, ...                |
+| **Lifecycle** | advisory, recommended, enforced                                   |
+| **Maturity**  | draft, beta, stable, deprecated                                   |
+| **Stability** | experimental, evolving, locked                                    |
+| **Audience**  | frontend, backend, fullstack, a11y, sec, devops, architect        |
+| **Severity**  | info, low, medium, high, critical                                 |
+
+### Relational Fields
+
+- `requires[]`: IDs of other required rules
+- `conflicts[]`: incompatible rules
+- `supersedes[]`: replaces old rules
+- `bundles[]`: logical groups (baseline/web)
+
+### Operational Fields
+
+- `files`: ["src/**/*.tsx"] - files to which the rule applies
+- `enforcement`: configuration of how it is applied (lint, ci, scaffold)
+- `order`: application order
+- `inputs`: configurable rule options
+
+### Labeled Fields
+
+- `topic:*` → thematic tags (`topic:wcag22`, `topic:core-web-vitals`)
+- `lint:*` → linting scope (`lint:eslint-config`)
+- `test:*` → testing scope (`test:playwright`)
+- `a11y:*`, `perf:*`, `sec:*` → accessibility, performance, security
+
+## Governance Rules
+
+The system includes clear governance rules:
+
+- Changes to vocabulary or enums require PR review by "Owners"
+- Any new enum value → schema update + changelog entry
+- Consistent rule naming using `domain.subdomain.slug`
+
+### Rule ID Examples
+
+```
+foundation.baseline.web
+language.typescript.strict
+framework.react.hooks
+performance.core-web-vitals
+accessibility.wcag22.keyboard
+```
+
+## Metadata Schema (JSON Schema)
+
+Rules conform to JSON Schema 2020-12. The schema file is `mdc.schema.json`, ensuring consistent validation and tools that can consume these definitions.
+
+## Rule Example (Frontmatter)
+
+```yaml
+---
+id: typescript.conventions.guidelines
+title: "TypeScript Conventions Guidelines"
+category: language
+language: "typescript"
+frameworks: ["react", "astro"]
+tooling: ["eslint", "prettier"]
+maturity: stable
+severity: low
+enforcement:
+  lint: warn
+  ci: allow
+  scaffold: none
+tags: ["topic:typescript", "lint:typescript-eslint"]
+owner: "typescript-team@your-org.com"
+review: { lastReviewed: "2025-01-20", reviewCycleDays: 90 }
+---
+```
+
+## Integration with ai-rules-cli
+
+The CLI uses metadata to:
+
+1. **Filter rules** by category, language, frameworks, and tools
+2. **Resolve dependencies** using the `requires` and `conflicts` fields
+3. **Generate bundles** based on the `bundles` field
+4. **Apply enforcement** according to the `enforcement` configuration
+5. **Order rules** using the `order` field for proper composition
+
+## Benefits
+
+- **Consistency**: By having a standardized system for defining rules, you can ensure that all projects follow the same conventions and best practices.
+
+- **Scalability**: The taxonomy and metadata system allows managing large rule sets without losing organization or clarity.
+
+- **Traceability**: Each rule includes information about its owner, last review, and review cycle, facilitating maintenance and auditing.
+
+- **Controlled evolution**: With SemVer and maturity states, you can manage rule evolution in a controlled and predictable way.
+
+- **Tool integration**: Being machine-readable, tools can consume these definitions to automatically apply rules in linting, CI/CD, and scaffolding.
+
+## Contributing
+
+The project accepts contributions following these guidelines:
+
+- PRs are welcome, but must follow the defined schema
+- Each rule must include complete metadata and tags
+- Review cycle is applied via `review.lastReviewed`
+
+## Use Cases
+
+- **Project initialization**: When starting a new project, you can use ai-rules-cli to automatically select and apply an appropriate rule set based on the technology stack.
+
+- **Team standardization**: Teams can define shared rules that ensure consistency across all team or organization projects.
+
+- **Migration and updates**: The versioning system and maturity states facilitate rule migration between projects and gradual practice updates.
+
+## Resources
+
+- [AI Rules Repository](https://github.com/rerades/ai-rules)
+- [ai-rules-cli Repository](https://github.com/rerades/ai-rules-cli)
+- [JSON Schema](https://github.com/rerades/ai-rules/blob/main/mdc.schema.json)
+

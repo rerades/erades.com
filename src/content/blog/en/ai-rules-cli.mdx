@@ -1,0 +1,247 @@
+---
+title: "ai-rules-cli: CLI for AI Rules Management"
+description: "Command-line tool for working with ai-rules, allowing you to initialize, validate, and manage project rules interactively and automatically."
+pubDate: 2025-11-02
+tags:
+  - ai-rules-cli
+  - cli
+  - tools
+  - automation
+  - rules
+  - development
+categories:
+  - AI
+  - Tools
+draft: false
+heroImage: /ai-rules-cli.png
+---
+
+**ai-rules-cli** is a command-line tool designed to work with the **ai-rules** repository. It allows you to initialize, validate, and manage project rules interactively and automatically, facilitating the consistent application of best practices in your projects.
+
+## Overview
+
+The CLI is designed to consume rule definitions from the ai-rules repository and apply them to your projects. It provides an interactive interface that guides developers through selecting and applying appropriate rules for their technology stack and specific needs.
+
+Ai-rules-cli significantly simplifies project rules management, especially when working with AI assistants like Cursor IDE or Claude. Its interactive interface and automation capabilities make it easy to maintain consistency and best practices across all your development projects.
+
+## Key Features
+
+- **Interactive initialization**: The CLI includes an interactive wizard that guides users through a question tree to select the most appropriate rules for their project.
+
+- **Schema validation**: Verifies that rules comply with the defined JSON Schema, ensuring consistency and validity.
+
+- **Dependency resolution**: Automatically manages dependencies between rules, resolving conflicts and ensuring all required rules are present.
+
+- **File generation**: Automatically generates rule files (`.mdc`) in your project's `.cursor/rules` directory, ready to be consumed by Cursor IDE and other AI assistants.
+
+- **Index generation**: Creates index files that document all available rules, facilitating navigation and reference.
+
+## Installation and Usage
+
+### Installation
+
+```bash
+npm install -g ai-rules-cli
+# or
+pnpm add -g ai-rules-cli
+# or
+yarn global add ai-rules-cli
+```
+
+### Main Commands
+
+#### `init`
+
+Initializes a new project with ai-rules. Runs the interactive wizard to select appropriate rules.
+
+```bash
+ai-rules-cli init
+```
+
+#### `generate`
+
+Generates rule files based on selections made during initialization or updates existing rules.
+
+```bash
+ai-rules-cli generate
+```
+
+#### `validate`
+
+Validates that existing rules comply with the JSON Schema.
+
+```bash
+ai-rules-cli validate
+```
+
+## Architecture
+
+The CLI is built with a modular architecture:
+
+```
+src/
+├── core/           # Core business logic
+│   ├── config.ts   # Configuration management
+│   ├── rule-loader.ts      # Rule loading and parsing
+│   ├── rule-validator.ts   # Schema validation
+│   └── dependency-resolver.ts # Dependency resolution
+├── ui/             # User interface
+│   ├── wizard.ts   # Interactive wizard
+│   ├── prompts.ts   # Inquirer prompts
+│   ├── formatters.ts # Visual formatting
+│   └── spinner.ts  # Loading indicators
+├── generators/     # File generation
+│   ├── output-generator.ts # Rule file generation
+│   └── index-generator.ts  # Index file generation
+├── utils/          # Utilities
+│   ├── logger.ts   # Logging
+│   └── file-utils.ts # File operations
+├── types/          # TypeScript types
+│   ├── rule.types.ts
+│   ├── config.types.ts
+│   └── wizard.types.ts
+└── index.ts        # CLI entry point
+```
+
+## Generated File Structure
+
+### `claude.md` File
+
+The CLI automatically generates a `claude.md` file that helps Claude AI integrate with your rules:
+
+- Provides structured guidelines for Claude AI to reference the `.cursor/rules` directory
+- Explains how Claude can benefit from your rules and maintain consistency with Cursor IDE
+- Includes usage examples and best practices for working with rules in Claude
+- Documents available rules and categories for easy reference
+- Automatically generated when running `init` or `generate`
+
+### Rule Files
+
+Each rule file (`.mdc`) contains:
+
+- YAML frontmatter with metadata
+- Markdown content with the actual rule
+
+## Configuration
+
+The CLI can be configured via:
+
+- Command-line options
+- Project configuration files
+- Environment variables
+
+## Error Handling
+
+The CLI provides comprehensive error handling:
+
+- **Validation errors**: clear messages for schema violations
+- **Dependency errors**: missing dependencies are reported
+- **Conflict errors**: rule conflicts are identified and resolved
+- **File errors**: file system operations are handled gracefully
+- **User errors**: invalid inputs are captured and reported
+
+## Typical Workflow
+
+1. **Initialization**: Run `ai-rules-cli init` in your project
+2. **Selection**: The wizard guides you through questions to select appropriate rules
+3. **Validation**: The CLI automatically validates selected rules
+4. **Resolution**: Dependencies and conflicts are automatically resolved
+5. **Generation**: Rule files are generated in `.cursor/rules`
+6. **Index**: An index file is created for reference
+
+## User Interface
+
+The CLI provides a polished user experience with:
+
+- Visual progress indicators
+- Colorized output formatting
+- Clear and actionable error messages
+- Interactive confirmations when necessary
+
+## Testing
+
+The project includes a comprehensive test suite:
+
+```bash
+npm test
+```
+
+Tests cover:
+
+- Rule loading and parsing
+- Schema validation
+- Dependency resolution
+- File generation
+- Error handling
+
+## Linting
+
+The code follows strict quality standards:
+
+```bash
+npm run lint
+npm run lint:fix
+```
+
+## Development
+
+### Prerequisites
+
+- Node.js 18+
+- TypeScript 5+
+- npm, yarn or pnpm
+
+### Development Environment Setup
+
+```bash
+git clone <repository-url>
+cd ai-rules-cli
+npm install
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+### Development
+
+```bash
+npm run dev
+```
+
+## Contributing
+
+The project accepts contributions:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make changes
+4. Add tests
+5. Submit a pull request
+
+## Use Cases
+
+### New Project
+
+When starting a new project, use the CLI to automatically apply appropriate rules based on your technology stack.
+
+### Rule Updates
+
+When rules evolve, the CLI can help update and migrate existing rules.
+
+### Team Standardization
+
+Teams can use the CLI to consistently apply the same rules across all projects.
+
+### CI/CD Integration
+
+The CLI can be integrated into CI/CD pipelines to validate that projects comply with defined rules.
+
+## Resources
+
+- [ai-rules-cli Repository](https://github.com/rerades/ai-rules-cli)
+- [AI Rules Repository](https://github.com/rerades/ai-rules)
+- [Documentation](https://github.com/rerades/ai-rules-cli#readme)
+

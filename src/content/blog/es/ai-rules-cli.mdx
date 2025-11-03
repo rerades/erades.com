@@ -1,0 +1,246 @@
+---
+title: "ai-rules-cli: CLI para gestión de reglas de IA"
+description: "Herramienta de línea de comandos para trabajar con ai-rules, permitiendo inicializar, validar y gestionar reglas de proyecto de forma interactiva y automatizada."
+pubDate: 2025-11-02
+tags:
+  - ai-rules-cli
+  - cli
+  - herramientas
+  - automatización
+  - reglas
+  - desarrollo
+categories:
+  - AI
+  - Herramientas
+draft: false
+heroImage: /ai-rules-cli.png
+---
+
+**ai-rules-cli** es una herramienta de línea de comandos diseñada para trabajar con el repositorio **ai-rules**. Permite inicializar, validar y gestionar reglas de proyecto de forma interactiva y automatizada, facilitando la aplicación consistente de mejores prácticas en tus proyectos.
+
+## Visión general
+
+El CLI está diseñado para consumir las definiciones de reglas del repositorio ai-rules y aplicarlas en tus proyectos. Proporciona una interfaz interactiva que guía a los desarrolladores a través de la selección y aplicación de reglas apropiadas para su stack tecnológico y necesidades específicas.
+
+Ai-rules-cli simplifica significativamente la gestión de reglas de proyecto, especialmente cuando trabajas con asistentes de IA como Cursor IDE o Claude. Su interfaz interactiva y capacidades de automatización hacen que sea fácil mantener consistencia y mejores prácticas en todos tus proyectos de desarrollo.
+
+## Características principales
+
+- **Inicialización interactiva**: El CLI incluye un asistente interactivo (wizard) que guía a los usuarios a través de un árbol de preguntas para seleccionar las reglas más apropiadas para su proyecto.
+
+- **Validación de esquemas**: Verifica que las reglas cumplan con el esquema JSON Schema definido, garantizando consistencia y validez.
+
+- **Resolución de dependencias**: Gestiona automáticamente las dependencias entre reglas, resolviendo conflictos y asegurando que todas las reglas requeridas estén presentes.
+
+- **Generación de archivos**: Genera automáticamente los archivos de reglas (`.mdc`) en el directorio `.cursor/rules` de tu proyecto, listos para ser consumidos por Cursor IDE y otros asistentes de IA.
+
+- **Generación de índices**: Crea archivos de índice que documentan todas las reglas disponibles, facilitando la navegación y referencia.
+
+## Instalación y uso
+
+### Instalación
+
+```bash
+npm install -g ai-rules-cli
+# o
+pnpm add -g ai-rules-cli
+# o
+yarn global add ai-rules-cli
+```
+
+### Comandos principales
+
+#### `init`
+
+Inicializa un nuevo proyecto con reglas de ai-rules. Ejecuta el asistente interactivo para seleccionar reglas apropiadas.
+
+```bash
+ai-rules-cli init
+```
+
+#### `generate`
+
+Genera archivos de reglas basados en las selecciones realizadas durante la inicialización o actualiza reglas existentes.
+
+```bash
+ai-rules-cli generate
+```
+
+#### `validate`
+
+Valida que las reglas existentes cumplan con el esquema JSON Schema.
+
+```bash
+ai-rules-cli validate
+```
+
+## Arquitectura
+
+El CLI está construido con una arquitectura modular:
+
+```
+src/
+├── core/           # Lógica de negocio principal
+│   ├── config.ts   # Gestión de configuración
+│   ├── rule-loader.ts      # Carga y parsing de reglas
+│   ├── rule-validator.ts   # Validación de esquemas
+│   └── dependency-resolver.ts # Resolución de dependencias
+├── ui/             # Interfaz de usuario
+│   ├── wizard.ts   # Asistente interactivo
+│   ├── prompts.ts   # Prompts de Inquirer
+│   ├── formatters.ts # Formateo visual
+│   └── spinner.ts  # Indicadores de carga
+├── generators/     # Generación de archivos
+│   ├── output-generator.ts # Generación de archivos de reglas
+│   └── index-generator.ts  # Generación de archivos de índice
+├── utils/          # Utilidades
+│   ├── logger.ts   # Logging
+│   └── file-utils.ts # Operaciones de archivos
+├── types/          # Tipos TypeScript
+│   ├── rule.types.ts
+│   ├── config.types.ts
+│   └── wizard.types.ts
+└── index.ts        # Punto de entrada CLI
+```
+
+## Estructura de archivos generados
+
+### Archivo `claude.md`
+
+El CLI genera automáticamente un archivo `claude.md` que ayuda a Claude AI a integrarse con tus reglas:
+
+- Proporciona directrices estructuradas para que Claude AI haga referencia al directorio `.cursor/rules`
+- Explica cómo Claude puede beneficiarse de tus reglas y mantener consistencia con Cursor IDE
+- Incluye ejemplos de uso y mejores prácticas para trabajar con reglas en Claude
+- Documenta reglas y categorías disponibles para fácil referencia
+- Se genera automáticamente al ejecutar `init` o `generate`
+
+### Archivos de reglas
+
+Cada archivo de regla (`.mdc`) contiene:
+
+- Frontmatter YAML con metadatos
+- Contenido Markdown con la regla real
+
+## Configuración
+
+El CLI puede ser configurado mediante:
+
+- Opciones de línea de comandos
+- Archivos de configuración del proyecto
+- Variables de entorno
+
+## Manejo de errores
+
+El CLI proporciona manejo exhaustivo de errores:
+
+- **Errores de validación**: mensajes claros para violaciones de esquema
+- **Errores de dependencias**: se reportan dependencias faltantes
+- **Errores de conflicto**: se identifican y resuelven conflictos de reglas
+- **Errores de archivos**: las operaciones del sistema de archivos se manejan con gracia
+- **Errores de usuario**: las entradas inválidas se capturan y reportan
+
+## Flujo de trabajo típico
+
+1. **Inicialización**: Ejecuta `ai-rules-cli init` en tu proyecto
+2. **Selección**: El asistente te guía a través de preguntas para seleccionar reglas apropiadas
+3. **Validación**: El CLI valida automáticamente las reglas seleccionadas
+4. **Resolución**: Se resuelven dependencias y conflictos automáticamente
+5. **Generación**: Se generan los archivos de reglas en `.cursor/rules`
+6. **Índice**: Se crea un archivo de índice para referencia
+
+## Interfaz de usuario
+
+El CLI proporciona una experiencia de usuario pulida con:
+
+- Indicadores de progreso visuales
+- Formateo de salida colorizado
+- Mensajes de error claros y accionables
+- Confirmaciones interactivas cuando es necesario
+
+## Testing
+
+El proyecto incluye una suite de tests completa:
+
+```bash
+npm test
+```
+
+Los tests cubren:
+
+- Carga y parsing de reglas
+- Validación de esquemas
+- Resolución de dependencias
+- Generación de archivos
+- Manejo de errores
+
+## Linting
+
+El código sigue estándares estrictos de calidad:
+
+```bash
+npm run lint
+npm run lint:fix
+```
+
+## Desarrollo
+
+### Prerrequisitos
+
+- Node.js 18+
+- TypeScript 5+
+- npm, yarn o pnpm
+
+### Configuración del entorno de desarrollo
+
+```bash
+git clone <repository-url>
+cd ai-rules-cli
+npm install
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+### Desarrollo
+
+```bash
+npm run dev
+```
+
+## Contribución
+
+El proyecto acepta contribuciones:
+
+1. Fork del repositorio
+2. Crear una rama de características
+3. Realizar cambios
+4. Añadir tests
+5. Enviar un pull request
+
+## Casos de uso
+
+### Nuevo proyecto
+
+Al iniciar un nuevo proyecto, usa el CLI para aplicar automáticamente reglas apropiadas basadas en tu stack tecnológico.
+
+### Actualización de reglas
+
+Cuando las reglas evolucionan, el CLI puede ayudar a actualizar y migrar reglas existentes.
+
+### Estandarización de equipo
+
+Los equipos pueden usar el CLI para aplicar consistentemente las mismas reglas en todos los proyectos.
+
+### Integración con CI/CD
+
+El CLI puede integrarse en pipelines de CI/CD para validar que los proyectos cumplan con las reglas definidas.
+
+## Recursos
+
+- [Repositorio de ai-rules-cli](https://github.com/rerades/ai-rules-cli)
+- [Repositorio de AI Rules](https://github.com/rerades/ai-rules)
+- [Documentación](https://github.com/rerades/ai-rules-cli#readme)

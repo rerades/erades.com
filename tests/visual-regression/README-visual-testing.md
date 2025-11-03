@@ -28,14 +28,28 @@ pnpm test:visual:update
 
 ## Primer Uso
 
-### 1. Generar snapshots de referencia
+### 1. Construir y levantar el servidor
+
+```bash
+# Construir la aplicación
+pnpm build
+
+# Levantar el servidor (en una terminal separada)
+pnpm start
+```
+
+### 2. Generar snapshots de referencia
+
+En otra terminal (con el servidor corriendo):
 
 ```bash
 # Generar snapshots iniciales en entorno consistente
 pnpm test:visual:update
 ```
 
-### 2. Ejecutar tests visuales
+### 3. Ejecutar tests visuales
+
+Con el servidor corriendo:
 
 ```bash
 pnpm test:visual
@@ -95,10 +109,28 @@ expect: {
 
 ### Desarrollo Normal
 
-1. Hacer cambios en el código
-2. Ejecutar `pnpm test:visual` que levanta una imagen docker y hace las pruebas con el navegador en docker
-3. Si fallan, revisar los diffs generados
-4. Si los cambios son intencionales, ejecutar `pnpm test:visual:update`
+**⚠️ IMPORTANTE: Los tests visuales requieren que el servidor Astro esté corriendo antes de ejecutarlos.**
+
+1. Construir la aplicación:
+   ```bash
+   pnpm build
+   ```
+
+2. Levantar el servidor en una terminal (debe estar en el puerto 4321):
+   ```bash
+   pnpm start
+   ```
+   El servidor debe estar escuchando en `http://localhost:4321` (o `http://0.0.0.0:4321`).
+
+3. En otra terminal, ejecutar los tests visuales:
+   ```bash
+   pnpm test:visual
+   ```
+   Este comando levanta una imagen Docker que se conecta al servidor corriendo en el host.
+
+4. Si los tests fallan, revisar los diffs generados en `test-results/`
+
+5. Si los cambios son intencionales, ejecutar `pnpm test:visual:update`
 
 ### Cambios Intencionales en UI
 
@@ -168,6 +200,33 @@ Para CI/CD, considera:
 ```
 
 ## Resolución de Problemas
+
+### Error: `net::ERR_CONNECTION_REFUSED` o `page.goto: net::ERR_CONNECTION_REFUSED`
+
+Este error indica que el servidor Astro no está corriendo. Asegúrate de:
+
+1. **Construir la aplicación primero:**
+   ```bash
+   pnpm build
+   ```
+
+2. **Levantar el servidor en una terminal separada:**
+   ```bash
+   pnpm start
+   ```
+
+3. **Verificar que el servidor está corriendo:**
+   ```bash
+   curl http://localhost:4321
+   ```
+   Debe responder con HTML.
+
+4. **Entonces ejecutar los tests:**
+   ```bash
+   pnpm test:visual
+   ```
+
+El servidor debe estar escuchando en `http://localhost:4321` (o `http://0.0.0.0:4321`) para que Docker pueda conectarse a través de `host.docker.internal:4321`.
 
 ### Tests Fallan por Diferencias Menores
 

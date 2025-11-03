@@ -1,0 +1,159 @@
+---
+title: "AI Rules: Una taxonomía universal para la gobernanza de reglas de IA"
+description: "AI Rules define un metamodelo y taxonomía universal para describir reglas de proyecto de forma estructurada y legible por máquinas, diseñado para trabajar junto con ai-rules-cli."
+pubDate: 2025-11-02
+tags:
+  - ai-rules
+  - gobernanza
+  - taxonomía
+  - reglas
+  - desarrollo
+  - buenas-prácticas
+categories:
+  - AI
+  - Herramientas
+draft: false
+heroImage: /ai-rules.png
+---
+
+**AI Rules** define un **metamodelo y taxonomía universal** para describir reglas de proyecto de forma estructurada y legible por máquinas. Está diseñado para trabajar en conjunto con **ai-rules-cli**, que consume estas definiciones para inicializar, validar y evolucionar conjuntos de reglas de proyecto.
+
+## Visión general
+
+AI Rules proporciona una forma estándar y consistente de definir, organizar y gestionar reglas que rigen el comportamiento y las prácticas de desarrollo en proyectos de software. Esto es especialmente valioso cuando trabajas con asistentes de IA que necesitan entender y aplicar estas reglas de manera consistente.
+
+## Metamodelo
+
+El sistema define un metamodelo completo que incluye:
+
+- **Composición guiada por CLI**: árbol de preguntas que lleva a la selección de reglas
+- **Gobernanza de etiquetas**: evita la jungla taxonómica
+- **Compatibilidad y conflictos**: gestión de requisitos y conflictos entre reglas
+- **Auditoría**: trazabilidad con información de procedencia, última revisión y propietario
+- **Evolución controlada**: SemVer junto con estados de madurez
+
+## Taxonomía
+
+Las reglas se describen mediante facetas fijas (enums) y campos opcionales etiquetados para garantizar una composición y filtrado predecibles.
+
+### Facetas principales (Enums)
+
+| Faceta        | Valores                                                           |
+| ------------- | ----------------------------------------------------------------- |
+| **Category**  | code, foundation, framework, security, testing, architecture, ... |
+| **Scope**     | global, repo, package, component, page, api, ci, cd               |
+| **Language**  | typescript, javascript, html, css, python, go, ...                |
+| **Lifecycle** | advisory, recommended, enforced                                   |
+| **Maturity**  | draft, beta, stable, deprecated                                   |
+| **Stability** | experimental, evolving, locked                                    |
+| **Audience**  | frontend, backend, fullstack, a11y, sec, devops, architect        |
+| **Severity**  | info, low, medium, high, critical                                 |
+
+### Campos relacionales
+
+- `requires[]`: IDs de otras reglas requeridas
+- `conflicts[]`: reglas incompatibles
+- `supersedes[]`: reemplaza reglas antiguas
+- `bundles[]`: grupos lógicos (baseline/web)
+
+### Campos operacionales
+
+- `files`: ["src/**/*.tsx"] - archivos a los que aplica la regla
+- `enforcement`: configuración de cómo se aplica (lint, ci, scaffold)
+- `order`: orden de aplicación
+- `inputs`: opciones configurables de la regla
+
+### Campos etiquetados
+
+- `topic:*` → etiquetas temáticas (`topic:wcag22`, `topic:core-web-vitals`)
+- `lint:*` → alcance de linting (`lint:eslint-config`)
+- `test:*` → alcance de testing (`test:playwright`)
+- `a11y:*`, `perf:*`, `sec:*` → accesibilidad, rendimiento, seguridad
+
+## Reglas de gobernanza
+
+El sistema incluye reglas claras de gobernanza:
+
+- Los cambios en el vocabulario o enums requieren revisión por PR de los "Owners"
+- Cualquier nuevo valor de enum → actualización del esquema + entrada en changelog
+- Nomenclatura consistente de reglas mediante `domain.subdomain.slug`
+
+### Ejemplos de IDs de reglas
+
+```
+foundation.baseline.web
+language.typescript.strict
+framework.react.hooks
+performance.core-web-vitals
+accessibility.wcag22.keyboard
+```
+
+## Esquema de metadatos (JSON Schema)
+
+Las reglas se ajustan a JSON Schema 2020-12. El archivo de esquema es `mdc.schema.json`, lo que garantiza validación consistente y herramientas que pueden consumir estas definiciones.
+
+## Ejemplo de regla (Frontmatter)
+
+```yaml
+---
+id: typescript.conventions.guidelines
+title: "TypeScript Conventions Guidelines"
+category: language
+language: "typescript"
+frameworks: ["react", "astro"]
+tooling: ["eslint", "prettier"]
+maturity: stable
+severity: low
+enforcement:
+  lint: warn
+  ci: allow
+  scaffold: none
+tags: ["topic:typescript", "lint:typescript-eslint"]
+owner: "typescript-team@your-org.com"
+review: { lastReviewed: "2025-01-20", reviewCycleDays: 90 }
+---
+```
+
+## Integración con ai-rules-cli
+
+El CLI utiliza los metadatos para:
+
+1. **Filtrar reglas** por categoría, lenguaje, frameworks y herramientas
+2. **Resolver dependencias** usando los campos `requires` y `conflicts`
+3. **Generar bundles** basados en el campo `bundles`
+4. **Aplicar enforcement** según la configuración de `enforcement`
+5. **Ordenar reglas** usando el campo `order` para una composición adecuada
+
+## Beneficios
+
+- **Consistencia**: Al tener un sistema estandarizado para definir reglas, puedes asegurar que todos los proyectos sigan las mismas convenciones y mejores prácticas.
+
+- **Escalabilidad**: El sistema de taxonomía y metadatos permite gestionar grandes conjuntos de reglas sin perder organización ni claridad.
+
+- **Trazabilidad**: Cada regla incluye información sobre su propietario, última revisión y ciclo de revisión, facilitando el mantenimiento y la auditoría.
+
+- **Evolución controlada**: Con SemVer y estados de madurez, puedes gestionar la evolución de las reglas de forma controlada y predecible.
+
+- **Integración con herramientas**: Al ser legible por máquinas, las herramientas pueden consumir estas definiciones para aplicar automáticamente las reglas en linting, CI/CD y scaffolding.
+
+## Contribución
+
+El proyecto acepta contribuciones siguiendo estas pautas:
+
+- Los PRs son bienvenidos, pero deben seguir el esquema definido
+- Cada regla debe incluir metadatos y etiquetas completos
+- El ciclo de revisión se aplica mediante `review.lastReviewed`
+
+## Casos de uso
+
+- **Inicialización de proyectos**: Al iniciar un nuevo proyecto, puedes usar ai-rules-cli para seleccionar y aplicar automáticamente un conjunto de reglas apropiado según el stack tecnológico.
+
+- **Estandarización de equipos**: Los equipos pueden definir reglas compartidas que garanticen consistencia en todos los proyectos del equipo o la organización.
+
+- **Migración y actualización**: El sistema de versionado y estados de madurez facilita la migración de reglas entre proyectos y la actualización gradual de prácticas.
+
+## Recursos
+
+- [Repositorio de AI Rules](https://github.com/rerades/ai-rules)
+- [Repositorio de ai-rules-cli](https://github.com/rerades/ai-rules-cli)
+- [Esquema JSON Schema](https://github.com/rerades/ai-rules/blob/main/mdc.schema.json)
