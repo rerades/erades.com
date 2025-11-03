@@ -68,7 +68,7 @@ function getAllMarkdownFiles(dir: string): string[] {
     const stat = fs.statSync(filePath);
     if (stat && stat.isDirectory()) {
       results = results.concat(getAllMarkdownFiles(filePath));
-    } else if (file.endsWith(".md")) {
+    } else if (file.endsWith(".md") || file.endsWith(".mdx")) {
       results.push(filePath);
     }
   }
