@@ -17,7 +17,7 @@ heroImage: /blog-placeholder-18.jpg
 
 ## Eval malvado
 
-Podemos hacer trampa con el alcance léxico usando la palabra clave eval. <br>
+Podemos hacer trampa con el alcance léxico usando la palabra clave eval. <br />
 La palabra clave eval, toma cualquier cadena dada y la trata como si fuera un código
 
 ```javascript
@@ -30,7 +30,7 @@ function foo(str) {
 foo("var bar = 42");
 ```
 
-El problema de hacer esto es que el rendimiento se verá afectado porque, como sabemos, JS primero asigna el LHS (lado izquierdo), lo cual significa que leerá todas las asignaciones en el lado izquierdo y luego hará el lado derecho del código. En el caso de la función eval estamos utilizando un RHS que contiene una declaración LHS y RHS y eso significa que el compilador de JS no podrá hacer una optimización de código porque el motor no puede asumir que el alcance léxico será inalterable. Entonces, incluso si declaramos un eval y no lo usamos para hacer una declaración, tendrá un efecto secundario en el rendimiento de nuestro código. <br>
+El problema de hacer esto es que el rendimiento se verá afectado porque, como sabemos, JS primero asigna el LHS (lado izquierdo), lo cual significa que leerá todas las asignaciones en el lado izquierdo y luego hará el lado derecho del código. En el caso de la función eval estamos utilizando un RHS que contiene una declaración LHS y RHS y eso significa que el compilador de JS no podrá hacer una optimización de código porque el motor no puede asumir que el alcance léxico será inalterable. Entonces, incluso si declaramos un eval y no lo usamos para hacer una declaración, tendrá un efecto secundario en el rendimiento de nuestro código. <br />
 Así que para resumir en general no deberíamos usar la clave eval
 
 ## with with
@@ -41,9 +41,9 @@ También podemos saltarnos el alcance léxico haciendo algo aún peor, y eso es 
 
 La búsqueda de LHS se realiza cuando una variable aparece en el lado izquierdo de una operación de asignación, y una búsqueda de RHS se realiza cuando una variable aparece en el lado derecho de una operación de asignación.
 
-Lo pienso de la siguiente manera: <br>
-la búsqueda de lhs es una búsqueda de contenedor <br>
-la búsqueda de rhs es una búsqueda de valor <br>
+Lo pienso de la siguiente manera: <br />
+la búsqueda de lhs es una búsqueda de contenedor <br />
+la búsqueda de rhs es una búsqueda de valor <br />
 
 ## Alcance dinámico
 

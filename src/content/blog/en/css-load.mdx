@@ -31,23 +31,23 @@ We might think it is because of the weight (many bytes to send to the client), b
 
 </div>
 
-- **HTML Parser:**<br>
+- **HTML Parser:**<br />
   This is the first step, where the browser analyzes the HTML document to create the DOM.
-- **CSS Parser:**<br>
+- **CSS Parser:**<br />
   When the HTML parser encounters CSS style sheets, it passes them to the CSS parser.
-- **CSSOM (CSS Object Model):**<br>The CSS parser creates the CSSOM, a tree-like structure that represents the styles of the document.
-- **DOM:**<br>The HTML parser creates this tree structure of the HTML document.
-- **Render Tree:**<br>It is the rendering from the combination of the DOM and the CSSOM. This tree includes only the visible elements and their computed styles and applies the cascade rules at the same time.
-- **Cascade Rules:**<br> This is where the browser applies the cascade, specificity, and inheritance rules of CSS to determine the final styles of each element.
-- **Final Computed Style:**<br> It is the final result for each element, showing all applied styles, which is used for subsequent Layout/reflow and Paint steps.
+- **CSSOM (CSS Object Model):**<br />The CSS parser creates the CSSOM, a tree-like structure that represents the styles of the document.
+- **DOM:**<br />The HTML parser creates this tree structure of the HTML document.
+- **Render Tree:**<br />It is the rendering from the combination of the DOM and the CSSOM. This tree includes only the visible elements and their computed styles and applies the cascade rules at the same time.
+- **Cascade Rules:**<br /> This is where the browser applies the cascade, specificity, and inheritance rules of CSS to determine the final styles of each element.
+- **Final Computed Style:**<br /> It is the final result for each element, showing all applied styles, which is used for subsequent Layout/reflow and Paint steps.
 
 ### **Ways to Load CSS**
 
-<hr>
+<hr />
 
 #### **External** (`<link ...>`)
 
-<br>
+<br />
 
 ```html
 <head>
@@ -69,7 +69,7 @@ We might think it is because of the weight (many bytes to send to the client), b
 <link rel="stylesheet" href="/assets/print.css" media="print" />
 ```
 
-<hr>
+<hr />
 
 #### Internal (`<style>`)
 
@@ -95,7 +95,7 @@ We might think it is because of the weight (many bytes to send to the client), b
 
 </div>
 
-<hr>
+<hr />
 
 #### Inline (in the style attribute)
 
@@ -113,7 +113,7 @@ We might think it is because of the weight (many bytes to send to the client), b
 
 </div>
 
-<hr>
+<hr />
 
 #### Imported within another CSS (`@import`)
 
@@ -152,7 +152,7 @@ Or from `<style>`:
 
 </div>
 
-<hr>
+<hr />
 
 #### Dynamically by JS (injecting `<link>` or `<style>`)
 

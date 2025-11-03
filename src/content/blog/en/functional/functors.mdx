@@ -13,8 +13,8 @@ draft: false
 heroImage: "/blog-placeholder-15.jpg"
 ---
 
-> **Functor is simply an interface with a contract.**<br>
-> We could have just as easily named it Mappable, but now, where's the fun in that?.<br> > _Professor Frisby's_
+> **Functor is simply an interface with a contract.**<br />
+> We could have just as easily named it Mappable, but now, where's the fun in that?.<br /> > _Professor Frisby's_
 
 A functor is nothing more than a data structure that you can map functions with the purpose of
 lifting values intro a wrapper, modifying them, and then putting them back into a wrapper.
@@ -165,20 +165,20 @@ Then after having an fmap function that returns the same type object we can also
     object.fmap(compose(f, g)) ≍ object.fmap(g).fmap(f)
 ```
 
-<br>
+<br />
 
 An finally we can say then that an object will be a functor if it fulfills these rules:
 
-**1) It is a wrapper object to contain our data**<br>
-**2) had a map function to iterate over its own data**<br>
-**3) preserves identity**<br>
-**4) can be composable**<br><br>
+**1) It is a wrapper object to contain our data**<br />
+**2) had a map function to iterate over its own data**<br />
+**3) preserves identity**<br />
+**4) can be composable**<br /><br />
 
-<hr>
+<hr />
 <div class="bibliography">
-Bibliogrphy:<br><br>
+Bibliogrphy:<br /><br />
 
 - Functional Programming in JavaScript . Ed: MANNING SHELTER ISLAND. Author: Luis Atencio.
 - [Mostly Adequate Guide to functional programming](https://drboolean.gitbooks.io/mostly-adequate-guide-old/content/).
-Professor Frisby's<br>
+Professor Frisby's<br />
 </div>
