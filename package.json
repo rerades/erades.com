@@ -55,7 +55,7 @@
     "@lhci/cli": "0.15.1",
     "@lhci/server": "0.15.1",
     "@playwright/test": "1.55.0",
-    "@tailwindcss/postcss": "4.1.12",
+    "@tailwindcss/postcss": "4.1.16",
     "@tailwindcss/typography": "0.5.16",
     "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "6.8.0",
