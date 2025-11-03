@@ -44,9 +44,6 @@ importers:
       gray-matter:
         specifier: 4.0.3
         version: 4.0.3
-      h:
-        specifier: link:/h
-        version: link:../../../../../h
       openai:
         specifier: 5.15.0
         version: 5.15.0(ws@8.18.3)(zod@3.25.76)
