@@ -7,4 +7,3 @@ ignoredBuiltDependencies:
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
-  - inotify
