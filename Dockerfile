@@ -3,7 +3,7 @@
 FROM node:22-slim AS builder
 
 # Enable Corepack and install pnpm at fixed version
-ARG PNPM_VERSION=10.20.0
+ARG PNPM_VERSION=10.27.0
 RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
 WORKDIR /app
