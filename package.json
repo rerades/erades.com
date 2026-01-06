@@ -2,7 +2,7 @@
   "name": "erades-com",
   "type": "module",
   "version": "0.0.1",
-  "packageManager": "pnpm@10.20.0",
+  "packageManager": "pnpm@10.27.0",
   "engines": {
     "node": ">=22.13.0"
   },
