@@ -4,13 +4,6 @@
   <xsl:template match="/">
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
-      <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&amp;l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WJFZWBGZ');</script>
-<!-- End Google Tag Manager -->
         <title><xsl:value-of select="/rss/channel/title"/></title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <style>
@@ -101,10 +94,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&amp;l='+l:'';j.async=true;j.src=
         </style>
       </head>
       <body>
-      <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WJFZWBGZ"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
         <div class="header">
           <h1><xsl:value-of select="/rss/channel/title"/></h1>
           <p><xsl:value-of select="/rss/channel/description"/></p>
