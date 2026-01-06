@@ -83,6 +83,7 @@ jobs:
       PORT: 4321
       HOST: 0.0.0.0
       BASE_URL: http://127.0.0.1:4321
+      PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -91,6 +92,14 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Validate PUBLIC_GA_MEASUREMENT_ID
+        run: |
+          if [ -z "$PUBLIC_GA_MEASUREMENT_ID" ]; then
+            echo "Error: PUBLIC_GA_MEASUREMENT_ID is not configured in GitHub repository variables"
+            echo "Please configure it in: Settings → Secrets and variables → Actions → Variables"
+            exit 1
+          fi
+          echo "PUBLIC_GA_MEASUREMENT_ID is configured"
       - name: Build app
         run: pnpm build
       - name: Start server
@@ -123,6 +132,8 @@ jobs:
   Build:
     name: Build-App
     runs-on: ubuntu-latest
+    env:
+      PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}
     needs:
       - Lint
       - Type-Check
@@ -137,4 +148,12 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Validate PUBLIC_GA_MEASUREMENT_ID
+        run: |
+          if [ -z "$PUBLIC_GA_MEASUREMENT_ID" ]; then
+            echo "Error: PUBLIC_GA_MEASUREMENT_ID is not configured in GitHub repository variables"
+            echo "Please configure it in: Settings → Secrets and variables → Actions → Variables"
+            exit 1
+          fi
+          echo "PUBLIC_GA_MEASUREMENT_ID is configured"
       - run: pnpm build
