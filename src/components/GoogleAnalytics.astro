@@ -10,7 +10,6 @@ const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
     <>
       {/* Google Analytics 4 - Optimized non-blocking implementation */}
       {/* Script loads asynchronously with low priority to not compete with critical resources */}
-      {/* @ts-expect-error - fetchpriority is valid HTML but not yet in TypeScript definitions */}
       <script
         async
         src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
