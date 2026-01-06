@@ -3,10 +3,11 @@
 coverage-lighthouse/
 db/lighthouse/*
 !db/lighthouse/*.db
-
 .lighthouseci/
 coverage-lighthouse/
 
+# cspell
+.cspell/
 
 .pnpm-store
 

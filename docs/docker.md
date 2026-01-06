@@ -1,9 +1,9 @@
-# Errores posibles
+# Possible Errors
 
-**FALLO IMAGEN DOCKER:**
-El error se debe a que la versión de Playwright en tu proyecto (@playwright/test 1.55.0) no coincide con la versión de la imagen Docker que usas (mcr.microsoft.com/playwright:v1.54.0-jammy). Para evitar estos problemas, siempre debes alinear la versión de la imagen con la de tu dependencia Playwright. La solución recomendada es actualizar el tag de la imagen Docker a la misma versión que tu dependencia, o viceversa, y reconstruir el contenedor.
-También se explica cómo parametrizar la versión con variables de entorno para facilitar futuras actualizaciones.
+**DOCKER IMAGE FAILURE:**
+The error occurs because the Playwright version in your project (@playwright/test 1.55.0) does not match the version of the Docker image you're using (mcr.microsoft.com/playwright:v1.54.0-jammy). To avoid these issues, you should always align the image version with your Playwright dependency. The recommended solution is to update the Docker image tag to match your dependency version, or vice versa, and rebuild the container.
+It also explains how to parameterize the version with environment variables to facilitate future updates.
 
-- No se recomienda mantener versiones desincronizadas: **Mantener imagen y lib desincronizadas es pedirte bugs el mes que viene.**
+- Keeping versions out of sync is not recommended: **Keeping image and library out of sync is asking for bugs next month.**
 
-- **DECISIÓN TOMADA:** tomaré como referencia la versión del docker file y modificaré mi package.json para coincidir porque las imágenes se actualizan con menos frecuencia que los paquetes (posiblemente tenga que hacer un downgrade del package.json), de vez en cunado ir actualizando la versión del docker file y hacer el match con el package.json
+- **DECISION MADE:** I will use the Docker file version as reference and modify my package.json to match because images are updated less frequently than packages (I may need to downgrade package.json), and occasionally update the Docker file version and match it with package.json

@@ -1,44 +1,42 @@
-# Lighthouse CI Server - Configuración Local
+# Lighthouse CI Server - Local Configuration
 
-Este documento explica cómo configurar y usar el Lighthouse CI Server en local para monitorear el rendimiento de tu sitio web.
+This document explains how to configure and use the Lighthouse CI Server locally to monitor your website's performance.
 
-## 🚀 Configuración Rápida
+## 🚀 Quick Setup
 
-### 1. Instalar dependencias
+### 1. Install dependencies
 
 ```bash
 pnpm install
 ```
 
-### 2. Construir el proyecto
+### 2. Build the project
 
 ```bash
 pnpm build
 ```
 
-### 3. Ejecutar Lighthouse (mobile + desktop en un único build)
+### 3. Run Lighthouse (mobile + desktop in a single build)
 
 ```bash
-pnpm lhci:server:up       # asegúrate de que el server está levantado
-pnpm lhci:ci:both         # hace 2 collect (mobile y desktop aditivo) y 1 upload
+pnpm lhci:server:up       # make sure the server is up
+pnpm lhci:ci:both         # runs 2 collects (mobile and desktop additive) and 1 upload
 ```
 
-## 📊 Resultados
+## 📊 Results
 
-Los resultados se suben automáticamente al servidor LHCI local y quedan
-persistidos en la base de datos SQLite: `db/lighthouse/lhci.db`. Puedes
-visualizarlos en `http://localhost:9001`.
+Results are automatically uploaded to the local LHCI server and persisted in the SQLite database: `db/lighthouse/lhci.db`. You can view them at `http://localhost:9001`.
 
-## 🐳 Lighthouse CI Server con Docker
+## 🐳 Lighthouse CI Server with Docker
 
-Basado en la guía oficial de LHCI Server [documentación](https://googlechrome.github.io/lighthouse-ci/docs/server.html):
+Based on the official LHCI Server [documentation](https://googlechrome.github.io/lighthouse-ci/docs/server.html):
 
-### Estructura y persistencia
+### Structure and persistence
 
-- La base de datos SQLite se persiste en `db/lighthouse/` (bajo control de versiones).
-- Se utiliza la imagen `patrickhulce/lhci-server` y se monta el volumen en `/data`.
+- The SQLite database is persisted in `db/lighthouse/` (under version control).
+- Uses the `patrickhulce/lhci-server` image and mounts the volume at `/data`.
 
-Archivo `docker-compose.lhci.yml`:
+File `docker-compose.lhci.yml`:
 
 ```yaml
 version: "3.8"
@@ -53,7 +51,7 @@ services:
     restart: unless-stopped
 ```
 
-Scripts útiles en `package.json`:
+Useful scripts in `package.json`:
 
 ```json
 {
@@ -66,25 +64,25 @@ Scripts útiles en `package.json`:
 }
 ```
 
-### Pasos para levantar el servidor
+### Steps to start the server
 
-1. Crear directorio de base de datos si no existe: `mkdir -p db/lighthouse`
-2. Arrancar el servidor: `pnpm lhci:server:up`
-3. Abrir `http://localhost:9001` en el navegador
+1. Create database directory if it doesn't exist: `mkdir -p db/lighthouse`
+2. Start the server: `pnpm lhci:server:up`
+3. Open `http://localhost:9001` in your browser
 
-Sin autenticación ni reglas de firewall, accesible localmente.
+No authentication or firewall rules, accessible locally.
 
-### Inicializar el primer proyecto (persistente)
+### Initialize the first project (persistent)
 
-Cuando visites `http://localhost:9001/app/projects` verás el mensaje para correr el asistente. Para dejar la configuración persistida en `db/lighthouse/lhci.db` usa:
+When you visit `http://localhost:9001/app/projects` you'll see the message to run the wizard. To persist the configuration in `db/lighthouse/lhci.db` use:
 
 ```bash
 pnpm lhci:wizard:db
 ```
 
-Este comando ejecuta el wizard de LHCI apuntando a la misma base de datos SQLite persistida por Docker.
+This command runs the LHCI wizard pointing to the same SQLite database persisted by Docker.
 
-Alternativa con Docker (usa el contenedor del servidor):
+Alternative with Docker (uses the server container):
 
 ```bash
 docker exec -it lhci-server node /usr/src/lhci/node_modules/.bin/lhci wizard \
@@ -93,55 +91,55 @@ docker exec -it lhci-server node /usr/src/lhci/node_modules/.bin/lhci wizard \
   --storage.sqlDatabasePath=/data/lhci.db
 ```
 
-Ambos métodos escriben en `db/lighthouse/lhci.db`, dejando tokens y proyecto configurados de forma permanente.
+Both methods write to `db/lighthouse/lhci.db`, leaving tokens and project configured permanently.
 
-### Ejecutar auditorías y subir automáticamente al servidor
+### Run audits and upload automatically to the server
 
-Con la configuración actual, se recomienda ejecutar dos `collect` (mobile y desktop con `--additive`) y un único `upload` por hash de commit:
+With the current configuration, it's recommended to run two `collect` (mobile and desktop with `--additive`) and a single `upload` per commit hash:
 
 ```bash
-pnpm lhci:server:up  # asegurarse que el server está corriendo
-pnpm lhci:ci:both    # 2 collects (uno mobile, otro desktop aditivo) + 1 upload
+pnpm lhci:server:up  # make sure the server is running
+pnpm lhci:ci:both    # 2 collects (one mobile, one desktop additive) + 1 upload
 ```
 
-Notas:
+Notes:
 
-- El servidor rechaza uploads duplicados para el mismo hash.
-- Desktop se distingue en el dashboard usando `?device=desktop` en las URLs de `lighthouserc.desktop.cjs`.
+- The server rejects duplicate uploads for the same hash.
+- Desktop is distinguished in the dashboard using `?device=desktop` in URLs from `lighthouserc.desktop.cjs`.
 
-## 🔧 Scripts Disponibles
+## 🔧 Available Scripts
 
 ### Lighthouse CI
 
-- `pnpm lhci:ci:both` - Ejecuta mobile + desktop (aditivo) y realiza un único upload
-- `pnpm lhci:ci:mobile` - (opcional) Solo móvil
-- `pnpm lhci:ci:desktop` - (opcional) Solo escritorio
+- `pnpm lhci:ci:both` - Runs mobile + desktop (additive) and performs a single upload
+- `pnpm lhci:ci:mobile` - (optional) Mobile only
+- `pnpm lhci:ci:desktop` - (optional) Desktop only
 
-## 📁 Estructura de Archivos
+## 📁 File Structure
 
 ```
-├── lighthouserc.cjs           # Configuración para móvil (URLs base)
-├── lighthouserc.desktop.cjs   # Configuración para escritorio (emulación + ?device=desktop)
+├── lighthouserc.cjs           # Configuration for mobile (base URLs)
+├── lighthouserc.desktop.cjs   # Configuration for desktop (emulation + ?device=desktop)
 ├── db/
 │   └── lighthouse/
-│       └── lhci.db            # Base de datos persistente del servidor LHCI
+│       └── lhci.db            # Persistent LHCI server database
 └── docs/
-    └── lighthouse-server.md   # Esta documentación
+    └── lighthouse-server.md   # This documentation
 ```
 
-## ⚙️ Configuración
+## ⚙️ Configuration
 
-### Configuración de Lighthouse CI
+### Lighthouse CI Configuration
 
-Los archivos de configuración contienen:
+The configuration files contain:
 
-- **lighthouserc.cjs**: Configuración para pruebas móviles (preset por defecto)
-- **lighthouserc.desktop.cjs**: Configuración para escritorio (emulación de pantalla, `formFactor: desktop` y URLs con `?device=desktop`)
-- **URLs de prueba**: Páginas principales del sitio
-- **Presupuestos**: Límites de rendimiento
-- **Aserciones**: Umbrales de calidad
+- **lighthouserc.cjs**: Configuration for mobile tests (default preset)
+- **lighthouserc.desktop.cjs**: Configuration for desktop (screen emulation, `formFactor: desktop` and URLs with `?device=desktop`)
+- **Test URLs**: Main pages of the site
+- **Budgets**: Performance limits
+- **Assertions**: Quality thresholds
 
-## 📈 Métricas Monitoreadas
+## 📈 Monitored Metrics
 
 ### Core Web Vitals
 
@@ -150,65 +148,65 @@ Los archivos de configuración contienen:
 - **Total Blocking Time (TBT)**: < 150ms
 - **Cumulative Layout Shift (CLS)**: < 0.1
 
-### Categorías
+### Categories
 
-- **Performance**: Mínimo 90%
-- **Accessibility**: Mínimo 95%
-- **SEO**: Mínimo 95%
+- **Performance**: Minimum 90%
+- **Accessibility**: Minimum 95%
+- **SEO**: Minimum 95%
 
-### Recursos
+### Resources
 
-- **Scripts**: Máximo 300KB, 20 archivos
-- **Stylesheets**: Máximo 120KB, 8 archivos
-- **Images**: Máximo 800KB, 40 archivos
-- **Fonts**: Máximo 400KB, 8 archivos
-- **Third-party**: Máximo 150KB, 15 archivos
+- **Scripts**: Maximum 300KB, 20 files
+- **Stylesheets**: Maximum 120KB, 8 files
+- **Images**: Maximum 800KB, 40 files
+- **Fonts**: Maximum 400KB, 8 files
+- **Third-party**: Maximum 150KB, 15 files
 
-## 🔍 Análisis de Resultados
+## 🔍 Results Analysis
 
-### Reportes Generados
+### Generated Reports
 
-Los resultados se guardan en `metrics/lighthouse/` con:
+Results are saved in `metrics/lighthouse/` with:
 
-- **Reportes HTML**: Visualización completa de resultados
-- **Datos JSON**: Información estructurada para análisis
-- **Métricas**: Puntuaciones por categoría y Core Web Vitals
+- **HTML Reports**: Complete visualization of results
+- **JSON Data**: Structured information for analysis
+- **Metrics**: Scores by category and Core Web Vitals
 
-### Interpretación
+### Interpretation
 
-- **Performance**: Puntuación de rendimiento (0-100)
-- **Accessibility**: Puntuación de accesibilidad (0-100)
-- **SEO**: Puntuación de SEO (0-100)
-- **Best Practices**: Puntuación de mejores prácticas (0-100)
+- **Performance**: Performance score (0-100)
+- **Accessibility**: Accessibility score (0-100)
+- **SEO**: SEO score (0-100)
+- **Best Practices**: Best practices score (0-100)
 
-## 🛠️ Solución de Problemas
+## 🛠️ Troubleshooting
 
-### Errores de construcción
+### Build errors
 
 ```bash
-# Limpiar caché
+# Clear cache
 rm -rf dist/ .astro/
 
-# Reinstalar dependencias
+# Reinstall dependencies
 pnpm install
 
-# Reconstruir
+# Rebuild
 pnpm build
 ```
 
-### Problemas con Lighthouse CI
+### Lighthouse CI issues
 
 ```bash
-# Limpiar resultados anteriores
+# Clear previous results
 rm -rf metrics/lighthouse/
 
-# Reinstalar dependencias de Lighthouse
+# Reinstall Lighthouse dependencies
 pnpm install @lhci/cli
 ```
 
-## 🔄 Integración con CI/CD
+## 🔄 CI/CD Integration
 
-Para integrar con GitHub Actions, agrega este job (un único upload por commit):
+To integrate with GitHub Actions, add this job (single upload per commit):
 
 ```yaml
 - name: Lighthouse CI
@@ -218,7 +216,7 @@ Para integrar con GitHub Actions, agrega este job (un único upload por commit):
     pnpm lhci:ci:both
 ```
 
-## 📚 Recursos Adicionales
+## 📚 Additional Resources
 
 - [Lighthouse CI Documentation](https://github.com/GoogleChrome/lighthouse-ci)
 - [Lighthouse Scoring](https://web.dev/performance-scoring/)
