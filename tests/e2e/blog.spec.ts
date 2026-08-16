@@ -15,8 +15,11 @@ test.describe("Blog", () => {
     await page.goto("/es");
     await waitForPageReady(page);
 
-    // Hacer clic en el enlace de "Blog"
-    const blogLink = page.getByRole("link", { name: "Blog" });
+    // Hacer clic en el enlace de "Blog" del header
+    // (el footer tiene otro enlace a /blog con el mismo nombre accesible)
+    const blogLink = page
+      .getByLabel("header")
+      .getByRole("link", { name: "Blog" });
     await blogLink.click();
 
     // Esperar a que la URL cambie a la página del blog
