@@ -186,6 +186,14 @@ export const forceEagerImagesOnInit = async (page: Page): Promise<void> => {
 export const ensureAllImagesLoaded = async (page: Page): Promise<void> => {
   // Desplazamiento incremental por la página para activar observadores de intersección o native lazy
   await page.evaluate(async () => {
+    // Quitar el lazy nativo antes de recorrer: si no, una imagen que solo pasa
+    // brevemente por el viewport puede no llegar a cargarse nunca.
+    for (const img of Array.from(document.images)) {
+      if (img.getAttribute("loading") === "lazy") {
+        img.setAttribute("loading", "eager");
+      }
+    }
+
     const total = Math.max(
       document.body.scrollHeight,
       document.documentElement.scrollHeight

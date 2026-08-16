@@ -39,12 +39,12 @@ const Icon = ICONS[href as keyof typeof ICONS];
   <ShowWhen when={Icon}>
     <IconWrapper
       Icon={Icon}
-      className={"h-4 w-4 mr-2 md:h-6 md:w-6 xl:h-4 xl:w-4 xl:mr-2 md:mr-0 min-[850px]:mr-2 " +
+      className={"h-4 w-4 mr-2 md:h-6 md:w-6 xl:h-4 xl:w-4 min-[768px]:max-[849px]:mr-0 " +
         (isActive ? "text-primary" : "text-muted-foreground")}
     />
   </ShowWhen>
   <span
-    class="md:hidden min-[850px]:inline whitespace-nowrap overflow-hidden text-ellipsis"
+    class="min-[768px]:max-[849px]:hidden whitespace-nowrap overflow-hidden text-ellipsis"
   >
     <slot />
   </span>
