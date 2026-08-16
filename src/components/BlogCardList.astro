@@ -4,12 +4,14 @@ import ShowWhen from "./ShowWhen.astro";
 import If from "./If.astro";
 import { Image } from "astro:assets";
 import { EAGER_LOAD_IMAGES_COUNT } from "../consts";
+import { t } from "../i18n";
 interface Props {
   post: any;
   lang: string;
   index: number;
 }
 const { post, lang, index } = Astro.props;
+const uiLang = lang === "en" ? "en" : "es";
 const langPrefix = `${lang}/`;
 const postId = post && typeof post.id === "string" ? post.id : "";
 const href = `/${lang}/blog/${postId.startsWith(langPrefix) ? postId.slice(langPrefix.length) : postId}/`;
@@ -48,7 +50,7 @@ const get = (key: string) => post[key] ?? (post.data && post.data[key]);
             {
               Array.isArray(get("categories")) && get("categories").length > 0
                 ? get("categories")[0]
-                : "Sin categoría"
+                : t(uiLang, "post.noCategory")
             }
           </span>
           <div

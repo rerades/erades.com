@@ -1,8 +1,8 @@
 ---
-import { SortDesc, ChevronDown, LayoutGrid, List } from "@lucide/astro";
+import { SortDesc, ChevronDown } from "@lucide/astro";
 import ViewModeToggle from "./ViewModeToggle.astro";
 import ShowWhen from "./ShowWhen.astro";
-import If from "./If.astro";
+import { t } from "../i18n";
 interface Props {
   categories: string[];
   selectedCategory: string;
@@ -11,6 +11,7 @@ interface Props {
   tag?: string;
   getCategoryHref?: (cat: string) => string;
   customClass?: string;
+  lang?: "es" | "en";
 }
 const {
   categories,
@@ -20,6 +21,7 @@ const {
   tag,
   getCategoryHref,
   customClass,
+  lang = "es",
 } = Astro.props as Props;
 
 function getCategoryHrefLocal(cat: string) {
@@ -34,17 +36,17 @@ function getCategoryHrefLocal(cat: string) {
 <form
   id="filters"
   method="get"
-  class={`bg-white dark:bg-gray-700 grid md:grid-cols-[auto_max-content] gap-4 items-start md:items-center justify-between mb-8 p-4 bg-card rounded-lg border ${customClass || ""}`}
+  class={`bg-white dark:bg-gray-700 flex flex-wrap gap-4 items-start md:items-center justify-between mb-8 p-4 bg-card rounded-lg border ${customClass || ""}`}
 >
-  <div class="grid grid-cols-1 gap-4">
-    <div class="flex items-center gap-2">
-      <span class="text-sm text-muted-foreground">Categoría:</span>
-      <div class="grid grid-flow-col gap-2">
+  <div class="flex flex-col gap-4 min-w-0 flex-1">
+    <div class="flex flex-wrap items-center gap-2 min-w-0">
+      <span class="text-sm text-muted-foreground">{t(lang, "filters.category")}</span>
+      <div class="flex flex-wrap gap-2 min-w-0">
         {
           categories.map((category) => (
             <a
               href={getCategoryHrefLocal(category)}
-              class={`w-fit whitespace-nowrap capitalize px-3 py-1 rounded-md border text-sm transition-colors ${selectedCategory.trim().toLowerCase() === category.trim().toLowerCase() ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foregroundhover:bg-primary/10"}`}
+              class={`w-fit whitespace-nowrap capitalize px-3 py-1 rounded-md border text-sm transition-colors ${selectedCategory.trim().toLowerCase() === category.trim().toLowerCase() ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-primary/10"}`}
               aria-current={
                 selectedCategory.trim().toLowerCase() ===
                 category.trim().toLowerCase()
@@ -53,33 +55,32 @@ function getCategoryHrefLocal(cat: string) {
               }
               tabindex={0}
             >
-              {category}
+              {category === "Todas" ? t(lang, "filters.all") : category}
             </a>
           ))
         }
       </div>
     </div>
   </div>
-  <div
-    class="grid grid-cols-[max-content_max-content] justify-items-end justify-end gap-4"
-  >
-    <div class="flex items-center gap-2 justify-end">
-      <span class="text-sm text-muted-foreground flex items-center">
+  <div class="flex flex-wrap items-center justify-end gap-4 min-w-0">
+    <div class="flex items-center gap-2 justify-end min-w-0">
+      <span class="text-sm text-muted-foreground flex items-center shrink-0">
         <SortDesc class="h-4 w-4 text-muted-foreground" />
       </span>
-      <div class="relative w-40">
+      <div class="relative w-40 max-w-full min-w-0">
         <select
           name="sortBy"
-          class="w-full h-10 px-3 pr-8 py-2 rounded-md borderbg-input text-foreground appearance-none focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
+          class="w-full h-10 px-3 pr-8 py-2 rounded-md border bg-input text-foreground appearance-none focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
           onchange="this.form.submit()"
         >
           <option value="date-desc" selected={sortBy === "date-desc"}
-            >Más recientes</option
+            >{t(lang, "filters.sort.dateDesc")}</option
           >
           <option value="date-asc" selected={sortBy === "date-asc"}
-            >Más antiguos</option
+            >{t(lang, "filters.sort.dateAsc")}</option
           >
-          <option value="title" selected={sortBy === "title"}>Por título</option
+          <option value="title" selected={sortBy === "title"}
+            >{t(lang, "filters.sort.title")}</option
           >
         </select>
         <ChevronDown
@@ -88,7 +89,7 @@ function getCategoryHrefLocal(cat: string) {
       </div>
     </div>
     <!-- Selector visual grid/lista -->
-    <ViewModeToggle viewMode={viewMode} />
+    <ViewModeToggle viewMode={viewMode} lang={lang} />
   </div>
   {/* Mantener los parámetros de búsqueda y categoría en el formulario */}
   <ShowWhen when={Astro.url.searchParams.get("q")}>

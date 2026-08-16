@@ -1,0 +1,78 @@
+---
+import { Linkedin, X } from "@lucide/astro";
+import { t } from "../i18n";
+
+interface Props {
+  lang?: "es" | "en";
+}
+const { lang = "es" } = Astro.props;
+
+const year = new Date().getFullYear();
+const links = [
+  { href: `/${lang}`, key: "menu.home" },
+  { href: `/${lang}/blog`, key: "menu.blog" },
+  { href: `/${lang}/about`, key: "menu.about" },
+  { href: `/${lang}/tags`, key: "menu.tags" },
+];
+---
+
+<footer
+  aria-label="footer"
+  class="w-full mt-auto border-t border-header-border bg-header-background text-muted-foreground"
+>
+  <div
+    class="max-w-[1440px] mx-auto w-full flex flex-col gap-6 px-6 py-8 md:flex-row md:items-start md:justify-between"
+  >
+    <p class="text-sm" data-testid="footer-copyright">
+      &copy; {year} Rodrigo Erades. {t(lang, "footer.rights")}
+    </p>
+
+    <nav aria-label={t(lang, "footer.navTitle")} class="flex flex-col gap-2">
+      <h2 class="text-xs font-semibold uppercase tracking-wide">
+        {t(lang, "footer.navTitle")}
+      </h2>
+      <ul class="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+        {
+          links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="hover:text-foreground transition-colors"
+              >
+                {t(lang, link.key)}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex flex-col gap-2">
+      <h2 class="text-xs font-semibold uppercase tracking-wide">
+        {t(lang, "footer.followTitle")}
+      </h2>
+      <div class="flex items-center gap-4">
+        <a
+          href="https://www.linkedin.com/in/siete3/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t(lang, "social.linkedin")}
+          title={t(lang, "social.linkedin")}
+          class="hover:text-foreground transition-colors"
+        >
+          <Linkedin class="h-5 w-5" />
+        </a>
+        <a
+          href="https://x.com/area_73"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t(lang, "social.x")}
+          title={t(lang, "social.x")}
+          class="hover:text-foreground transition-colors"
+        >
+          <X class="h-5 w-5" />
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

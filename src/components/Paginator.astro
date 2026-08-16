@@ -3,6 +3,7 @@ import ShowWhen from "./ShowWhen.astro";
 import If from "./If.astro";
 import Then from "./Then.astro";
 import Else from "./Else.astro";
+import { t, tWithInterpolation } from "../i18n";
 
 interface Props {
   /** Página actual (1-indexed) */
@@ -21,15 +22,18 @@ interface Props {
   customClass?: string;
   /** Etiqueta ARIA para describir el propósito de la paginación */
   ariaLabel?: string;
+  /** Idioma de la interfaz */
+  lang?: "es" | "en";
 }
 const {
   currentPage,
   totalPages,
   getPageHref = (page) => (page === 1 ? "/blog/" : `/blog/${page}/`),
-  prevLabel = "Anterior",
-  nextLabel = "Siguiente",
+  lang = "es",
+  prevLabel = t(lang, "pagination.prev"),
+  nextLabel = t(lang, "pagination.next"),
   customClass,
-  ariaLabel = "Navegación de páginas",
+  ariaLabel = t(lang, "pagination.ariaLabel"),
 } = Astro.props as Props;
 ---
 
@@ -44,13 +48,15 @@ const {
         <div
           class="flex gap-2"
           role="group"
-          aria-label="Navegación de paginación"
+          aria-label={t(lang, "pagination.groupLabel")}
         >
           <If condition={currentPage === 1}>
             <span
               slot="then"
               class="inline-flex items-center px-3 py-1 rounded border bg-secondary text-secondary-foreground text-sm font-medium opacity-50 cursor-not-allowed"
-              aria-label={`${prevLabel} (página no disponible)`}
+              aria-label={tWithInterpolation(lang, "pagination.unavailable", {
+                label: prevLabel,
+              })}
               aria-disabled="true"
             >
               {prevLabel}
@@ -59,7 +65,10 @@ const {
               slot="else"
               href={getPageHref(currentPage - 1)}
               class="inline-flex items-center px-3 py-1 rounded border bg-card text-foreground text-sm font-medium hover:bg-primary/10"
-              aria-label={`${prevLabel}, ir a página ${currentPage - 1}`}
+              aria-label={tWithInterpolation(lang, "pagination.goToPrev", {
+                label: prevLabel,
+                page: String(currentPage - 1),
+              })}
             >
               {prevLabel}
             </a>
@@ -75,7 +84,9 @@ const {
                     ? "bg-primary text-primary-foreground border-primary"
                     : "bg-card text-foreground hover:bg-primary/10"
                 }`}
-                aria-label={`Ir a página ${pageNumber}`}
+                aria-label={tWithInterpolation(lang, "pagination.goToPage", {
+                  page: String(pageNumber),
+                })}
                 aria-current={isCurrentPage ? "page" : undefined}
                 aria-setsize={totalPages.toString()}
                 aria-posinset={pageNumber.toString()}
@@ -88,7 +99,9 @@ const {
             <span
               slot="then"
               class="inline-flex items-center px-3 py-1 rounded border bg-secondary text-secondary-foreground text-sm font-medium opacity-50 cursor-not-allowed"
-              aria-label={`${nextLabel} (página no disponible)`}
+              aria-label={tWithInterpolation(lang, "pagination.unavailable", {
+                label: nextLabel,
+              })}
               aria-disabled="true"
             >
               {nextLabel}
@@ -97,14 +110,20 @@ const {
               slot="else"
               href={getPageHref(currentPage + 1)}
               class="inline-flex items-center px-3 py-1 rounded border bg-card text-foreground text-sm font-medium hover:bg-primary/10"
-              aria-label={`${nextLabel}, ir a página ${currentPage + 1}`}
+              aria-label={tWithInterpolation(lang, "pagination.goToNext", {
+                label: nextLabel,
+                page: String(currentPage + 1),
+              })}
             >
               {nextLabel}
             </a>
           </If>
         </div>
         <div class="sr-only" aria-live="polite">
-          Página {currentPage} de {totalPages}
+          {tWithInterpolation(lang, "pagination.pageOf", {
+            current: String(currentPage),
+            total: String(totalPages),
+          })}
         </div>
       </nav>
     </ShowWhen>
