@@ -1,15 +1,10 @@
 packages:
   - .
 
+overrides:
+  mdast-util-to-hast: '>=13.2.1'
+
 allowBuilds:
   '@tailwindcss/oxide': true
-  esbuild: true
-  inotify: true
-  sharp: true
-
-ignoredBuiltDependencies:
-  - esbuild
-  - sharp
-
-onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
+  esbuild: false
+  sharp: false
