@@ -254,7 +254,6 @@ export const ensureAllImagesLoaded = async (page: Page): Promise<void> => {
 export const setupPageForVisualTest = async (page: Page): Promise<void> => {
   await disableAnimations(page);
   await forceEagerImagesOnInit(page);
-  await hideCardImagesOnInit(page);
   await mockExternalRequests(page);
 };
 
@@ -269,6 +268,10 @@ export const setupPageForVisualTest = async (page: Page): Promise<void> => {
  * `visibility: hidden` conserva la caja, así que se siguen comprobando layout,
  * tipografía y colores; solo se dejan de comparar los píxeles de las fotos.
  * Se inyecta con `addInitScript` para que sobreviva a `page.goto`.
+ *
+ * Deliberadamente FUERA de `setupPageForVisualTest`: los tests e2e reutilizan
+ * ese setup y allí ocultar imágenes no aporta nada y altera los tiempos de
+ * carga. Lo llaman solo los specs de regresión visual.
  */
 export const hideCardImagesOnInit = async (page: Page): Promise<void> => {
   await page.addInitScript(() => {

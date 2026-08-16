@@ -1,10 +1,15 @@
 import { test, expect } from "@playwright/test";
-import { setupPageForVisualTest, waitForPageReady } from "./visual-helpers";
+import {
+  setupPageForVisualTest,
+  waitForPageReady,
+  hideCardImagesOnInit,
+} from "./visual-helpers";
 
 // Configuración común para TODOS los tests del fichero. A nivel de fichero y no
 // dentro de un describe: los bloques Mobile y Tablet se quedaban sin él.
 test.beforeEach(async ({ page }) => {
   await setupPageForVisualTest(page);
+  await hideCardImagesOnInit(page);
 });
 
 test.describe("Visual Regression Tests", () => {

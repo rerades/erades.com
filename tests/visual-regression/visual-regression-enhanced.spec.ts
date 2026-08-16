@@ -8,12 +8,19 @@ import {
   setViewport,
   VIEWPORTS,
   waitForElement,
+  hideCardImagesOnInit,
 } from "./visual-helpers";
 
 /**
  * Tests de regresión visual mejorados usando utilidades comunes
  * Este archivo demuestra cómo usar las utilidades para tests más limpios y consistentes
  */
+
+// Solo para snapshots: oculta las imágenes de tarjeta, que no se cargan de
+// forma determinista antes de una captura fullPage.
+test.beforeEach(async ({ page }) => {
+  await hideCardImagesOnInit(page);
+});
 
 test.describe("Enhanced Visual Regression Tests", () => {
   test.beforeEach(async ({ page }) => {
