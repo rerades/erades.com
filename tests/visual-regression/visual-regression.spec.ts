@@ -1,12 +1,13 @@
 import { test, expect } from "@playwright/test";
 import { setupPageForVisualTest, waitForPageReady } from "./visual-helpers";
 
-test.describe("Visual Regression Tests", () => {
-  // Configuración común para todos los tests visuales
-  test.beforeEach(async ({ page }) => {
-    await setupPageForVisualTest(page);
-  });
+// Configuración común para TODOS los tests del fichero. A nivel de fichero y no
+// dentro de un describe: los bloques Mobile y Tablet se quedaban sin él.
+test.beforeEach(async ({ page }) => {
+  await setupPageForVisualTest(page);
+});
 
+test.describe("Visual Regression Tests", () => {
   test("Homepage - Español", async ({ page }) => {
     await page.goto("/es");
 
