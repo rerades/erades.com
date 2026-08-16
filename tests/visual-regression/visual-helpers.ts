@@ -254,7 +254,42 @@ export const ensureAllImagesLoaded = async (page: Page): Promise<void> => {
 export const setupPageForVisualTest = async (page: Page): Promise<void> => {
   await disableAnimations(page);
   await forceEagerImagesOnInit(page);
+  await hideCardImagesOnInit(page);
   await mockExternalRequests(page);
+};
+
+/**
+ * Oculta las imágenes de las tarjetas de post, manteniendo su hueco en el layout.
+ *
+ * Las imágenes bajo el pliegue no terminan de cargarse de forma reproducible
+ * antes de una captura `fullPage`, y hacían fallar de forma intermitente los
+ * screenshots del listado del blog: el mismo test producía imágenes distintas
+ * en dos ejecuciones de CI seguidas.
+ *
+ * `visibility: hidden` conserva la caja, así que se siguen comprobando layout,
+ * tipografía y colores; solo se dejan de comparar los píxeles de las fotos.
+ * Se inyecta con `addInitScript` para que sobreviva a `page.goto`.
+ */
+export const hideCardImagesOnInit = async (page: Page): Promise<void> => {
+  await page.addInitScript(() => {
+    const inject = (): void => {
+      if (document.getElementById("visual-test-hide-card-images")) return;
+      const style = document.createElement("style");
+      style.id = "visual-test-hide-card-images";
+      style.textContent = `
+        [aria-label="grid-card"] img,
+        [aria-label="list-card"] img {
+          visibility: hidden !important;
+        }
+      `;
+      document.head?.appendChild(style);
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", inject);
+    } else {
+      inject();
+    }
+  });
 };
 
 /**
