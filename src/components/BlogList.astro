@@ -72,6 +72,7 @@ const {
       viewMode={viewMode}
       tag={tag}
       getCategoryHref={getCategoryHref}
+      lang={lang}
     />
   </div>
   <!-- Resultados -->
@@ -82,12 +83,14 @@ const {
         currentPage={currentPage}
         totalPages={totalPages}
         getPageHref={getPageHref}
+        lang={lang}
       />
     </ShowWhen>
     <ResultsInfo
       shown={paginatedPosts.length}
       total={posts.length}
       query={query}
+      lang={lang}
     />
   </div>
   <If condition={viewMode === "grid"}>
@@ -137,6 +140,7 @@ const {
       currentPage={currentPage}
       totalPages={totalPages}
       getPageHref={getPageHref}
+      lang={lang}
     />
   </ShowWhen>
 </section>

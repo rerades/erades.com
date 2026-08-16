@@ -1,10 +1,12 @@
 ---
 import { LayoutGrid, List } from "@lucide/astro";
 import If from "./If.astro";
+import { t } from "../i18n";
 interface Props {
   viewMode: string;
+  lang?: "es" | "en";
 }
-const { viewMode } = Astro.props as Props;
+const { viewMode, lang = "es" } = Astro.props as Props;
 ---
 
 <div class="flex items-center gap-1 bg-secondary rounded-lg p-1 w-fit">
@@ -14,8 +16,8 @@ const { viewMode } = Astro.props as Props;
       href={Astro.url.pathname +
         `?${new URLSearchParams({ ...Object.fromEntries(Astro.url.searchParams.entries()), viewMode: "grid" }).toString()}`}
       class="h-8 w-8 p-0 rounded-full flex items-center justify-center bg-primary text-primary-foreground"
-      title="Vista grid"
-      aria-label="Cambiar a vista de cuadrícula (activa)"
+      title={t(lang, "filters.gridView")}
+      aria-label={t(lang, "filters.gridViewActive")}
     >
       <LayoutGrid class="h-4 w-4 mx-auto" />
     </a>
@@ -24,8 +26,8 @@ const { viewMode } = Astro.props as Props;
       href={Astro.url.pathname +
         `?${new URLSearchParams({ ...Object.fromEntries(Astro.url.searchParams.entries()), viewMode: "grid" }).toString()}`}
       class="h-8 w-8 p-0 rounded-full flex items-center justify-center bg-transparent text-muted-foreground"
-      title="Vista grid"
-      aria-label="Cambiar a vista de cuadrícula"
+      title={t(lang, "filters.gridView")}
+      aria-label={t(lang, "filters.gridViewSwitch")}
     >
       <LayoutGrid class="h-4 w-4 mx-auto" />
     </a>
@@ -36,8 +38,8 @@ const { viewMode } = Astro.props as Props;
       href={Astro.url.pathname +
         `?${new URLSearchParams({ ...Object.fromEntries(Astro.url.searchParams.entries()), viewMode: "list" }).toString()}`}
       class="h-8 w-8 p-0 rounded-full flex items-center justify-center bg-primary text-primary-foreground"
-      title="Vista lista"
-      aria-label="Cambiar a vista de lista (activa)"
+      title={t(lang, "filters.listView")}
+      aria-label={t(lang, "filters.listViewActive")}
     >
       <List class="h-4 w-4 mx-auto" />
     </a>
@@ -46,8 +48,8 @@ const { viewMode } = Astro.props as Props;
       href={Astro.url.pathname +
         `?${new URLSearchParams({ ...Object.fromEntries(Astro.url.searchParams.entries()), viewMode: "list" }).toString()}`}
       class="h-8 w-8 p-0 rounded-full flex items-center justify-center bg-transparent text-muted-foreground"
-      title="Vista lista"
-      aria-label="Cambiar a vista de lista"
+      title={t(lang, "filters.listView")}
+      aria-label={t(lang, "filters.listViewSwitch")}
     >
       <List class="h-4 w-4 mx-auto" />
     </a>

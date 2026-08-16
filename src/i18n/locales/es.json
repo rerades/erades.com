@@ -33,6 +33,42 @@
     "title": "Todos los Posts",
     "description": "Explora la colección completa de artículos sobre tecnología, desarrollo y diseño."
   },
+  "filters": {
+    "category": "Categoría:",
+    "all": "Todas",
+    "sortLabel": "Ordenar por",
+    "sort": {
+      "dateDesc": "Más recientes",
+      "dateAsc": "Más antiguos",
+      "title": "Por título"
+    },
+    "gridView": "Vista grid",
+    "listView": "Vista lista",
+    "gridViewActive": "Cambiar a vista de cuadrícula (activa)",
+    "gridViewSwitch": "Cambiar a vista de cuadrícula",
+    "listViewActive": "Cambiar a vista de lista (activa)",
+    "listViewSwitch": "Cambiar a vista de lista"
+  },
+  "pagination": {
+    "prev": "Anterior",
+    "next": "Siguiente",
+    "ariaLabel": "Navegación de páginas",
+    "groupLabel": "Navegación de paginación",
+    "pageOf": "Página {current} de {total}",
+    "goToPage": "Ir a página {page}",
+    "unavailable": "{label} (página no disponible)",
+    "goToPrev": "{label}, ir a página {page}",
+    "goToNext": "{label}, ir a página {page}"
+  },
+  "results": {
+    "showing": "Mostrando {shown} de {total} resultados",
+    "for": "para"
+  },
+  "post": {
+    "readTime": "{minutes} min de lectura",
+    "viewCategory": "Ver posts en la categoría {category}",
+    "noCategory": "Sin categoría"
+  },
   "about": {
     "title": "Sobre mí",
     "description": "Ingeniero con más de 20 años de experiencia, apasionado por el desarrollo front, la IA, las buenas prácticas y la optimización web.",
@@ -89,5 +125,10 @@
       "goHome": "Ir al inicio",
       "orTry": "O prueba con:"
     }
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados.",
+    "navTitle": "Navegación",
+    "followTitle": "Sígueme"
   }
 }

@@ -1,18 +1,27 @@
 ---
 import ShowWhen from "./ShowWhen.astro";
+import { t } from "../i18n";
 interface Props {
   shown: number;
   total: number;
   query?: string;
+  lang?: "es" | "en";
 }
-const { shown, total, query } = Astro.props;
+const { shown, total, query, lang = "es" } = Astro.props as Props;
+// "Mostrando {shown} de {total} resultados" -> ["Mostrando ", " de ", " resultados"]
+const [before, middle, after] = t(lang, "results.showing").split(
+  /\{shown\}|\{total\}/
+);
 ---
 
 <p class="text-muted-foreground">
-  Mostrando <span class="text-primary">{shown}</span> de <span
+  {before}<span class="text-primary">{shown}</span>{middle}<span
     class="text-primary">{total}</span
-  > resultados
+  >{after}
   <ShowWhen when={query}>
-    <span> para <span class="text-primary">{query}</span></span>
+    <span>
+      {t(lang, "results.for")}
+      <span class="text-primary">{query}</span></span
+    >
   </ShowWhen>
 </p>

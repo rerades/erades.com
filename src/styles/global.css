@@ -483,6 +483,8 @@ añado esto para poder usar clases de tailwindCSS cuando se definen comom por ej
   --color-primary-foreground: hsl(215 16% 95%);
   --color-secondary-foreground: hsl(215 20% 65%);
   --color-header-background: hsl(215 16% 98%);
+  /* header/footer divider: sigue a --header-border, que ya cambia en html.dark */
+  --color-header-border: var(--header-border);
 
   /*Puedes añadir aquí el resto de tus colores personalizados*/
 }

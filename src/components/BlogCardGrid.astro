@@ -4,6 +4,7 @@ import FormattedDate from "./FormattedDate.astro";
 import ShowWhen from "./ShowWhen.astro";
 import { Image } from "astro:assets";
 import { EAGER_LOAD_IMAGES_COUNT } from "../consts";
+import { tWithInterpolation } from "../i18n";
 
 interface Props {
   post: any;
@@ -11,6 +12,7 @@ interface Props {
   index: number;
 }
 const { post, lang, index } = Astro.props;
+const uiLang = lang === "en" ? "en" : "es";
 const langPrefix = `${lang}/`;
 const postId = post && typeof post.id === "string" ? post.id : "";
 const href = `/${lang}/blog/${postId.startsWith(langPrefix) ? postId.slice(langPrefix.length) : postId}/`;
@@ -59,7 +61,9 @@ const postTags = Array.isArray(post.tags || (post.data && post.data.tags))
             categories.map((category: string) => (
               <span
                 class="inline-flex items-center px-2 py-0.5 rounded bg-secondary text-xs text-secondary-foreground font-medium whitespace-nowrap"
-                title={`Ver posts en la categoría ${category}`}
+                title={tWithInterpolation(uiLang, "post.viewCategory", {
+                  category,
+                })}
               >
                 {category}
               </span>
@@ -81,7 +85,13 @@ const postTags = Array.isArray(post.tags || (post.data && post.data.tags))
           lang={lang}
         />
         <ShowWhen when={readTime}>
-          <span class="ml-2">· {readTime} min de lectura</span>
+          <span class="ml-2"
+            >· {
+              tWithInterpolation(uiLang, "post.readTime", {
+                minutes: String(readTime),
+              })
+            }</span
+          >
         </ShowWhen>
         <ShowWhen when={post.author || (post.data && post.data.author)}>
           <span class="ml-2"

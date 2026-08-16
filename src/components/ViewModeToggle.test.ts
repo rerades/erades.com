@@ -199,6 +199,23 @@ describe("ViewModeToggle", () => {
     expect(listLink).not.toBeNull();
   });
 
+  test("translates titles and aria-labels with lang=en", async () => {
+    const result = await renderAstroComponent(ViewModeToggle, {
+      props: {
+        viewMode: "grid",
+        lang: "en" as const,
+      },
+    });
+
+    const gridLink = result.querySelector('a[title="Grid view"]');
+    const listLink = result.querySelector('a[title="List view"]');
+
+    expect(gridLink?.getAttribute("aria-label")).toBe(
+      "Switch to grid view (active)"
+    );
+    expect(listLink?.getAttribute("aria-label")).toBe("Switch to list view");
+  });
+
   test("renders with empty view mode", async () => {
     const result = await renderAstroComponent(ViewModeToggle, {
       props: {

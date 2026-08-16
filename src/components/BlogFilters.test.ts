@@ -107,6 +107,31 @@ describe("BlogFilters.astro", () => {
       expect(result.innerHTML).toContain("Por título");
     });
 
+    test("debería traducir etiquetas y el sentinel 'Todas' con lang=en", async () => {
+      // Arrange
+      const mockProps = {
+        categories: ["Todas", "Technology"],
+        selectedCategory: "Todas",
+        sortBy: "date-desc",
+        viewMode: "grid",
+        lang: "en" as const,
+        getCategoryHref: (cat: string) => `/category/${cat}/`,
+      };
+
+      // Act
+      const result = await renderAstroComponent(BlogFilters, {
+        props: mockProps,
+      });
+
+      // Assert: se traduce lo mostrado, no el valor interno del href
+      expect(result.innerHTML).toContain("Category:");
+      expect(result.innerHTML).toContain("Newest");
+      expect(result.innerHTML).not.toContain("Más recientes");
+      const allLink = result.querySelector('a[aria-current="page"]');
+      expect(allLink?.textContent?.trim()).toBe("All");
+      expect(allLink?.getAttribute("href")).toBe("/category/Todas/");
+    });
+
     test("debería marcar la opción de ordenamiento seleccionada", async () => {
       // Arrange
       const mockProps = {

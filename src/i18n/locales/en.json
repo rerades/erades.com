@@ -33,6 +33,42 @@
     "title": "All Posts",
     "description": "Explore the complete collection of articles about technology, development and design."
   },
+  "filters": {
+    "category": "Category:",
+    "all": "All",
+    "sortLabel": "Sort by",
+    "sort": {
+      "dateDesc": "Newest",
+      "dateAsc": "Oldest",
+      "title": "By title"
+    },
+    "gridView": "Grid view",
+    "listView": "List view",
+    "gridViewActive": "Switch to grid view (active)",
+    "gridViewSwitch": "Switch to grid view",
+    "listViewActive": "Switch to list view (active)",
+    "listViewSwitch": "Switch to list view"
+  },
+  "pagination": {
+    "prev": "Previous",
+    "next": "Next",
+    "ariaLabel": "Page navigation",
+    "groupLabel": "Pagination navigation",
+    "pageOf": "Page {current} of {total}",
+    "goToPage": "Go to page {page}",
+    "unavailable": "{label} (page unavailable)",
+    "goToPrev": "{label}, go to page {page}",
+    "goToNext": "{label}, go to page {page}"
+  },
+  "results": {
+    "showing": "Showing {shown} of {total} results",
+    "for": "for"
+  },
+  "post": {
+    "readTime": "{minutes} min read",
+    "viewCategory": "View posts in category {category}",
+    "noCategory": "Uncategorized"
+  },
   "about": {
     "title": "About me",
     "description": "Engineer with over 20 years of experience, passionate about front-end development, AI, best practices and web optimization.",
@@ -89,5 +125,10 @@
       "goHome": "Go home",
       "orTry": "Or try:"
     }
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "navTitle": "Navigation",
+    "followTitle": "Follow me"
   }
 }
