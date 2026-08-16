@@ -17,11 +17,11 @@ WORKDIR /tests
 
 
 # 2) Instala deps del runner (node_modules aislado del host)
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm --version && pnpm install --frozen-lockfile
 
 # Copiamos manifest para cachear deps del runner de tests
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # Instala solo lo necesario para ejecutar los tests dentro del contenedor
 # (esto crea su propio node_modules separado del host)
 RUN pnpm install --frozen-lockfile
