@@ -1,6 +1,6 @@
 # Runner de tests E2E/visual.
 # Imagen oficial multi-arch de Playwright con deps/navegadores.
-ARG PLAYWRIGHT_TAG=mcr.microsoft.com/playwright:v1.57.0-jammy
+ARG PLAYWRIGHT_TAG=mcr.microsoft.com/playwright:v1.62.1-jammy
 FROM ${PLAYWRIGHT_TAG}
 
 # 1) PNPM via Corepack con versión fija (evita claves TUF antiguas)
