@@ -104,7 +104,11 @@ test.describe("Enhanced Visual Regression Tests", () => {
       {
         name: "hover-blog-link",
         setup: async () => {
-          const blogLink = page.getByRole("link", { name: "Blog" });
+          // Acotado al header: el footer tiene otro enlace a /blog con el
+          // mismo nombre accesible.
+          const blogLink = page
+            .getByLabel("header")
+            .getByRole("link", { name: "Blog" });
           await blogLink.hover();
           await page.waitForTimeout(200);
         },
