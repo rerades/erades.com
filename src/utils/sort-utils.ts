@@ -32,13 +32,18 @@ export function sortPosts<T extends SortablePost>(
   };
   const getTitle = (post: T): string => post.title || post.data?.title || "";
 
+  // Desempate por título: hay posts que comparten pubDate, y sin esto su orden
+  // relativo lo decide el orden en que getCollection los devuelve, que cambia
+  // entre sistemas de ficheros y entre versiones de astro.
+  const byTitle = (a: T, b: T): number => getTitle(a).localeCompare(getTitle(b));
+
   switch (sortBy) {
     case "date-asc":
-      return [...posts].sort((a, b) => getDate(a) - getDate(b));
+      return [...posts].sort((a, b) => getDate(a) - getDate(b) || byTitle(a, b));
     case "date-desc":
-      return [...posts].sort((a, b) => getDate(b) - getDate(a));
+      return [...posts].sort((a, b) => getDate(b) - getDate(a) || byTitle(a, b));
     case "title":
-      return [...posts].sort((a, b) => getTitle(a).localeCompare(getTitle(b)));
+      return [...posts].sort(byTitle);
     default:
       return posts;
   }

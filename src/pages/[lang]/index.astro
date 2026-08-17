@@ -7,6 +7,7 @@ import { t, tWithInterpolation } from "../../i18n";
 import Else from "../../components/Else.astro";
 import If from "../../components/If.astro";
 import Then from "../../components/Then.astro";
+import { sortPosts } from "../../utils/sort-utils";
 
 const { lang: langParam } = Astro.params;
 const isValidLang = langParam === "es" || langParam === "en";
@@ -25,9 +26,12 @@ if (!isValidLang) {
 }
 
 const posts = isValidLang
-	? (await getCollection("blog"))
-			.filter((p) => !p.data.draft && p.id.startsWith(`${lang}/`))
-			.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	? sortPosts(
+			(await getCollection("blog")).filter(
+				(p) => !p.data.draft && p.id.startsWith(`${lang}/`)
+			),
+			"date-desc"
+		)
 	: [];
 const featured = isValidLang ? posts.slice(0, 3) : [];
 

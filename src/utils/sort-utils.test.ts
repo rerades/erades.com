@@ -35,6 +35,21 @@ describe("sortPosts", () => {
     ]);
   });
 
+  it("desempata por título cuando la fecha coincide, venga en el orden que venga", () => {
+    const sameDate: SortablePost[] = [
+      { pubDate: "2025-11-02", title: "ai-rules: reglas para IA" },
+      { pubDate: "2025-11-02", title: "ai-rules-cli: CLI para reglas de IA" },
+    ];
+    const titlesOf = (input: SortablePost[], sortBy: "date-asc" | "date-desc") =>
+      sortPosts(input, sortBy).map((p) => p.title);
+
+    for (const sortBy of ["date-asc", "date-desc"] as const) {
+      expect(titlesOf(sameDate, sortBy)).toEqual(
+        titlesOf([...sameDate].reverse(), sortBy)
+      );
+    }
+  });
+
   it("sorts by title", () => {
     const sorted = sortPosts(posts, "title");
     expect(sorted.map((p) => p.title || p.data?.title)).toEqual([
