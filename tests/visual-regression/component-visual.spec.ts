@@ -1,10 +1,15 @@
 import { test, expect } from "@playwright/test";
-import { setupPageForVisualTest, waitForPageReady } from "./visual-helpers";
+import {
+  setupPageForVisualTest,
+  waitForPageReady,
+  hideCardImagesOnInit,
+} from "./visual-helpers";
 
 // A nivel de fichero: los bloques Responsive Behavior y Error States se
 // quedaban sin esta configuración.
 test.beforeEach(async ({ page }) => {
   await setupPageForVisualTest(page);
+  await hideCardImagesOnInit(page);
 });
 
 test.describe("Component Visual Regression", () => {

@@ -79,10 +79,11 @@ test.describe("Blog", () => {
     const sortSelect = page.locator('select[name="sortBy"]');
     await sortSelect.selectOption("title");
 
-    // Esperar a que el orden cambie: comprobar que el primer título ya no coincide
-    await expect(
-      blogPosts.locator('[aria-label="blog-card-title"]').first()
-    ).not.toHaveText(titlesBefore[0] ?? "", { timeout: 5000 });
+    // Esperar al cambio de estado real, no a que un título concreto cambie:
+    // esa espera era flaky (dependía de una ventana de 5s) y además asumía que
+    // el primer post por fecha nunca coincide con el primero alfabéticamente.
+    await page.waitForURL(/sortBy=title/);
+    await waitForPageReady(page);
     const titlesAfter = await getTitles();
 
     // Comprobar que el orden ha cambiado

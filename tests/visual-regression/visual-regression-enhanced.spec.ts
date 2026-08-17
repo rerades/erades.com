@@ -8,12 +8,19 @@ import {
   setViewport,
   VIEWPORTS,
   waitForElement,
+  hideCardImagesOnInit,
 } from "./visual-helpers";
 
 /**
  * Tests de regresión visual mejorados usando utilidades comunes
  * Este archivo demuestra cómo usar las utilidades para tests más limpios y consistentes
  */
+
+// Solo para snapshots: oculta las imágenes de tarjeta, que no se cargan de
+// forma determinista antes de una captura fullPage.
+test.beforeEach(async ({ page }) => {
+  await hideCardImagesOnInit(page);
+});
 
 test.describe("Enhanced Visual Regression Tests", () => {
   test.beforeEach(async ({ page }) => {
@@ -97,7 +104,11 @@ test.describe("Enhanced Visual Regression Tests", () => {
       {
         name: "hover-blog-link",
         setup: async () => {
-          const blogLink = page.getByRole("link", { name: "Blog" });
+          // Acotado al header: el footer tiene otro enlace a /blog con el
+          // mismo nombre accesible.
+          const blogLink = page
+            .getByLabel("header")
+            .getByRole("link", { name: "Blog" });
           await blogLink.hover();
           await page.waitForTimeout(200);
         },
