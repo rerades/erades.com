@@ -30,7 +30,7 @@
     "test:e2e": "playwright test",
     "test:e2e:headed": "PWDEBUG=1 playwright test --headed",
     "test:visual": "docker compose run --rm -e CI=true erades-com pnpm exec playwright test --config=playwright.visual.config.ts",
-    "test:visual:update": "pnpm run test:visual --update-snapshots",
+    "test:visual:update": "pnpm run test:visual --update-snapshots=all",
     "compose:build": "docker compose build"
   },
   "dependencies": {
