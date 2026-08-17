@@ -7,17 +7,33 @@ import type { Page } from "@playwright/test";
 /**
  * Espera a que una página esté completamente cargada para screenshots consistentes
  */
+/**
+ * Espera a que TODAS las tipografías declaradas estén cargadas.
+ *
+ * Dos trampas que hacían que las capturas salieran a veces con la fuente de
+ * fallback, y que eran el origen de las diferencias de ~235 px entre local y CI:
+ *
+ * 1. `waitForFunction(() => document.fonts.ready)` no espera a nada:
+ *    `document.fonts.ready` es una Promise, o sea siempre truthy, así que la
+ *    condición se daba por cumplida en el primer sondeo.
+ * 2. Aun resolviendo bien esa promesa, `ready` solo cubre las caras que el
+ *    navegador YA ha pedido. Con `font-display: swap`, Inter 400 aparecía como
+ *    `unloaded` justo antes de la captura. `FontFace.load()` fuerza la descarga.
+ */
+const waitForFontsLoaded = async (page: Page): Promise<void> => {
+  await page.evaluate(async () => {
+    await Promise.all(
+      Array.from(document.fonts).map((face) => face.load().catch(() => face))
+    );
+    await document.fonts.ready;
+  });
+};
+
 export const waitForPageReady = async (page: Page): Promise<void> => {
   // Esperar a que la red esté inactiva
   await page.waitForLoadState("networkidle");
 
-  // Esperar a que las fuentes se carguen.
-  //
-  // Ojo con la forma: `waitForFunction(() => document.fonts.ready)` NO espera.
-  // `document.fonts.ready` es una Promise, o sea siempre truthy, así que la
-  // condición se cumplía en el primer sondeo y la captura salía a veces con la
-  // fuente de fallback. `evaluate` sí resuelve la promesa antes de seguir.
-  await page.evaluate(() => document.fonts.ready);
+  await waitForFontsLoaded(page);
 
   // Asegurar que todas las imágenes (incluyendo lazy) estén visibles y decodificadas
   await ensureAllImagesLoaded(page);
