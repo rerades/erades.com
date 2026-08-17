@@ -17,6 +17,19 @@ updates:
     labels:
       - "dependencies"
       - "automated"
+    # Un solo PR con todos los minor/patch. Los major siguen saliendo sueltos,
+    # que es donde de verdad hay que mirar el changelog.
+    groups:
+      npm-minor-patch:
+        patterns:
+          - "*"
+        # Fuera del grupo: su version tiene que ir a la par con el tag de
+        # Dockerfile.visual-test, asi que hay que verla venir sola.
+        exclude-patterns:
+          - "@playwright/test"
+        update-types:
+          - "minor"
+          - "patch"
     ignore:
       # Ignore major version updates for these packages
       - dependency-name: "@astrojs/*"
@@ -46,3 +59,8 @@ updates:
       - "dependencies"
       - "automated"
       - "github-actions"
+    # Aqui casi todo son major (v4 -> v5), asi que van todas juntas en un PR.
+    groups:
+      github-actions:
+        patterns:
+          - "*"
