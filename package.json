@@ -60,7 +60,7 @@
     "@testing-library/user-event": "14.6.1",
     "@typescript-eslint/parser": "8.67.0",
     "@vitest/coverage-v8": "4.0.16",
-    "astro-eslint-parser": "1.2.2",
+    "astro-eslint-parser": "3.1.0",
     "autoprefixer": "10.4.21",
     "dotenv-cli": "11.0.0",
     "eslint": "10.8.1",
