@@ -1,4 +1,4 @@
-// @vitest-environment happy-dom
+// @vitest-environment ./src/test/happy-dom-ssr.ts
 import { describe, test, expect } from "vitest";
 import { getByText, getByTitle } from "@testing-library/dom";
 import ViewModeToggle from "./ViewModeToggle.astro";

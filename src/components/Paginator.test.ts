@@ -1,4 +1,4 @@
-// @vitest-environment happy-dom
+// @vitest-environment ./src/test/happy-dom-ssr.ts
 import { describe, test, expect } from "vitest";
 import { getByText, getByRole, getByLabelText } from "@testing-library/dom";
 import Paginator from "./Paginator.astro";

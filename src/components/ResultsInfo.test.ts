@@ -1,4 +1,4 @@
-// @vitest-environment happy-dom
+// @vitest-environment ./src/test/happy-dom-ssr.ts
 import { describe, test, expect } from "vitest";
 import { getByText, getAllByText } from "@testing-library/dom";
 import ResultsInfo from "./ResultsInfo.astro";
