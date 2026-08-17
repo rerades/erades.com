@@ -27,9 +27,19 @@ export default defineConfig({
   expect: {
     timeout: 5000,
     toHaveScreenshot: {
-      threshold: 0.2,
-      maxDiffPixels: 1000,
+      // Umbral apretado a propósito. Con maxDiffPixels: 1000 (0,08% de una
+      // captura de 1280x1000) se colaban cambios de contenido reales: la
+      // baseline del paginador decía "Mostrando 6 de 19 resultados" mientras la
+      // página servía 21, y el test pasaba.
+      //
+      // El navegador siempre es el mismo (imagen de Docker fijada en
+      // Dockerfile.visual-test), así que el render es determinista y no hace
+      // falta colchón para ruido entre máquinas. Si esto empieza a dar falsos
+      // positivos, la respuesta es estabilizar la captura, no subir el número.
+      threshold: 0.15,
+      maxDiffPixels: 100,
+      animations: "disabled",
     },
-    toMatchSnapshot: { threshold: 0.2 },
+    toMatchSnapshot: { threshold: 0.15 },
   },
 });
