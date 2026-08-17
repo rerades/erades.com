@@ -2,33 +2,32 @@
 // Google Analytics 4 - Non-blocking, performance-optimized implementation
 // Only loads if PUBLIC_GA_MEASUREMENT_ID environment variable is configured
 // Uses async loading with low priority to avoid blocking page rendering
+import ShowWhen from "./ShowWhen.astro";
+
 const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
 ---
 
-{
-  gaMeasurementId && (
-    <>
-      {/* Google Analytics 4 - Optimized non-blocking implementation */}
-      {/* Script loads asynchronously with low priority to not compete with critical resources */}
-      <script
-        async
-        src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
-        fetchpriority="low"
-      />
-      {/* Inline configuration script - executes immediately but doesn't block rendering */}
-      <script is:inline define:vars={{ measurementId: gaMeasurementId }}>
-        {`
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${gaMeasurementId}', {
-          'send_page_view': true,
-          'anonymize_ip': true,
-          'allow_google_signals': false,
-          'allow_ad_personalization_signals': false
-        });
-        `}
-      </script>
-    </>
-  )
-}
+{/* El condicional va en ShowWhen y no en una expresion JSX envolvente: dentro
+    de una expresion, el cuerpo del <script> se parsea como JSX y Astro >= 5.17.2
+    lo emite literal en vez de evaluarlo. Como slot, es texto plano de script. */}
+<ShowWhen when={gaMeasurementId}>
+  {/* Script loads asynchronously with low priority to not compete with critical resources */}
+  <script
+    async
+    src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+    fetchpriority="low"></script>
+  {/* Inline configuration script - executes immediately but doesn't block rendering */}
+  <script is:inline define:vars={{ measurementId: gaMeasurementId }}>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+    gtag("config", measurementId, {
+      send_page_view: true,
+      anonymize_ip: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+    });
+  </script>
+</ShowWhen>
