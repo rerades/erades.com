@@ -1,13 +1,13 @@
 ---
 import type { HTMLAttributes } from "astro/types";
-import { Home, FileText, Info, Hash } from "@lucide/astro";
+import { House, FileText, Info, Hash } from "@lucide/astro";
 import ShowWhen from "./ShowWhen.astro";
 import IconWrapper from "./IconWrapper.astro";
 
 const { href, lang, ...rest } = Astro.props;
 
 const ICONS = {
-  [`/${lang}`]: Home,
+  [`/${lang}`]: House,
   [`/${lang}/blog`]: FileText,
   [`/${lang}/about`]: Info,
   [`/${lang}/tags`]: Hash,

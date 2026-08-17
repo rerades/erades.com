@@ -1,5 +1,5 @@
 ---
-import { SortDesc, ChevronDown } from "@lucide/astro";
+import { ArrowDownWideNarrow, ChevronDown } from "@lucide/astro";
 import ViewModeToggle from "./ViewModeToggle.astro";
 import ShowWhen from "./ShowWhen.astro";
 import { t } from "../i18n";
@@ -65,7 +65,7 @@ function getCategoryHrefLocal(cat: string) {
   <div class="flex flex-wrap items-center justify-end gap-4 min-w-0">
     <div class="flex items-center gap-2 justify-end min-w-0">
       <span class="text-sm text-muted-foreground flex items-center shrink-0">
-        <SortDesc class="h-4 w-4 text-muted-foreground" />
+        <ArrowDownWideNarrow class="h-4 w-4 text-muted-foreground" />
       </span>
       <div class="relative w-40 max-w-full min-w-0">
         <select
