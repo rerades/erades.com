@@ -2,20 +2,27 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Raleway variable. Dos detalles hacían que no llegara a cargarse nunca:
+   `format("ttf")` no es un valor válido (es "truetype"), así que el navegador
+   descartaba el src y con él toda la regla; y `font-weight` como descriptor
+   admite uno o dos valores, no cinco, así que 100 300 400 600 800 tampoco valía.
+   El eje wght del fichero va de 100 a 900. */
 @font-face {
   font-family: "Raleway";
-  font-stretch: normal; /* Note that font-stretch is a % of normal width */
-  font-style: normal; /* See note below */
-  font-weight: 100 300 400 600 800;
-  src: url("/fonts/Raleway-VariableFont_wght.ttf") format("ttf");
+  font-stretch: normal;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/Raleway-VariableFont_wght.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Raleway";
-  font-stretch: normal; /* Note that font-stretch is a % of normal width */
-  font-style: italic; /* See note below */
-  font-weight: 100 300 400 600 800;
-  src: url("/fonts/Raleway-Italic-VariableFont_wght.ttf") format("ttf");
+  font-stretch: normal;
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/Raleway-Italic-VariableFont_wght.ttf") format("truetype");
 }
 
 @font-face {
