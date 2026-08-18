@@ -1,11 +1,25 @@
 {
   "permissions": {
     "allow": [
-      "mcp__plugin_context-mode_context-mode__ctx_search",
-      "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index",
-      "Bash(hermes gateway status *)",
+      "Bash(curl -s http://127.0.0.1:*)",
+      "Bash(curl -s http://localhost:*)",
+      "Bash(dig *)",
       "Bash(hermes config get *)",
-      "Bash(dig *)"
+      "Bash(hermes gateway status *)",
+      "Bash(pnpm coverage)",
+      "Bash(pnpm lint)",
+      "Bash(pnpm run coverage)",
+      "Bash(pnpm run lint)",
+      "Bash(pnpm run test:e2e)",
+      "Bash(pnpm run test:unit)",
+      "Bash(pnpm run typecheck)",
+      "Bash(pnpm test:e2e)",
+      "Bash(pnpm test:unit)",
+      "Bash(pnpm typecheck)",
+      "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index",
+      "mcp__plugin_context-mode_context-mode__ctx_search",
+      "mcp__render__get_deploy",
+      "mcp__render__list_deploys"
     ]
   }
 }
