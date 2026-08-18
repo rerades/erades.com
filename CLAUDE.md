@@ -21,12 +21,10 @@ pnpm typecheck               # tsc --noEmit
 pnpm test:unit               # Vitest, single run, verbose
 pnpm test:unit:watch         # Vitest watch mode
 pnpm coverage                 # Vitest with V8 coverage
-pnpm test:e2e                 # Playwright (local, needs dev server running)
+pnpm test:e2e                 # Playwright E2E; playwright.config.ts starts the server itself
 pnpm test:e2e:headed          # Playwright headed with PWDEBUG
-pnpm docker:test:e2e          # Playwright E2E inside Docker container
-pnpm docker:test:visual       # Visual regression tests inside Docker
-pnpm docker:test:visual:update              # Update visual snapshots
-pnpm docker:test:visual:enhanced:update
+pnpm test:visual              # Visual regression inside Docker (needs a server on the host, see below)
+pnpm test:visual:update       # Same, rewriting the snapshots
 
 pnpm translate:es-en          # Translate es posts -> en via OpenAI (needs .env with OPENAI_API_KEY)
 pnpm translate:en-es
@@ -35,13 +33,13 @@ pnpm translate:en-es
 Run a single unit test file: `pnpm exec vitest run src/components/BlogCard.test.ts`
 Run a single Playwright spec: `pnpm exec playwright test path/to/file.spec.ts`
 
-CI (`.github/workflows/ci.yml`) runs Lint, Type-Check, Unit-Tests, E2E-Tests (Docker), Visual-Tests (Docker), and Build as separate jobs against `master`. Match these locally before pushing: `pnpm lint && pnpm typecheck && pnpm test:unit`.
+CI (`.github/workflows/ci.yml`) runs Lint-Check, Type-Check, Unit-Tests, E2E-Tests, Visual-Regression-Tests (Docker) and Build-App as separate jobs against `master`; `.github/workflows/security.yml` adds a `pnpm audit --audit-level moderate` job. Match these locally before pushing: `pnpm lint && pnpm typecheck && pnpm test:unit`.
 
 ## Architecture
 
 ### Routing and i18n
 
-- `output: "server"` with `@astrojs/node` (standalone). Locales are `es` (default, unprefixed) and `en` (prefixed `/en/...`) — set in `astro.config.mjs` (`i18n.routing.prefixDefaultLocale: false`).
+- `output: "server"` with `@astrojs/node` (standalone). **Both** locales are prefixed (`/es/...` and `/en/...`), so `astro.config.mjs` sets `i18n.routing.prefixDefaultLocale: true`; `/` redirects via `src/pages/index.astro`. Do not flip that flag back to `false`: every page lives under `src/pages/[lang]/`, and Astro 7 then treats the default locale's prefix as an invalid route and 404s half the site.
 - All localized pages live under `src/pages/[lang]/...` (e.g. `[lang]/blog/[...slug].astro`, `[lang]/blog/page/[page].astro`, `[lang]/tags/[tag]/[page].astro`). `lang` is validated/resolved per-route; there is no separate i18n routing middleware.
 - Root-level pages (`src/pages/index.astro`, `404.astro`, `rss.js`, `feed.js`, `en/rss.js`, `rss-viewer.astro`) exist outside `[lang]` for locale-root and cross-locale concerns (combined RSS feed, XSL viewer, etc).
 - Translation strings live in `src/i18n/locales/{en,es}.json`, accessed via `t(lang, key)` / `tWithInterpolation(lang, key, vars)` in `src/i18n/index.ts`. Missing keys return the key itself rather than throwing — check this when strings appear untranslated.
@@ -86,9 +84,29 @@ These come from `.cursor/rules/*.mdc` and apply to Claude Code edits too:
 ## Testing
 
 - Unit tests (Vitest + happy-dom) are colocated next to source, e.g. `src/components/BlogCard.astro` + `src/components/BlogCard.test.ts`. Config: `vitest.config.ts`, setup in `src/test/setup.ts`.
-- Astro components are unit-tested by rendering through `AstroContainer` via the `renderAstroComponent` helper in `src/test/helpers.ts`, then asserting on the resulting DOM (e.g. with `@testing-library/dom`'s `getByText`). Follow this pattern (see `Show.test.ts`) rather than snapshotting raw HTML strings.
-- E2E specs run with Playwright (`playwright.config.ts` for functional E2E, `playwright.visual.config.ts` for visual regression) and are expected to run **inside Docker** for consistency with CI (`pnpm docker:test:e2e`, `pnpm docker:test:visual`); the `pnpm test:e2e*` scripts run Playwright directly against a locally running dev server.
+- Astro components are unit-tested by rendering through `AstroContainer` via the `renderAstroComponent` helper in `src/test/helpers.ts`, then asserting on the resulting DOM (e.g. with `@testing-library/dom`'s `getByText`). Follow this pattern (see `show.test.ts`) rather than snapshotting raw HTML strings.
+- E2E specs run with Playwright: `playwright.config.ts` for functional E2E, `playwright.visual.config.ts` for visual regression. `pnpm test:e2e` runs Playwright directly on the host and its `webServer` block builds and starts the app itself (`pnpm build && pnpm start`), so nothing needs to be running beforehand. Only the visual suite runs **inside Docker** (`pnpm test:visual`), pinned to `linux/amd64` so font rasterization matches CI.
 - Keep the Docker Playwright image tag (`Dockerfile.visual-test`) and the `@playwright/test` version in `package.json` in sync — a mismatch is a known source of CI failures (see `docs/docker.md`).
+
+### Running the visual suite locally
+
+The Docker runner does **not** start a server — it drives one running on your host via `host.docker.internal:4321` (`BASE_URL` in `docker-compose.yml`). Start the **production** server, not `pnpm dev`:
+
+```bash
+pnpm build
+PORT=4321 HOST=0.0.0.0 pnpm start   # then, in another shell:
+pnpm test:visual
+```
+
+`pnpm dev` does not work for this since Astro 7: `astro dev` binds only to IPv6 `[::1]` (so `127.0.0.1` is refused), and even with `--host 0.0.0.0` Vite answers **403** to the container because `Host: host.docker.internal` is not in its DNS-rebinding allowlist. CI does not hit this because it also uses `pnpm build && pnpm start`.
+
+Symptom to recognize: *every* visual test failing with a 30s timeout waiting for a selector means the container cannot reach the app, not a render regression. Check it with `docker compose run --rm erades-com sh -c 'wget -S -qO /dev/null http://host.docker.internal:4321/es'` before suspecting the CSS.
+
+### Visual baselines
+
+Baselines are authoritative **from CI** and should not be regenerated locally: on Apple Silicon the `linux/amd64` runner is emulated and text rasterization differs, which produces ~250 px diffs indistinguishable from a real regression.
+
+To refresh them, run the CI workflow with `update_visual_snapshots=true`, download the `playwright-updated-snapshots` artifact, and copy it over `tests/visual-regression/visual-regression.spec.ts-snapshots/`. Before committing, diff the new baselines against the old ones and confirm the change is what you expect — a snapshot whose **dimensions** change is a layout shift, not antialiasing, and deserves a look.
 
 ## Docker / Lighthouse
 
