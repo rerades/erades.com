@@ -1,4 +1,4 @@
-// @vitest-environment happy-dom
+// @vitest-environment ./src/test/happy-dom-ssr.ts
 import { describe, test, expect } from "vitest";
 import Footer from "./Footer.astro";
 import { renderAstroComponent } from "../test/helpers.ts";

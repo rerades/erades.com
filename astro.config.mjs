@@ -40,7 +40,11 @@ export default defineConfig({
     defaultLocale: "en",
     locales: ["es", "en"],
     routing: {
-      prefixDefaultLocale: false,
+      // Todas las páginas viven bajo `src/pages/[lang]/`, así que ambos idiomas
+      // van prefijados (/es/... y /en/...). Con `false`, Astro 7 trata /en como
+      // ruta inválida y devuelve 404. La redirección de `/` la hace
+      // `src/pages/index.astro`.
+      prefixDefaultLocale: true,
     },
   },
   site: "https://erades.com",

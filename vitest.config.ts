@@ -11,7 +11,7 @@ export default getViteConfig({
   },
   test: {
     globals: true,
-    environment: "happy-dom",
+    environment: "./src/test/happy-dom-ssr.ts",
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.test.{ts,tsx,js}", "src/**/*.spec.{ts,tsx,js}"],
     exclude: [

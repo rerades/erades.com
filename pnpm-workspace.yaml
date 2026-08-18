@@ -3,6 +3,42 @@ packages:
 
 overrides:
   mdast-util-to-hast: '>=13.2.1'
+  # Avisos de seguridad en transitivas que sus padres aún no han bumpeado
+  # (sobre todo @lhci/* y lighthouse). Revisar al actualizar esos paquetes.
+  ajv@8: ^8.18.0
+  basic-ftp: ^5.3.1
+  body-parser@1: ^1.20.6
+  brace-expansion@1: ^1.1.18
+  dottie: ^2.0.7
+  fast-uri: ^3.1.5
+  flatted: ^3.4.2
+  ip-address: ^10.3.1
+  js-yaml@3: ^3.15.1
+  lodash: ^4.17.24
+  lodash-es: ^4.17.24
+  minimatch@3: ^3.1.4
+  morgan: ^1.10.2
+  path-to-regexp@0: ^0.1.13
+  picomatch@2: ^2.3.2
+  postcss: ^8.5.23
+  qs@6: ^6.15.2
+  sequelize: ^6.37.8
+  smol-toml: ^1.6.1
+  tmp: ^0.2.6
+  uuid@11: ^11.1.1
+  ws@7: ^7.5.11
+  ws@8: ^8.21.0
+
+auditConfig:
+  # Ambas llegan solo por @lhci/cli y @lhci/server (devDependencies: tooling de
+  # Lighthouse que se ejecuta en local, nunca en el servidor ni en el bundle).
+  # Ninguna tiene arreglo hoy:
+  #   extract-zip -> sin versión parcheada publicada (la última es 2.0.1)
+  #   uuid        -> sequelize@6 lo fija en v8; subir a 11 es breaking
+  # Revisar cuando @lhci/* publique una versión nueva.
+  ignoreGhsas:
+    - GHSA-jmr9-qjv8-65gv # extract-zip: symlink path traversal
+    - GHSA-w5hq-g745-h8pq # uuid: missing buffer bounds check
 
 allowBuilds:
   '@tailwindcss/oxide': true

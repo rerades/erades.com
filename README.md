@@ -10,14 +10,14 @@ A modern, multilingual blog built with Astro, TypeScript, and Tailwind CSS v4. T
 - **SEO Friendly**: Canonical URLs, OpenGraph data, and sitemap support
 - **Content Collections**: Type-safe content management with Astro's content collections
 - **Comprehensive Testing**: Unit tests, E2E tests, and visual regression testing
-- **Modern Tech Stack**: Astro 5, TypeScript, Tailwind CSS v4, Vitest, Playwright
+- **Modern Tech Stack**: Astro 7, TypeScript, Tailwind CSS v4, Vitest, Playwright
 - **Server-Side Rendering**: Fast, SEO-friendly SSR with Node adapter
 - **Code Highlighting**: Syntax highlighting with Expressive Code
 - **Large File Management**: Git LFS for handling large files like Lighthouse databases
 
 ## 🚀 Tech Stack
 
-- **Framework**: Astro 5.13.2
+- **Framework**: Astro 7.2.2
 - **Styling**: Tailwind CSS v4.1.12
 - **Language**: TypeScript 5.9.2
 - **Testing**: Vitest 3.2.4, Playwright 1.54.2

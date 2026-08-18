@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Area 73 (erades.com) — a multilingual (es/en) blog built with Astro 5 (server output, Node adapter, standalone mode), TypeScript (strict), and Tailwind CSS v4. Content is authored as Markdown/MDX and rendered via Astro content collections; search is powered by a build-time FlexSearch index served through an SSR API route. Package manager is **pnpm** (see `packageManager` in `package.json`); Node >= 22.13.
+Area 73 (erades.com) — a multilingual (es/en) blog built with Astro 7 (server output, Node adapter, standalone mode), TypeScript (strict), and Tailwind CSS v4. Content is authored as Markdown/MDX and rendered via Astro content collections; search is powered by a build-time FlexSearch index served through an SSR API route. Package manager is **pnpm** (see `packageManager` in `package.json`); Node >= 22.13.
 
 ## Commands
 
