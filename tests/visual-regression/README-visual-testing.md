@@ -226,7 +226,7 @@ Este error indica que el servidor Astro no está corriendo. Asegúrate de:
    pnpm test:visual
    ```
 
-El servidor debe estar escuchando en `http://localhost:4321` (o `http://0.0.0.0:4321`) para que Docker pueda conectarse a través de `host.docker.internal:4321`.
+El servidor debe estar escuchando en `http://localhost:4321`, que es el `BASE_URL` por defecto de `playwright.visual.config.ts`. La suite visual no arranca servidor por su cuenta.
 
 ### Tests Fallan por Diferencias Menores
 

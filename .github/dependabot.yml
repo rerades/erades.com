@@ -23,8 +23,9 @@ updates:
       npm-minor-patch:
         patterns:
           - "*"
-        # Fuera del grupo: su version tiene que ir a la par con el tag de
-        # Dockerfile.visual-test, asi que hay que verla venir sola.
+        # Fuera del grupo: su version tiene que ir a la par con el tag de la
+        # imagen `container:` del job Visual-Regression-Tests (ci.yml), asi
+        # que hay que verla venir sola.
         exclude-patterns:
           - "@playwright/test"
         update-types:

@@ -88,18 +88,17 @@ jobs:
   Visual-Regression-Tests:
     name: Visual-Regression-Tests
     runs-on: ubuntu-latest
-    # El job corre DENTRO de la imagen oficial de Playwright, en vez de construir
-    # una imagen propia (Dockerfile.visual-test) y lanzar el runner con docker
-    # compose. Motivo: en el desglose del job, construir esa imagen costaba 111s
-    # frente a 74s de tests reales, o sea el 60% del tiempo no era testear.
+    # El job corre DENTRO de la imagen oficial de Playwright. Hasta agosto de
+    # 2026 se construia una imagen propia y se lanzaba el runner con docker
+    # compose; el desglose del job decia que construirla costaba 111s frente a
+    # 74s de tests reales, o sea que el 60% del tiempo no era testear. Medido
+    # tras el cambio: 4m14s -> 2m29s, y los tests solos de 74s a 32s al quitar
+    # el bind-mount y el salto de red del contenedor.
     #
-    # Las baselines siguen siendo validas porque es exactamente la misma imagen
-    # que usaba docker-compose, luego mismas fuentes y mismo rasterizado. El
-    # `platform: linux/amd64` del compose deja de hacer falta: el runner de
-    # GitHub ya es amd64 nativo.
+    # El tag de esta imagen tiene que ir a la par con @playwright/test en
+    # package.json; dependabot lo saca de sus PRs agrupados por ese motivo.
     #
-    # Como el servidor y los tests viven ahora en el mismo contenedor, la URL es
-    # 127.0.0.1 y desaparece todo el baile de host.docker.internal.
+    # Servidor y tests comparten contenedor, de ahi que BASE_URL sea 127.0.0.1.
     container:
       image: mcr.microsoft.com/playwright:v1.62.1-jammy
       options: --shm-size=1g
@@ -135,7 +134,7 @@ jobs:
           done
       - name: Run visual tests
         if: ${{ !inputs.update_visual_snapshots }}
-        run: pnpm run test:visual:ci
+        run: pnpm run test:visual
       # Las baselines son autoritativas desde CI: el rasterizado de texto pequeno
       # no coincide entre un amd64 nativo y el amd64 emulado de un Mac Apple
       # Silicon, asi que generarlas en local produce diffs de ~250 px que no se
@@ -144,7 +143,7 @@ jobs:
       # y descomprimir el artefacto sobre tests/visual-regression/.
       - name: Regenerate visual baselines
         if: ${{ inputs.update_visual_snapshots }}
-        run: pnpm run test:visual:ci:update
+        run: pnpm run test:visual:update
       - name: Upload regenerated baselines
         if: ${{ inputs.update_visual_snapshots }}
         uses: actions/upload-artifact@v7

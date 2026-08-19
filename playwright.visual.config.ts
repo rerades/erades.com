@@ -32,9 +32,9 @@ export default defineConfig({
       // baseline del paginador decía "Mostrando 6 de 19 resultados" mientras la
       // página servía 21, y el test pasaba.
       //
-      // El navegador siempre es el mismo (imagen de Docker fijada en
-      // Dockerfile.visual-test), así que el render es determinista y no hace
-      // falta colchón para ruido entre máquinas. Si esto empieza a dar falsos
+      // En CI el navegador siempre es el mismo (la imagen fijada en el
+      // `container:` del job Visual-Regression-Tests), así que el render es
+      // determinista y no hace falta colchón para ruido entre máquinas. Si esto empieza a dar falsos
       // positivos, la respuesta es estabilizar la captura, no subir el número.
       threshold: 0.15,
       maxDiffPixels: 100,
