@@ -37,6 +37,50 @@ CI (`.github/workflows/ci.yml`) runs Lint-Check, Type-Check, Unit-Tests, E2E-Tes
 
 ## Architecture
 
+### The shape of it
+
+```mermaid
+flowchart TD
+    req([Request]) --> node["@astrojs/node (standalone SSR)"]
+    node --> root["src/pages/index.astro<br/>redirect / → /es"]
+    node --> pages["src/pages/[lang]/**<br/>localized routes"]
+    node --> api["src/pages/api/search.ts<br/>prerender = false"]
+
+    pages --> layouts["src/layouts<br/>BlogLayout · BlogPost"]
+    layouts --> comps["src/components<br/>incl. Show/If control flow"]
+
+    pages --> content[("src/content/blog/{en,es}<br/>schema: src/content.config.ts")]
+    pages --> i18n["src/i18n<br/>t() + locales/{en,es}.json"]
+    comps --> i18n
+
+    api --> index[("public/search-index.json")]
+    build["build: scripts/generate-flexsearch-index.ts"] -.writes.-> index
+    content -.read at build time.-> build
+
+    classDef leaf fill:none,stroke-dasharray:3 3
+    class i18n,content,index leaf
+```
+
+Two things worth reading off this diagram, because they are the ones people get
+wrong: the search index is written **at build time** and re-read **per request**
+(the API route rebuilds FlexSearch from the JSON on every call — nothing is kept
+in memory), and `layouts` sit strictly between `pages` and `components`.
+
+### Architectural boundaries
+
+The layering above is enforced by `no-restricted-imports` in `eslint.config.js`,
+so the `Lint` CI job fails if it drifts. The invariants:
+
+| Rule | Why |
+| --- | --- |
+| Nothing imports from `pages/` | Routes are leaves — Astro is their only caller. Importing one means the logic belongs elsewhere. |
+| Only `pages/` import `layouts/` | A component reaching for a layout is a render cycle waiting to happen. |
+| `utils/` and `i18n/` import no UI | They are the base layer, and the only part directly unit-testable without a container render. |
+
+Note that imports in this repo are written **relative**, not through the `~` /
+`@components` aliases, so the ESLint patterns match path segments (`**/pages/**`)
+rather than alias prefixes. Keep that in mind when adding a rule.
+
 ### Routing and i18n
 
 - `output: "server"` with `@astrojs/node` (standalone). **Both** locales are prefixed (`/es/...` and `/en/...`), so `astro.config.mjs` sets `i18n.routing.prefixDefaultLocale: true`; `/` redirects via `src/pages/index.astro`. Do not flip that flag back to `false`: every page lives under `src/pages/[lang]/`, and Astro 7 then treats the default locale's prefix as an invalid route and 404s half the site.
