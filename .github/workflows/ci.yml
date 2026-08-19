@@ -123,21 +123,35 @@ jobs:
       # (que es como se regeneran las baselines) corre siempre.
       - name: Decidir si la suite visual aplica
         id: scope
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
-            echo "run=true" >> "$GITHUB_OUTPUT"; exit 0
+          # Por defecto SE CORRE. Solo se omite si se demuestra que el diff es
+          # unicamente documentacion. La primera version hacia lo contrario, y
+          # un `git diff` que fallaba por no tener el SHA base en el clon del
+          # contenedor devolvia vacio: la suite no corria y el job pasaba
+          # igualmente. Un verde falso es peor que gastar 2m30s de mas.
+          run=true
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            git config --global --add safe.directory "$GITHUB_WORKSPACE" || true
+            if git fetch --no-tags --depth=1 origin "$BASE_SHA" 2>/dev/null &&
+               changed=$(git diff --name-only "$BASE_SHA" HEAD 2>/dev/null) &&
+               [ -n "$changed" ]; then
+              echo "Ficheros cambiados:"; printf '%s\n' "$changed"
+              # Documentacion = docs/ y los .md de la RAIZ. Deliberadamente NO
+              # cualquier *.md: los posts viven en src/content/blog/**/*.md y
+              # si cambian mueven el listado y el paginador, o sea pixeles.
+              if printf '%s\n' "$changed" | grep -qvE '(^docs/|^[^/]+\.md$)'; then
+                run=true
+              else
+                run=false
+              fi
+            else
+              echo "No se pudo diffear contra $BASE_SHA; se corre la suite."
+            fi
           fi
-          base='${{ github.event.pull_request.base.sha }}'
-          # Documentacion = docs/ y los .md de la RAIZ. Deliberadamente NO
-          # cualquier *.md: los posts viven en src/content/blog/**/*.md y si
-          # cambian mueven el listado y el paginador, o sea pixeles.
-          # Acierta si queda algun fichero fuera de ese conjunto.
-          if git diff --name-only "$base" HEAD | grep -qvE '(^docs/|^[^/]+\.md$)'; then
-            echo "run=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "run=false" >> "$GITHUB_OUTPUT"
-            echo "Solo documentacion: se omite la suite visual."
-          fi
+          echo "Decision: run=$run"
+          echo "run=$run" >> "$GITHUB_OUTPUT"
 
       - uses: pnpm/action-setup@v6
         if: steps.scope.outputs.run == 'true'
