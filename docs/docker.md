@@ -1,7 +1,7 @@
 # Possible Errors
 
 **DOCKER IMAGE FAILURE:**
-The error occurs because the Playwright version in your project (@playwright/test 1.55.0) does not match the version of the Docker image you're using (mcr.microsoft.com/playwright:v1.54.0-jammy). To avoid these issues, you should always align the image version with your Playwright dependency. The recommended solution is to update the Docker image tag to match your dependency version, or vice versa, and rebuild the container.
+The error occurs because the Playwright version in your project (@playwright/test 1.55.0) does not match the version of the Docker image you're using (mcr.microsoft.com/playwright:v1.54.0-jammy). To avoid these issues, you should always align the image version with your Playwright dependency. The image tag now lives in the `container:` block of the `Visual-Regression-Tests` job in `.github/workflows/ci.yml` — keep it in sync with `@playwright/test` in `package.json` (Dependabot deliberately excludes that package from its grouped PRs for this reason).
 It also explains how to parameterize the version with environment variables to facilitate future updates.
 
 - Keeping versions out of sync is not recommended: **Keeping image and library out of sync is asking for bugs next month.**
@@ -19,8 +19,10 @@ de unos 250 px por captura, siempre en el mismo sitio (el header, los chips de
 tag), y es indistinguible de una regresión real salvo que se afloje el umbral —
 que es justo lo que llevaba años tapando cambios de contenido de verdad.
 
-`docker-compose.yml` fija `platform: linux/amd64` para que al menos la
-arquitectura sea la misma en todas partes.
+En CI eso no es un problema: el job corre dentro de la imagen oficial de
+Playwright (`container:` en `ci.yml`) sobre un runner amd64 nativo, así que la
+captura es siempre la misma. Lo que cambió en agosto de 2026 es que ya no se
+construye una imagen propia para ello — ver la sección siguiente.
 
 ## Refrescar las baselines
 
@@ -30,10 +32,22 @@ arquitectura sea la misma en todas partes.
 
 ## Correr los tests visuales en local
 
-`pnpm run test:visual` sigue sirviendo para ver *qué* ha cambiado (el reporte
-HTML y los `-diff.png` señalan la zona). Lo que no vale es dar por buena una
-baseline generada aquí: eso es lo que hace `pnpm run test:visual:update`, y solo
-tiene sentido si estás en amd64 nativo.
+`pnpm run test:visual` ya no pasa por Docker: lanza Playwright directamente
+contra un servidor tuyo en el puerto 4321.
+
+```bash
+pnpm build
+PORT=4321 pnpm start     # en otra terminal:
+pnpm test:visual
+```
+
+Sirve para ver *qué* ha cambiado: el reporte HTML y los `-diff.png` señalan la
+zona. Lo que **no** vale es dar por buena una baseline generada aquí, y ahora
+menos que antes: hasta agosto de 2026 el contenedor forzaba `linux/amd64`
+emulado, y hoy corres el navegador de tu propia máquina. En un Mac Apple
+Silicon eso significa diferencias de rasterizado mayores que los ~250 px de
+antes. Es un empeoramiento aceptado a conciencia, porque una baseline local
+nunca fue autoritativa: para refrescarlas, usa el workflow de arriba.
 
 ## Umbral
 

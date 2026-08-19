@@ -88,6 +88,20 @@ jobs:
   Visual-Regression-Tests:
     name: Visual-Regression-Tests
     runs-on: ubuntu-latest
+    # El job corre DENTRO de la imagen oficial de Playwright. Hasta agosto de
+    # 2026 se construia una imagen propia y se lanzaba el runner con docker
+    # compose; el desglose del job decia que construirla costaba 111s frente a
+    # 74s de tests reales, o sea que el 60% del tiempo no era testear. Medido
+    # tras el cambio: 4m14s -> 2m29s, y los tests solos de 74s a 32s al quitar
+    # el bind-mount y el salto de red del contenedor.
+    #
+    # El tag de esta imagen tiene que ir a la par con @playwright/test en
+    # package.json; dependabot lo saca de sus PRs agrupados por ese motivo.
+    #
+    # Servidor y tests comparten contenedor, de ahi que BASE_URL sea 127.0.0.1.
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-jammy
+      options: --shm-size=1g
     env:
       PORT: 4321
       HOST: 0.0.0.0
@@ -105,7 +119,7 @@ jobs:
         run: |
           if [ -z "$PUBLIC_GA_MEASUREMENT_ID" ]; then
             echo "Error: PUBLIC_GA_MEASUREMENT_ID is not configured in GitHub repository variables"
-            echo "Please configure it in: Settings → Secrets and variables → Actions → Variables"
+            echo "Please configure it in: Settings -> Secrets and variables -> Actions -> Variables"
             exit 1
           fi
           echo "PUBLIC_GA_MEASUREMENT_ID is configured"
@@ -114,22 +128,20 @@ jobs:
       - name: Start server
         run: |
           nohup env PORT=$PORT HOST=$HOST pnpm start > server.log 2>&1 &
-          for i in {1..60}; do
+          for i in $(seq 1 60); do
             if curl -fsS "$BASE_URL" >/dev/null; then echo "Server is up"; break; fi
             sleep 2
           done
-      - name: Build visual test runner image
-        run: docker compose build
-      - name: Run visual tests (Docker)
+      - name: Run visual tests
         if: ${{ !inputs.update_visual_snapshots }}
         run: pnpm run test:visual
-      # Las baselines son autoritativas desde CI: el rasterizado de texto pequeño
+      # Las baselines son autoritativas desde CI: el rasterizado de texto pequeno
       # no coincide entre un amd64 nativo y el amd64 emulado de un Mac Apple
-      # Silicon, así que generarlas en local produce diffs de ~250 px que no se
-      # pueden distinguir de una regresión de verdad sin aflojar el umbral.
+      # Silicon, asi que generarlas en local produce diffs de ~250 px que no se
+      # pueden distinguir de una regresion de verdad sin aflojar el umbral.
       # Para refrescarlas: lanzar este workflow con update_visual_snapshots=true
       # y descomprimir el artefacto sobre tests/visual-regression/.
-      - name: Regenerate visual baselines (Docker)
+      - name: Regenerate visual baselines
         if: ${{ inputs.update_visual_snapshots }}
         run: pnpm run test:visual:update
       - name: Upload regenerated baselines

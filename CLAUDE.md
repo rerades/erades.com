@@ -23,7 +23,7 @@ pnpm test:unit:watch         # Vitest watch mode
 pnpm coverage                 # Vitest with V8 coverage
 pnpm test:e2e                 # Playwright E2E; playwright.config.ts starts the server itself
 pnpm test:e2e:headed          # Playwright headed with PWDEBUG
-pnpm test:visual              # Visual regression inside Docker (needs a server on the host, see below)
+pnpm test:visual              # Visual regression (needs a server on :4321, see below)
 pnpm test:visual:update       # Same, rewriting the snapshots
 
 pnpm translate:es-en          # Translate es posts -> en via OpenAI (needs .env with OPENAI_API_KEY)
@@ -129,22 +129,30 @@ These come from `.cursor/rules/*.mdc` and apply to Claude Code edits too:
 
 - Unit tests (Vitest + happy-dom) are colocated next to source, e.g. `src/components/BlogCard.astro` + `src/components/BlogCard.test.ts`. Config: `vitest.config.ts`, setup in `src/test/setup.ts`.
 - Astro components are unit-tested by rendering through `AstroContainer` via the `renderAstroComponent` helper in `src/test/helpers.ts`, then asserting on the resulting DOM (e.g. with `@testing-library/dom`'s `getByText`). Follow this pattern (see `show.test.ts`) rather than snapshotting raw HTML strings.
-- E2E specs run with Playwright: `playwright.config.ts` for functional E2E, `playwright.visual.config.ts` for visual regression. `pnpm test:e2e` runs Playwright directly on the host and its `webServer` block builds and starts the app itself (`pnpm build && pnpm start`), so nothing needs to be running beforehand. Only the visual suite runs **inside Docker** (`pnpm test:visual`), pinned to `linux/amd64` so font rasterization matches CI.
-- Keep the Docker Playwright image tag (`Dockerfile.visual-test`) and the `@playwright/test` version in `package.json` in sync — a mismatch is a known source of CI failures (see `docs/docker.md`).
+- E2E specs run with Playwright: `playwright.config.ts` for functional E2E, `playwright.visual.config.ts` for visual regression. `pnpm test:e2e` runs Playwright directly and its `webServer` block builds and starts the app itself (`pnpm build && pnpm start`), so nothing needs to be running beforehand. The visual suite has no `webServer` — it expects a server already listening on `BASE_URL` (default `http://localhost:4321`).
+- In CI the visual job runs **inside** the official Playwright image via the `container:` block in `.github/workflows/ci.yml`, on an amd64 runner, which is what makes the baselines reproducible. Keep that image tag and the `@playwright/test` version in `package.json` in sync — a mismatch is a known source of CI failures (see `docs/docker.md`). Dependabot excludes `@playwright/test` from its grouped PRs so the bump arrives alone and visible.
 
 ### Running the visual suite locally
 
-The Docker runner does **not** start a server — it drives one running on your host via `host.docker.internal:4321` (`BASE_URL` in `docker-compose.yml`). Start the **production** server, not `pnpm dev`:
+The visual config has no `webServer`, so it drives a server you start yourself.
+Use the **production** server, not `pnpm dev`:
 
 ```bash
 pnpm build
-PORT=4321 HOST=0.0.0.0 pnpm start   # then, in another shell:
+PORT=4321 pnpm start   # then, in another shell:
 pnpm test:visual
 ```
 
-`pnpm dev` does not work for this since Astro 7: `astro dev` binds only to IPv6 `[::1]` (so `127.0.0.1` is refused), and even with `--host 0.0.0.0` Vite answers **403** to the container because `Host: host.docker.internal` is not in its DNS-rebinding allowlist. CI does not hit this because it also uses `pnpm build && pnpm start`.
+`pnpm dev` does not work for this since Astro 7: `astro dev` binds only to IPv6
+`[::1]`, so `127.0.0.1:4321` is refused.
 
-Symptom to recognize: *every* visual test failing with a 30s timeout waiting for a selector means the container cannot reach the app, not a render regression. Check it with `docker compose run --rm erades-com sh -c 'wget -S -qO /dev/null http://host.docker.internal:4321/es'` before suspecting the CSS.
+Symptom to recognize: *every* visual test failing with a 30s timeout waiting for
+a selector means nothing is listening on `BASE_URL`, not a render regression.
+Check with `curl -sI http://localhost:4321/es` before suspecting the CSS.
+
+Expect local runs to differ from CI: you are rendering with your own machine's
+browser and fonts. On Apple Silicon the diffs are substantial. That is fine for
+seeing *what* changed — never for blessing a new baseline.
 
 ### Visual baselines
 
@@ -154,5 +162,5 @@ To refresh them, run the CI workflow with `update_visual_snapshots=true`, downlo
 
 ## Docker / Lighthouse
 
-- `Dockerfile` builds the production standalone server; `Dockerfile.visual-test` builds the container used for E2E/visual Playwright runs (see `docker-compose.yml`).
+- `Dockerfile` builds the production standalone server. There is no test-runner image any more: CI gets its pinned browser from the `container:` block in `ci.yml`, and local runs use the host's Playwright install.
 - `docker-compose.lhci.yml` + the `lhci:*` scripts run a local Lighthouse CI server backed by a SQLite DB at `db/lighthouse/lhci.db` (tracked via **Git LFS** — see `.gitattributes`). `lighthouserc.cjs` / `lighthouserc.desktop.cjs` configure mobile/desktop assertions; `pnpm lhci:ci:both` runs both against `.env`.

@@ -51,13 +51,12 @@ src/
 | `pnpm dev`                                | Start development server at `localhost:4321`                |
 | `pnpm build`                              | Build for production (includes FlexSearch index generation) |
 | `pnpm preview`                            | Preview production build locally                            |
-| `pnpm test`                               | Run unit tests                                              |
-| `pnpm test:watch`                         | Run unit tests in watch mode                                |
+| `pnpm test:unit`                          | Run unit tests                                              |
+| `pnpm test:unit:watch`                    | Run unit tests in watch mode                                |
 | `pnpm coverage`                           | Run unit tests with coverage report                         |
-| `pnpm docker:test:e2e`                    | Run end-to-end tests in Docker (Playwright container)       |
-| `pnpm docker:test:visual`                 | Run visual regression tests in Docker                       |
-| `pnpm docker:test:visual:update`          | Update visual regression snapshots                          |
-| `pnpm docker:test:visual:enhanced:update` | Update enhanced visual snapshots                            |
+| `pnpm test:e2e`                           | Run end-to-end tests (Playwright starts the server itself)  |
+| `pnpm test:visual`                        | Run visual regression tests (needs a server on :4321)       |
+| `pnpm test:visual:update`                 | Update visual baselines (CI is authoritative, see docs)     |
 | `pnpm lint`                               | Lint code with ESLint                                       |
 | `pnpm lint:fix`                           | Fix linting issues automatically                            |
 | `pnpm translate:es-en`                    | Translate Spanish posts to English                          |
@@ -157,14 +156,11 @@ pnpm test
 # Unit tests with coverage
 pnpm coverage
 
-# E2E tests (Docker)
-pnpm docker:test:e2e
+# E2E tests
+pnpm test:e2e
 
-# Visual tests (Docker)
-pnpm docker:test:visual
-
-# Update visual snapshots
-pnpm docker:test:visual:update
+# Visual tests (needs `pnpm build && pnpm start` running)
+pnpm test:visual
 
 # Build
 pnpm build
