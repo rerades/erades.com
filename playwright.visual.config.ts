@@ -8,7 +8,16 @@ export default defineConfig({
   reporter: [["html", { open: "never" }]],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  // Sin reintentos, a proposito. Toda esta config se apoya en que el render
+  // es determinista: imagen fijada en CI, esperas explicitas de fuentes e
+  // imagenes, animaciones desactivadas. Si eso es cierto, reintentar solo
+  // triplica lo que tarda CI en dar un rojo legitimo; y si resulta falso,
+  // preferimos verlo como un fallo y estabilizar la captura, que es lo mismo
+  // que dice el comentario de `maxDiffPixels` mas abajo.
+  //
+  // Si empieza a haber rojos intermitentes, el arreglo NO es volver a
+  // `retries: 2`: es encontrar que captura no es estable.
+  retries: 0,
   workers: process.env.CI ? 4 : Math.ceil(os.cpus().length * 0.75),
 
   use: {
@@ -16,7 +25,10 @@ export default defineConfig({
     baseURL: process.env.BASE_URL || "http://localhost:4321",
     headless: true,
     trace: "off",
-    video: "retain-on-failure",
+    // `retain-on-failure` graba video de los 25 tests y lo tira al pasar. En
+    // una suite visual el artefacto util es el `-diff.png`, no un video de una
+    // pagina estatica.
+    video: "off",
     screenshot: "only-on-failure",
     viewport: { width: 1280, height: 720 },
     ignoreHTTPSErrors: true,
