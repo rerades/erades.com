@@ -73,8 +73,8 @@ describe("Header", () => {
       },
     });
 
-    const esButton = result.querySelector("#lang-es");
-    const enButton = result.querySelector("#lang-en");
+    const esButton = result.querySelector('[data-lang-switch="es"]');
+    const enButton = result.querySelector('[data-lang-switch="en"]');
 
     expect(esButton).not.toBeNull();
     expect(enButton).not.toBeNull();
@@ -89,12 +89,27 @@ describe("Header", () => {
       },
     });
 
-    const esButton = result.querySelector("#lang-es");
-    const enButton = result.querySelector("#lang-en");
+    const esButton = result.querySelector('[data-lang-switch="es"]');
+    const enButton = result.querySelector('[data-lang-switch="en"]');
 
     expect(esButton?.classList.contains("bg-primary")).toBe(true);
     expect(esButton?.getAttribute("aria-current")).toBe("page");
     expect(enButton?.classList.contains("bg-primary")).toBe(false);
+  });
+
+  test("exposes the language switches in both desktop and mobile menus", async () => {
+    const result = await renderAstroComponent(Header, {
+      props: {
+        lang: "es",
+      },
+    });
+
+    // Regresion: antes iban por id y el id estaba duplicado, asi que los
+    // botones del menu movil nunca recibian listener.
+    expect(result.querySelectorAll('[data-lang-switch="es"]').length).toBe(2);
+    expect(result.querySelectorAll('[data-lang-switch="en"]').length).toBe(2);
+    expect(result.querySelectorAll("#lang-es").length).toBe(0);
+    expect(result.querySelectorAll("#lang-en").length).toBe(0);
   });
 
   test("renders theme toggle", async () => {
