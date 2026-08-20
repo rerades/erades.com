@@ -244,3 +244,38 @@ jobs:
           fi
           echo "PUBLIC_GA_MEASUREMENT_ID is configured"
       - run: pnpm build
+
+  Auto-Merge-Dependabot:
+    name: Auto-Merge-Dependabot
+    # Solo PRs de dependabot. El `needs` es la puerta: si algun job falla, este
+    # se queda en skipped y el PR sigue abierto esperando revision humana.
+    # No se usa `gh pr merge --auto` porque el repo es privado en plan free y
+    # sin branch protection no hay checks requeridos: auto-merge mergearia al
+    # instante, sin esperar a nada.
+    #
+    # `gh pr merge` sin SHA mergea el head actual del PR, no el commit que este
+    # run testeo. Si Dependabot rebasea o llega un synchronize mientras el merge
+    # va en camino, cancel-in-progress no aborta la request ya disparada.
+    # `--match-head-commit` es el `sha` del Merge API: GitHub rechaza el merge
+    # si el head ya no es el SHA de este evento (el que los jobs de `needs`
+    # ejecutaron). github.sha no vale: en pull_request es el merge commit, no
+    # el head del PR.
+    if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    needs:
+      - Lint
+      - Type-Check
+      - Unit-Tests
+      - E2E-Tests
+      - Visual-Regression-Tests
+      - Build
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Merge
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge --squash --delete-branch --match-head-commit "$HEAD_SHA" "$PR_URL"
