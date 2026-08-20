@@ -16,6 +16,8 @@ const viteConfig = {
         new URL("./src/components", import.meta.url)
       ),
       "~": fileURLToPath(new URL("./src", import.meta.url)),
+      // Los componentes de bejamas/ui vienen escritos contra `@/`.
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   plugins: [

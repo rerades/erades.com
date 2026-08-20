@@ -61,7 +61,7 @@ export default [
     rules: { "no-restricted-imports": restrict([NO_PAGES, NO_LAYOUTS]) },
   },
   {
-    files: ["src/utils/**/*.ts", "src/i18n/**/*.ts"],
+    files: ["src/utils/**/*.ts", "src/i18n/**/*.ts", "src/lib/**/*.ts"],
     rules: {
       "no-restricted-imports": restrict([NO_PAGES, NO_LAYOUTS, NO_COMPONENTS]),
     },

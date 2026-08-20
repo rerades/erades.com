@@ -41,10 +41,12 @@
     "@tailwindcss/vite": "4.3.3",
     "astro": "7.2.2",
     "astro-expressive-code": "0.44.1",
+    "clsx": "2.1.1",
     "flexsearch": "0.8.212",
     "gray-matter": "4.0.3",
     "openai": "7.4.0",
-    "sharp": "0.35.3"
+    "sharp": "0.35.3",
+    "tailwind-merge": "3.6.0"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
