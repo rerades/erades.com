@@ -252,6 +252,14 @@ jobs:
     # No se usa `gh pr merge --auto` porque el repo es privado en plan free y
     # sin branch protection no hay checks requeridos: auto-merge mergearia al
     # instante, sin esperar a nada.
+    #
+    # `gh pr merge` sin SHA mergea el head actual del PR, no el commit que este
+    # run testeo. Si Dependabot rebasea o llega un synchronize mientras el merge
+    # va en camino, cancel-in-progress no aborta la request ya disparada.
+    # `--match-head-commit` es el `sha` del Merge API: GitHub rechaza el merge
+    # si el head ya no es el SHA de este evento (el que los jobs de `needs`
+    # ejecutaron). github.sha no vale: en pull_request es el merge commit, no
+    # el head del PR.
     if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     needs:
@@ -268,5 +276,6 @@ jobs:
       - name: Merge
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge --squash --delete-branch "$PR_URL"
+        run: gh pr merge --squash --delete-branch --match-head-commit "$HEAD_SHA" "$PR_URL"
