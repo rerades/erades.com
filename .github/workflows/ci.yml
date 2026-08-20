@@ -108,14 +108,62 @@ jobs:
       BASE_URL: http://127.0.0.1:4321
       PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}
     steps:
+      # fetch-depth 0 para poder diffear contra la base del PR en el paso
+      # siguiente. No trae LFS (actions/checkout no lo hace por defecto).
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # Un PR que solo toca markdown no puede mover un pixel, y la suite cuesta
+      # ~2m30s. Se filtra DENTRO del job, no con `paths-ignore` a nivel de
+      # workflow: un check requerido que se salta se queda en "pending" para
+      # siempre y bloquea el merge. Asi el job termina en ~20s y da success.
+      #
+      # Solo se filtra en pull_request; en push a master y en workflow_dispatch
+      # (que es como se regeneran las baselines) corre siempre.
+      - name: Decidir si la suite visual aplica
+        id: scope
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          # Por defecto SE CORRE. Solo se omite si se demuestra que el diff es
+          # unicamente documentacion. La primera version hacia lo contrario, y
+          # un `git diff` que fallaba por no tener el SHA base en el clon del
+          # contenedor devolvia vacio: la suite no corria y el job pasaba
+          # igualmente. Un verde falso es peor que gastar 2m30s de mas.
+          run=true
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            git config --global --add safe.directory "$GITHUB_WORKSPACE" || true
+            if git fetch --no-tags --depth=1 origin "$BASE_SHA" 2>/dev/null &&
+               changed=$(git diff --name-only "$BASE_SHA" HEAD 2>/dev/null) &&
+               [ -n "$changed" ]; then
+              echo "Ficheros cambiados:"; printf '%s\n' "$changed"
+              # Documentacion = docs/ y los .md de la RAIZ. Deliberadamente NO
+              # cualquier *.md: los posts viven en src/content/blog/**/*.md y
+              # si cambian mueven el listado y el paginador, o sea pixeles.
+              if printf '%s\n' "$changed" | grep -qvE '(^docs/|^[^/]+\.md$)'; then
+                run=true
+              else
+                run=false
+              fi
+            else
+              echo "No se pudo diffear contra $BASE_SHA; se corre la suite."
+            fi
+          fi
+          echo "Decision: run=$run"
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+
       - uses: pnpm/action-setup@v6
+        if: steps.scope.outputs.run == 'true'
       - uses: actions/setup-node@v7
+        if: steps.scope.outputs.run == 'true'
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - if: steps.scope.outputs.run == 'true'
+        run: pnpm install --frozen-lockfile
       - name: Validate PUBLIC_GA_MEASUREMENT_ID
+        if: steps.scope.outputs.run == 'true'
         run: |
           if [ -z "$PUBLIC_GA_MEASUREMENT_ID" ]; then
             echo "Error: PUBLIC_GA_MEASUREMENT_ID is not configured in GitHub repository variables"
@@ -124,8 +172,10 @@ jobs:
           fi
           echo "PUBLIC_GA_MEASUREMENT_ID is configured"
       - name: Build app
+        if: steps.scope.outputs.run == 'true'
         run: pnpm build
       - name: Start server
+        if: steps.scope.outputs.run == 'true'
         run: |
           nohup env PORT=$PORT HOST=$HOST pnpm start > server.log 2>&1 &
           for i in $(seq 1 60); do
@@ -133,7 +183,7 @@ jobs:
             sleep 2
           done
       - name: Run visual tests
-        if: ${{ !inputs.update_visual_snapshots }}
+        if: ${{ steps.scope.outputs.run == 'true' && !inputs.update_visual_snapshots }}
         run: pnpm run test:visual
       # Las baselines son autoritativas desde CI: el rasterizado de texto pequeno
       # no coincide entre un amd64 nativo y el amd64 emulado de un Mac Apple
@@ -151,7 +201,7 @@ jobs:
           name: playwright-updated-snapshots
           path: tests/visual-regression/**/*.png
       - name: Upload Playwright HTML report
-        if: always()
+        if: ${{ always() && steps.scope.outputs.run == 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: playwright-visual-report
@@ -163,7 +213,7 @@ jobs:
           name: playwright-test-results
           path: test-results
       - name: Show server log
-        if: always()
+        if: ${{ always() && steps.scope.outputs.run == 'true' }}
         run: cat server.log || true
 
   Build:
