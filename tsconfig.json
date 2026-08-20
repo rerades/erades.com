@@ -6,6 +6,9 @@
     "strictNullChecks": true,
     "moduleResolution": "bundler",
     "types": ["astro/client"],
-    "allowArbitraryExtensions": true
+    "allowArbitraryExtensions": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }
