@@ -1,222 +1,91 @@
 // @vitest-environment ./src/test/happy-dom-ssr.ts
 import { describe, test, expect } from "vitest";
-import { getByText, getByRole, getByLabelText } from "@testing-library/dom";
+import { getByText, getByLabelText } from "@testing-library/dom";
 import SocialProfileMenu from "./SocialProfileMenu.astro";
 import { renderAstroComponent } from "../test/helpers.ts";
 
+const props = {
+  name: "Jane Smith",
+  email: "jane@example.com",
+  linkedinUrl: "https://linkedin.com/in/janesmith",
+  xUrl: "https://x.com/janesmith",
+  lang: "es",
+  avatarSrc: "/avatar.png",
+};
+
+const render = (overrides: Partial<typeof props> = {}) =>
+  renderAstroComponent(SocialProfileMenu, { props: { ...props, ...overrides } });
+
 describe("SocialProfileMenu", () => {
-  test("renders with correct structure", async () => {
-    const result = await renderAstroComponent(SocialProfileMenu, {
-      props: {
-        name: "John Doe",
-        email: "john@example.com",
-        linkedinUrl: "https://linkedin.com/in/johndoe",
-        xUrl: "https://x.com/johndoe",
-        lang: "es",
-      },
-    });
+  test("el disparador y el contenido cuelgan de la misma raíz del dropdown", async () => {
+    const result = await render();
+    const root = result.querySelector('[data-slot="dropdown-menu"]');
 
-    const menu = result.querySelector("#avatar-menu");
-    expect(menu).not.toBeNull();
-    expect(menu?.classList.contains("hidden")).toBe(true);
-    expect(menu?.classList.contains("absolute")).toBe(true);
-    expect(menu?.classList.contains("right-0")).toBe(true);
+    // `createDropdownMenu` lanza si no encuentra ambos slots bajo la raíz.
+    expect(root).not.toBeNull();
+    expect(root?.querySelector('[data-slot="dropdown-menu-trigger"]')).not.toBeNull();
+    expect(root?.querySelector('[data-slot="dropdown-menu-content"]')).not.toBeNull();
   });
 
-  test("renders user information", async () => {
-    const result = await renderAstroComponent(SocialProfileMenu, {
-      props: {
-        name: "Jane Smith",
-        email: "jane@example.com",
-        linkedinUrl: "https://linkedin.com/in/janesmith",
-        xUrl: "https://x.com/janesmith",
-        lang: "en",
-      },
-    });
+  test("el disparador es el propio <button>, no un div envolvente", async () => {
+    const result = await render();
+    const trigger = result.querySelector('[data-slot="dropdown-menu-trigger"]');
 
-    const nameElement = getByText(result, "Jane Smith");
-    const emailElement = getByText(result, "jane@example.com");
+    // Importa porque el runtime cuelga de aquí aria-haspopup, aria-controls y
+    // aria-expanded: tienen que caer sobre el elemento que se pulsa.
+    expect(trigger?.tagName).toBe("BUTTON");
+    expect(trigger?.getAttribute("type")).toBe("button");
+  });
 
-    expect(nameElement).not.toBeNull();
-    expect(emailElement).not.toBeNull();
-    expect(nameElement?.classList.contains("text-sm")).toBe(true);
-    expect(nameElement?.classList.contains("font-medium")).toBe(true);
-    expect(emailElement?.classList.contains("text-xs")).toBe(true);
-    expect(emailElement?.classList.contains("text-muted-foreground")).toBe(
-      true
+  test("el contenido nace oculto", async () => {
+    const result = await render();
+    const content = result.querySelector('[data-slot="dropdown-menu-content"]');
+
+    expect(content?.hasAttribute("hidden")).toBe(true);
+  });
+
+  test("muestra nombre y email", async () => {
+    const result = await render();
+
+    expect(getByText(result, "Jane Smith")).not.toBeNull();
+    expect(getByText(result, "jane@example.com")).not.toBeNull();
+  });
+
+  test("los ítems son enlaces reales, no divs con JS", async () => {
+    const result = await render();
+    const items = [
+      ...result.querySelectorAll('[data-slot="dropdown-menu-item"]'),
+    ];
+
+    expect(items).toHaveLength(2);
+    for (const item of items) {
+      // Un <div role="menuitem"> perdería clic central y "abrir en pestaña nueva".
+      expect(item.tagName).toBe("A");
+      expect(item.getAttribute("role")).toBe("menuitem");
+      expect(item.getAttribute("target")).toBe("_blank");
+      expect(item.getAttribute("rel")).toBe("noopener noreferrer");
+    }
+
+    expect(items[0]?.getAttribute("href")).toBe(props.linkedinUrl);
+    expect(items[1]?.getAttribute("href")).toBe(props.xUrl);
+  });
+
+  test("usa las etiquetas traducidas del idioma recibido", async () => {
+    const es = await render({ lang: "es" });
+    const en = await render({ lang: "en" });
+
+    expect(getByLabelText(es, /linkedin/i)).not.toBeNull();
+    expect(getByLabelText(en, /linkedin/i)).not.toBeNull();
+    expect(es.querySelector("img")?.getAttribute("alt")).not.toBe(
+      en.querySelector("img")?.getAttribute("alt")
     );
   });
 
-  test("renders LinkedIn link", async () => {
-    const result = await renderAstroComponent(SocialProfileMenu, {
-      props: {
-        name: "Test User",
-        email: "test@example.com",
-        linkedinUrl: "https://linkedin.com/in/testuser",
-        xUrl: "https://x.com/testuser",
-        lang: "es",
-      },
-    });
+  test("pinta el avatar recibido", async () => {
+    const result = await render({ avatarSrc: "/otro-avatar.png" });
 
-    const linkedinLink = getByText(result, "LinkedIn");
-    expect(linkedinLink).not.toBeNull();
-    expect(linkedinLink?.tagName).toBe("A");
-    expect(linkedinLink?.getAttribute("href")).toBe(
-      "https://linkedin.com/in/testuser"
+    expect(result.querySelector("img")?.getAttribute("src")).toBe(
+      "/otro-avatar.png"
     );
-    expect(linkedinLink?.getAttribute("target")).toBe("_blank");
-    expect(linkedinLink?.getAttribute("rel")).toBe("noopener noreferrer");
-  });
-
-  test("renders X link", async () => {
-    const result = await renderAstroComponent(SocialProfileMenu, {
-      props: {
-        name: "Test User",
-        email: "test@example.com",
-        linkedinUrl: "https://linkedin.com/in/testuser",
-        xUrl: "https://x.com/testuser",
-        lang: "en",
-      },
-    });
-
-    const xLink = getByText(result, "X");
-    expect(xLink).not.toBeNull();
-    expect(xLink?.tagName).toBe("A");
-    expect(xLink?.getAttribute("href")).toBe("https://x.com/testuser");
-    expect(xLink?.getAttribute("target")).toBe("_blank");
-    expect(xLink?.getAttribute("rel")).toBe("noopener noreferrer");
-  });
-
-  test("has correct styling classes", async () => {
-    const result = await renderAstroComponent(SocialProfileMenu, {
-      props: {
-        name: "Test User",
-        email: "test@example.com",
-        linkedinUrl: "https://linkedin.com/in/testuser",
-        xUrl: "https://x.com/testuser",
-        lang: "es",
-      },
-    });
-
-    const menu = result.querySelector("#avatar-menu");
-    expect(menu?.classList.contains("w-56")).toBe(true);
-    expect(menu?.classList.contains("rounded-md")).toBe(true);
-    expect(menu?.classList.contains("shadow-lg")).toBe(true);
-    expect(menu?.classList.contains("bg-white")).toBe(true);
-    expect(menu?.classList.contains("dark:bg-gray-900")).toBe(true);
-    expect(menu?.classList.contains("border")).toBe(true);
-    expect(menu?.classList.contains("border-gray-200")).toBe(true);
-    expect(menu?.classList.contains("dark:border-gray-700")).toBe(true);
-  });
-
-  test("renders with long email", async () => {
-    const result = await renderAstroComponent(SocialProfileMenu, {
-      props: {
-        name: "Test User",
-        email: "very.long.email.address@very.long.domain.example.com",
-        linkedinUrl: "https://linkedin.com/in/testuser",
-        xUrl: "https://x.com/testuser",
-        lang: "en",
-      },
-    });
-
-    const emailElement = getByText(
-      result,
-      "very.long.email.address@very.long.domain.example.com"
-    );
-    expect(emailElement).not.toBeNull();
-    expect(emailElement?.classList.contains("truncate")).toBe(true);
-  });
-
-  test("renders with special characters in name", async () => {
-    const result = await renderAstroComponent(SocialProfileMenu, {
-      props: {
-        name: "José María",
-        email: "jose@example.com",
-        linkedinUrl: "https://linkedin.com/in/jose",
-        xUrl: "https://x.com/jose",
-        lang: "es",
-      },
-    });
-
-    const nameElement = getByText(result, "José María");
-    expect(nameElement).not.toBeNull();
-  });
-
-  test("has correct link structure", async () => {
-    const result = await renderAstroComponent(SocialProfileMenu, {
-      props: {
-        name: "Test User",
-        email: "test@example.com",
-        linkedinUrl: "https://linkedin.com/in/testuser",
-        xUrl: "https://x.com/testuser",
-        lang: "en",
-      },
-    });
-
-    const links = result.querySelectorAll("a");
-    expect(links.length).toBe(2);
-
-    links.forEach((link) => {
-      expect(link?.classList.contains("flex")).toBe(true);
-      expect(link?.classList.contains("items-center")).toBe(true);
-      expect(link?.classList.contains("gap-2")).toBe(true);
-      expect(link?.classList.contains("px-4")).toBe(true);
-      expect(link?.classList.contains("py-2")).toBe(true);
-      expect(link?.classList.contains("text-sm")).toBe(true);
-      expect(link?.classList.contains("text-foreground")).toBe(true);
-      expect(link?.classList.contains("hover:bg-muted")).toBe(true);
-      expect(link?.classList.contains("transition-colors")).toBe(true);
-      expect(link?.classList.contains("font-medium")).toBe(true);
-    });
-  });
-
-  test("renders with different languages", async () => {
-    const result = await renderAstroComponent(SocialProfileMenu, {
-      props: {
-        name: "Test User",
-        email: "test@example.com",
-        linkedinUrl: "https://linkedin.com/in/testuser",
-        xUrl: "https://x.com/testuser",
-        lang: "en",
-      },
-    });
-
-    // Verificar que el componente se renderiza correctamente con lang="en"
-    expect(result.innerHTML).toBeTruthy();
-  });
-
-  test("has proper accessibility attributes", async () => {
-    const result = await renderAstroComponent(SocialProfileMenu, {
-      props: {
-        name: "Test User",
-        email: "test@example.com",
-        linkedinUrl: "https://linkedin.com/in/testuser",
-        xUrl: "https://x.com/testuser",
-        lang: "es",
-      },
-    });
-
-    const links = result.querySelectorAll("a");
-    links.forEach((link) => {
-      expect(link?.hasAttribute("aria-label")).toBe(true);
-      expect(link?.hasAttribute("title")).toBe(true);
-    });
-  });
-
-  test("renders with empty strings", async () => {
-    const result = await renderAstroComponent(SocialProfileMenu, {
-      props: {
-        name: "",
-        email: "",
-        linkedinUrl: "https://linkedin.com/in/testuser",
-        xUrl: "https://x.com/testuser",
-        lang: "en",
-      },
-    });
-
-    const menu = result.querySelector("#avatar-menu");
-    expect(menu).not.toBeNull();
-    expect(result.innerHTML).toBeTruthy();
   });
 });

@@ -1,7 +1,7 @@
 ---
 import HeaderLink from "./HeaderLink.astro";
 import HeaderSearchBox from "./HeaderSearchBox.astro";
-import { ChevronDown, Menu, X } from "@lucide/astro";
+import { Menu, X } from "@lucide/astro";
 import Linkedin from "./LinkedinIcon.astro";
 import ThemeToggle from "./ThemeToggle.astro";
 import SocialProfileMenu from "./SocialProfileMenu.astro";
@@ -129,62 +129,14 @@ if (typeof window !== "undefined") {
               );
             });
           </script>
-          <div class="relative ml-2 min-w-16">
-            <button
-              id="avatar-btn"
-              type="button"
-              class="flex items-center rounded-full border bg-card p-1 focus:outline-none flex-shrink-0 min-w-fit"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              <img
-                loading="eager"
-                src={avatarImage.src}
-                alt={t(lang as "en" | "es", "avatar.alt")}
-                class="h-8 w-8 rounded-full object-cover"
-                width="32"
-                height="32"
-                decoding="async"
-                fetchpriority="auto"
-              />
-              <ChevronDown class="ml-1 h-4 w-4 text-muted-foreground" />
-            </button>
-            <SocialProfileMenu
-              name="Rodrigo Erades"
-              email="rerades@siete3.com"
-              linkedinUrl="https://www.linkedin.com/in/siete3/"
-              xUrl="https://x.com/area_73"
-              lang={lang}
-            />
-            <script is:inline>
-              if (typeof window !== "undefined") {
-                const btn = document.getElementById("avatar-btn");
-                const menu = document.getElementById("avatar-menu");
-                let open = false;
-                const toggleMenu = (show) => {
-                  open = typeof show === "boolean" ? show : !open;
-                  menu.classList.toggle("hidden", !open);
-                  btn.setAttribute("aria-expanded", open ? "true" : "false");
-                };
-                btn.addEventListener("click", (e) => {
-                  e.stopPropagation();
-                  toggleMenu();
-                });
-                document.addEventListener("click", (e) => {
-                  if (
-                    open &&
-                    !btn.contains(e.target) &&
-                    !menu.contains(e.target)
-                  ) {
-                    toggleMenu(false);
-                  }
-                });
-                document.addEventListener("keydown", (e) => {
-                  if (open && e.key === "Escape") toggleMenu(false);
-                });
-              }
-            </script>
-          </div>
+          <SocialProfileMenu
+            name="Rodrigo Erades"
+            email="rerades@siete3.com"
+            linkedinUrl="https://www.linkedin.com/in/siete3/"
+            xUrl="https://x.com/area_73"
+            lang={lang}
+            avatarSrc={avatarImage.src}
+          />
         </div>
       </div>
     </div>

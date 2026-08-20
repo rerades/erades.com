@@ -1,0 +1,52 @@
+---
+// Generated from bejamas-juno style registry. Do not edit packages/ui/src/components/dropdown-menu/DropdownMenuContent.astro directly.
+import type { HTMLAttributes } from "astro/types";
+import { cn } from "@/lib/utils";
+
+interface Props extends HTMLAttributes<"div"> {
+  align?: "start" | "center" | "end";
+  alignOffset?: number;
+  side?: "top" | "bottom" | "left" | "right";
+  sideOffset?: number;
+  class?: string;
+}
+
+const {
+  align = "start",
+  alignOffset = 0,
+  side = "bottom",
+  sideOffset = 4,
+  class: className = "",
+  ...rest
+} = Astro.props as Props;
+---
+
+<div data-slot="dropdown-menu-portal">
+  <div data-slot="dropdown-menu-positioner" class="isolate z-50 outline-none">
+    <div
+      {...rest}
+      hidden
+      data-slot="dropdown-menu-content"
+      data-align={align}
+      data-align-offset={alignOffset}
+      data-side={side}
+      data-side-offset={sideOffset}
+      class={cn(
+        // Del registry, podado. Se han quitado:
+        //  - animate-in/out, fade-*, zoom-*, slide-in-from-*: necesitan
+        //    `tw-animate-css`, y el dropdown actual no anima nada.
+        //  - cn-menu-target / cn-menu-translucent: no las define nadie aqui.
+        //  - no-scrollbar: la aporta `bejamas/tailwind.css`, que no usamos.
+        //  - w-[var(--anchor-width)] y max-h-[var(--available-height)]: el
+        //    runtime nunca escribe esas variables (solo --transform-origin),
+        //    asi que ya venian muertas de origen.
+        "ring-foreground/10 bg-popover text-popover-foreground min-w-32 rounded-lg p-1 shadow-md ring-1",
+        "z-50 origin-(--transform-origin) overflow-x-hidden overflow-y-auto overscroll-none outline-none",
+        "data-[state=closed]:overflow-hidden",
+        className,
+      )}
+    >
+      <slot />
+    </div>
+  </div>
+</div>
