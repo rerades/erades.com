@@ -67,7 +67,6 @@
     "lighthouse": "13.4.1",
     "postcss": "8.5.26",
     "tailwindcss": "4.3.3",
-    "tailwindcss-animate": "1.0.7",
     "tsx": "4.23.12",
     "typescript": "6.0.3",
     "vitest": "4.1.10"

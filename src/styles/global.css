@@ -469,6 +469,36 @@ html.dark {
 /**
 añado esto para poder usar clases de tailwindCSS cuando se definen comom por ejemplo text-muted-foreground
 */
+/* Los tokens semanticos (--background, --card, --popover, --accent, --border,
+   --ring...) ya estaban definidos arriba en :root y en html.dark, pero nadie
+   los habia registrado como colores del tema, asi que clases como
+   `text-foreground`, `bg-card` o `border-border` no generaban CSS alguno: se
+   usaban en 17 ficheros sin efecto. `inline` hace que la utilidad apunte a
+   var(--x) directamente, de modo que la redefinicion de html.dark se aplica. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-foreground-dim: var(--foreground-dim);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-primary-hover: var(--primary-hover);
+}
+
 @theme {
   --text-2xl: 2rem;
   --text-xl: 1.5rem;
