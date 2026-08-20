@@ -27,12 +27,29 @@ test.describe("Redirección de idioma en la raíz", () => {
     // Determina el idioma alternativo
     const altLang = currentLang === "es" ? "en" : "es";
     // Busca el botón del idioma alternativo (que NO tiene aria-current="page")
-    const altBtn = page.locator(
-      `button[id="lang-${altLang}"]:not([aria-current="page"])`
-    ).first();
+    const altBtn = page
+      .locator(`button[data-lang-switch="${altLang}"]:not([aria-current="page"])`)
+      .first();
     await expect(altBtn).toBeVisible();
     await altBtn.click();
     // Comprueba que la URL cambia al idioma alternativo
     await expect(page).toHaveURL(new RegExp(`/${altLang}(/|$)`));
+  });
+
+  // Regresion: los botones ES/EN del menu movil compartian id con los de
+  // escritorio, asi que getElementById solo enganchaba los primeros y los del
+  // movil no hacian nada.
+  test("los botones de idioma del menu movil cambian de idioma", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto("/es");
+
+    await page.locator("#mobile-menu-btn").click();
+    const overlay = page.locator("#mobile-menu-overlay");
+    await expect(overlay).toBeVisible();
+
+    await overlay.locator('button[data-lang-switch="en"]').click();
+    await expect(page).toHaveURL(/\/en(\/|$)/);
   });
 });
