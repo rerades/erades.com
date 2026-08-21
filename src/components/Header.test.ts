@@ -144,7 +144,11 @@ describe("Header", () => {
     const avatarButton = result.querySelector("#avatar-btn");
     expect(avatarButton).not.toBeNull();
     expect(avatarButton?.getAttribute("type")).toBe("button");
-    expect(avatarButton?.getAttribute("aria-haspopup")).toBe("true");
+    // `aria-haspopup` / `aria-expanded` ya no van en el markup: los pone
+    // @data-slot/dropdown-menu al hidratar. Se comprueban en el E2E.
+    expect(avatarButton?.getAttribute("data-slot")).toBe(
+      "dropdown-menu-trigger"
+    );
   });
 
   test("renders avatar image", async () => {

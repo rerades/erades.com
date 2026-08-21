@@ -1,51 +1,117 @@
 ---
+import { ChevronDown, X } from "@lucide/astro";
+import Linkedin from "./LinkedinIcon.astro";
+import { t } from "../i18n";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "./ui/dropdown-menu";
+
 interface Props {
   name: string;
   email: string;
   linkedinUrl: string;
   xUrl: string;
   lang: string;
+  avatarSrc: string;
 }
-const { name, email, linkedinUrl, xUrl, lang } = Astro.props;
-import { X } from "@lucide/astro";
-import Linkedin from "./LinkedinIcon.astro";
-import { t } from "../i18n";
+
+const { name, email, linkedinUrl, xUrl, lang, avatarSrc } = Astro.props;
+const locale = lang as "en" | "es";
 ---
 
-<div
-  id="avatar-menu"
-  class="hidden absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none z-50"
->
-  <div class="py-3 px-4 border-b">
-    <div class="text-sm font-medium leading-none">
-      {name}
-    </div>
-    <div class="text-xs text-muted-foreground truncate">
-      {email}
-    </div>
-  </div>
-  <div class="py-1">
-    <a
+{/*
+  El disparador y el contenido tienen que vivir bajo la misma raíz
+  `data-slot="dropdown-menu"`, así que el botón del avatar se mudó aquí desde
+  Header.astro.
+
+  Lleva `data-slot="dropdown-menu-trigger"` sobre el propio <button>, en vez de
+  envolverlo con el `DropdownMenuTrigger` del registry: así `aria-haspopup`,
+  `aria-controls` y `aria-expanded` los pone el runtime sobre el elemento que de
+  verdad se pulsa. Ese Trigger, con `asChild`, mete un <div> intermedio y los
+  colocaría ahí. (Además arrastraba `../button` y con él
+  class-variance-authority.)
+*/}
+<DropdownMenu class="relative ml-2 min-w-16">
+  <button
+    id="avatar-btn"
+    type="button"
+    data-slot="dropdown-menu-trigger"
+    class="flex items-center rounded-full border bg-card p-1 focus:outline-none flex-shrink-0 min-w-fit"
+  >
+    <img
+      loading="eager"
+      src={avatarSrc}
+      alt={t(locale, "avatar.alt")}
+      class="h-8 w-8 rounded-full object-cover"
+      width="32"
+      height="32"
+      decoding="async"
+      fetchpriority="auto"
+    />
+    <ChevronDown class="ml-1 h-4 w-4 text-muted-foreground" />
+  </button>
+
+  <DropdownMenuContent id="avatar-menu" align="end" class="w-56">
+    <DropdownMenuLabel class="px-4 py-3">
+      <span class="block text-sm font-medium leading-none text-foreground">
+        {name}
+      </span>
+      <span class="block truncate text-xs text-muted-foreground">
+        {email}
+      </span>
+    </DropdownMenuLabel>
+
+    <DropdownMenuSeparator />
+
+    <DropdownMenuItem
       href={linkedinUrl}
       target="_blank"
       rel="noopener noreferrer"
-      class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors font-medium"
-      aria-label={t(lang as "en" | "es", "social.linkedin")}
-      title={t(lang as "en" | "es", "social.linkedin")}
+      class="px-4 py-2 font-medium"
+      aria-label={t(locale, "social.linkedin")}
+      title={t(locale, "social.linkedin")}
     >
       <Linkedin class="h-4 w-4 text-muted-foreground" />
       LinkedIn
-    </a>
-    <a
+    </DropdownMenuItem>
+
+    <DropdownMenuItem
       href={xUrl}
       target="_blank"
       rel="noopener noreferrer"
-      class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors font-medium"
-      aria-label={t(lang as "en" | "es", "social.x")}
-      title={t(lang as "en" | "es", "social.x")}
+      class="px-4 py-2 font-medium"
+      aria-label={t(locale, "social.x")}
+      title={t(locale, "social.x")}
     >
       <X class="h-4 w-4 text-muted-foreground" />
       X
-    </a>
-  </div>
-</div>
+    </DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+
+{/*
+  Con ratón el <a> navega solo, pero con teclado el runtime hace
+  preventDefault() sobre Enter para emitir su propio `select`. Sin esto, el
+  menú se cerraría sin abrir el enlace.
+*/}
+<script>
+  interface DropdownSelectDetail {
+    readonly item?: Element | null;
+    readonly source?: string;
+  }
+
+  document
+    .querySelectorAll<HTMLElement>('[data-slot="dropdown-menu"]')
+    .forEach((root) => {
+      root.addEventListener("dropdown-menu:select", (event) => {
+        const { item, source } = (event as CustomEvent<DropdownSelectDetail>)
+          .detail;
+        if (source !== "keyboard") return;
+        if (item instanceof HTMLAnchorElement) item.click();
+      });
+    });
+</script>
