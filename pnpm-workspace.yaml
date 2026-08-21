@@ -25,20 +25,26 @@ overrides:
   sequelize: ^6.37.8
   smol-toml: ^1.6.1
   tmp: ^0.2.6
-  uuid@11: ^11.1.1
+  # Cierra GHSA-w5hq-g745-h8pq. @lhci/* y sequelize declaran ^8.3.x, pero
+  # uuid v11 sigue exportando CJS, así que su `require("uuid").v4` sigue
+  # funcionando: comprobado cargándolo desde @lhci/server y corriendo
+  # `lhci collect` + `lhci assert` de principio a fin.
+  uuid: ^11.1.1
   ws@7: ^7.5.11
   ws@8: ^8.21.0
 
 auditConfig:
-  # Ambas llegan solo por @lhci/cli y @lhci/server (devDependencies: tooling de
+  # Llega solo por @lhci/cli y @lhci/server (devDependencies: tooling de
   # Lighthouse que se ejecuta en local, nunca en el servidor ni en el bundle).
-  # Ninguna tiene arreglo hoy:
-  #   extract-zip -> sin versión parcheada publicada (la última es 2.0.1)
-  #   uuid        -> sequelize@6 lo fija en v8; subir a 11 es breaking
-  # Revisar cuando @lhci/* publique una versión nueva.
+  #
+  # extract-zip no tiene arreglo: la última publicada es 2.0.1 y es la
+  # vulnerable. Además la ruta afectada es `unpackArchive()` de
+  # @puppeteer/browsers, que solo corre al *instalar* un navegador. Aquí no
+  # corre nunca: lighthouse trae puppeteer-core (que no descarga nada) y lanza
+  # un Chrome ya instalado, y la CI saca el suyo de la imagen de Playwright.
+  # Revisar cuando @lhci/* publique una versión nueva (hoy 0.15.1 es la última).
   ignoreGhsas:
     - GHSA-jmr9-qjv8-65gv # extract-zip: symlink path traversal
-    - GHSA-w5hq-g745-h8pq # uuid: missing buffer bounds check
 
 allowBuilds:
   '@tailwindcss/oxide': true
