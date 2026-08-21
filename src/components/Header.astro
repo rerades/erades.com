@@ -5,6 +5,7 @@ import { Menu, X } from "@lucide/astro";
 import Linkedin from "./LinkedinIcon.astro";
 import ThemeToggle from "./ThemeToggle.astro";
 import SocialProfileMenu from "./SocialProfileMenu.astro";
+import LanguageSwitch from "./LanguageSwitch.astro";
 import {
   Dialog,
   DialogContent,
@@ -98,26 +99,7 @@ if (typeof window !== "undefined") {
       <div class="flex items-center gap-0 max-[555px]:hidden">
         <ThemeToggle />
         <div class="flex items-center gap-1 ml-2">
-          <button
-            data-lang-switch="es"
-            class={"px-2 py-1 rounded text-xs font-bold transition " +
-              (lang === "es"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-accent")}
-            aria-current={lang === "es" ? "page" : undefined}
-          >
-            ES
-          </button>
-          <button
-            data-lang-switch="en"
-            class={"px-2 py-1 rounded text-xs font-bold transition " +
-              (lang === "en"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-accent")}
-            aria-current={lang === "en" ? "page" : undefined}
-          >
-            EN
-          </button>
+          <LanguageSwitch lang={lang} class="flex items-center gap-1" />
           <!-- Un unico listener delegado: los botones de idioma existen dos
                veces (escritorio y menu movil) y getElementById solo devolvia el
                primero, dejando los del movil sin comportamiento. -->
@@ -233,28 +215,10 @@ if (typeof window !== "undefined") {
           X
         </a>
       </div>
-      <div class="min-[555px]:hidden grid grid-cols-[auto_auto] gap-2">
-        <button
-          data-lang-switch="es"
-          class={"px-2 py-1 rounded text-xs font-bold transition " +
-            (lang === "es"
-              ? "bg-primary text-primary-foreground"
-              : "bg-muted text-muted-foreground hover:bg-accent")}
-          aria-current={lang === "es" ? "page" : undefined}
-        >
-          ES
-        </button>
-        <button
-          data-lang-switch="en"
-          class={"px-2 py-1 rounded text-xs font-bold transition " +
-            (lang === "en"
-              ? "bg-primary text-primary-foreground"
-              : "bg-muted text-muted-foreground hover:bg-accent")}
-          aria-current={lang === "en" ? "page" : undefined}
-        >
-          EN
-        </button>
-      </div>
+      <LanguageSwitch
+        lang={lang}
+        class="min-[555px]:hidden grid grid-cols-[auto_auto] gap-2"
+      />
     </nav>
       </DialogContent>
     </Dialog>
