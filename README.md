@@ -13,7 +13,6 @@ A modern, multilingual blog built with Astro, TypeScript, and Tailwind CSS v4. T
 - **Modern Tech Stack**: Astro 7, TypeScript, Tailwind CSS v4, Vitest, Playwright
 - **Server-Side Rendering**: Fast, SEO-friendly SSR with Node adapter
 - **Code Highlighting**: Syntax highlighting with Expressive Code
-- **Large File Management**: Git LFS for handling large files like Lighthouse databases
 
 ## 🚀 Tech Stack
 
@@ -23,7 +22,6 @@ A modern, multilingual blog built with Astro, TypeScript, and Tailwind CSS v4. T
 - **Testing**: Vitest 3.2.4, Playwright 1.54.2
 - **Search**: FlexSearch 0.8.205
 - **Deployment**: Node.js adapter (standalone mode)
-- **Version Control**: Git LFS for large file management
 
 ## 📁 Project Structure
 
@@ -167,82 +165,6 @@ pnpm build
 ```
 
 For more details, see [`.github/README.md`](.github/README.md).
-
-## 📁 Large File Management (Git LFS)
-
-This project uses **Git Large File Storage (LFS)** to handle large files efficiently:
-
-### What is Git LFS?
-
-Git LFS replaces large files with text pointers in Git while storing the actual file contents on a remote server. This allows you to version large files without bloating your repository.
-
-### Files Managed by LFS
-
-- **Database files** (`*.db`): Lighthouse CI database files for performance tracking
-- **Large assets**: Any file larger than 100MB that needs version control
-
-### Benefits
-
-- ✅ **Repository size control**: Large files don't bloat your Git history
-- ✅ **Fast operations**: Cloning and fetching are much faster
-- ✅ **Normal workflow**: Use standard Git commands (`git add`, `git commit`, `git push`)
-- ✅ **Version control**: Maintain complete history of large files
-- ✅ **GitHub compatibility**: No file size limits for LFS-tracked files
-
-### Setup (Already Configured)
-
-The project is already configured with Git LFS:
-
-```bash
-# LFS is installed and configured
-git lfs track "*.db"  # Track database files
-
-# .gitattributes is committed with LFS patterns
-*.db filter=lfs diff=lfs merge=lfs -text
-```
-
-### Working with LFS Files
-
-```bash
-# Add large files (automatically handled by LFS)
-git add db/lighthouse/lhci.db
-
-# Commit and push (LFS handles the rest)
-git commit -m "Update Lighthouse database"
-git push
-```
-
-### For New Contributors
-
-If you're cloning this repository for the first time:
-
-```bash
-# Clone the repository
-git clone git@github.com:rerades/erades.com.git
-
-# LFS files are automatically downloaded
-# If not, run:
-git lfs pull
-```
-
-### Adding New Large Files
-
-To add new large files to LFS:
-
-```bash
-# Track new file types (if needed)
-git lfs track "*.large-file-extension"
-
-# Add the .gitattributes file
-git add .gitattributes
-
-# Add your large files
-git add path/to/large/file
-
-# Commit and push
-git commit -m "Add large file to LFS"
-git push
-```
 
 ## 🌐 Content Categories
 

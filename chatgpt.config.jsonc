@@ -79,7 +79,8 @@
   "ci": {
     "lighthouse": {
       "collectMobileAndDesktop": true,
-      "serverDockerCompose": "docker-compose.lhci.yml"
+      "target": "producción (erades.com), semanal",
+      "record": "lh.ndjson en la rama `metrics` (no se mergea a master)"
     }
   },
 

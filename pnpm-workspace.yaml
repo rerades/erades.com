@@ -4,12 +4,11 @@ packages:
 overrides:
   mdast-util-to-hast: '>=13.2.1'
   # Avisos de seguridad en transitivas que sus padres aún no han bumpeado
-  # (sobre todo @lhci/* y lighthouse). Revisar al actualizar esos paquetes.
+  # (sobre todo @lhci/cli y lighthouse). Revisar al actualizar esos paquetes.
   ajv@8: ^8.18.0
   basic-ftp: ^5.3.1
   body-parser@1: ^1.20.6
   brace-expansion@1: ^1.1.18
-  dottie: ^2.0.7
   fast-uri: ^3.1.5
   flatted: ^3.4.2
   ip-address: ^10.3.1
@@ -17,32 +16,29 @@ overrides:
   lodash: ^4.17.24
   lodash-es: ^4.17.24
   minimatch@3: ^3.1.4
-  morgan: ^1.10.2
   path-to-regexp@0: ^0.1.13
   picomatch@2: ^2.3.2
   postcss: ^8.5.23
   qs@6: ^6.15.2
-  sequelize: ^6.37.8
   smol-toml: ^1.6.1
   tmp: ^0.2.6
-  # Cierra GHSA-w5hq-g745-h8pq. @lhci/* y sequelize declaran ^8.3.x, pero
-  # uuid v11 sigue exportando CJS, así que su `require("uuid").v4` sigue
-  # funcionando: comprobado cargándolo desde @lhci/server y corriendo
-  # `lhci collect` + `lhci assert` de principio a fin.
+  # Cierra GHSA-w5hq-g745-h8pq. @lhci/cli declara ^8.3.x, pero uuid v11 sigue
+  # exportando CJS, así que su `require("uuid").v4` sigue funcionando:
+  # comprobado corriendo `lhci collect` de principio a fin.
   uuid: ^11.1.1
   ws@7: ^7.5.11
   ws@8: ^8.21.0
 
 auditConfig:
-  # Llega solo por @lhci/cli y @lhci/server (devDependencies: tooling de
-  # Lighthouse que se ejecuta en local, nunca en el servidor ni en el bundle).
+  # Llega solo por @lhci/cli (devDependency: tooling de Lighthouse que corre
+  # en la CI y en local, nunca en el servidor ni en el bundle).
   #
   # extract-zip no tiene arreglo: la última publicada es 2.0.1 y es la
   # vulnerable. Además la ruta afectada es `unpackArchive()` de
   # @puppeteer/browsers, que solo corre al *instalar* un navegador. Aquí no
   # corre nunca: lighthouse trae puppeteer-core (que no descarga nada) y lanza
   # un Chrome ya instalado, y la CI saca el suyo de la imagen de Playwright.
-  # Revisar cuando @lhci/* publique una versión nueva (hoy 0.15.1 es la última).
+  # Revisar cuando @lhci/cli publique una versión nueva (hoy 0.15.1 es la última).
   ignoreGhsas:
     - GHSA-jmr9-qjv8-65gv # extract-zip: symlink path traversal
 
