@@ -1,8 +1,9 @@
 # lighthouse
 .lighthouseci/
+# borrador local de lh:record; el histórico vive en la rama `metrics`
+metrics/
 coverage-lighthouse/
-db/lighthouse/*
-!db/lighthouse/*.db
+db/lighthouse/
 .lighthouseci/
 coverage-lighthouse/
 
