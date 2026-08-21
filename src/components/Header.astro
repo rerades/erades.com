@@ -5,6 +5,11 @@ import { Menu, X } from "@lucide/astro";
 import Linkedin from "./LinkedinIcon.astro";
 import ThemeToggle from "./ThemeToggle.astro";
 import SocialProfileMenu from "./SocialProfileMenu.astro";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "./ui/dialog";
 import { t } from "../i18n";
 import logoImage from "../assets/area73-small.png";
 import avatarImage from "../assets/avatar.png";
@@ -141,181 +146,140 @@ if (typeof window !== "undefined") {
       </div>
     </div>
 
-    <!-- Mobile Hamburger Button -->
-    <button
-      id="mobile-menu-btn"
-      class="md:hidden flex items-center justify-center w-10 h-10 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-      aria-label="Toggle mobile menu"
-      aria-expanded="false"
-    >
-      <Menu class="h-6 w-6" />
-    </button>
-  </div>
+    {/*
+      El disparador y el contenido tienen que colgar de la misma raíz
+      `data-slot="dialog"`. Con esto desaparecen: el `aria-hidden="true"`
+      que el toggle nunca actualizaba (el menú abierto se anunciaba como
+      oculto), el `window.toggleMobileMenu` global, y el manejo a mano de
+      `document.body.style.overflow`. El runtime aporta además focus trap,
+      `aria-modal` y devolución del foco al cerrar.
+    */}
+    <Dialog id="mobile-menu" class="md:hidden">
+      <button
+        id="mobile-menu-btn"
+        type="button"
+        data-slot="dialog-trigger"
+        class="flex items-center justify-center w-10 h-10 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+        aria-label="Toggle mobile menu"
+      >
+        <Menu class="h-6 w-6" />
+      </button>
 
-  <!-- Mobile Menu Overlay -->
-  <div
-    id="mobile-menu-overlay"
-    class="md:hidden fixed inset-0 z-50 bg-header-background hidden"
-    aria-hidden="true"
-  >
-    <div
-      class="absolute inset-0 w-full h-screen bg-header-background flex flex-col"
-    >
-      <div class="flex items-center justify-between p-6">
-        <h2 class="text-lg font-semibold text-foreground">Menu</h2>
-        <button
-          id="mobile-menu-close"
-          class="flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          aria-label="Close mobile menu"
+      <DialogContent
+        id="mobile-menu-overlay"
+        class="inset-0 top-0 left-0 h-dvh w-full max-w-none translate-x-0 translate-y-0 gap-0 rounded-none bg-header-background p-0 ring-0 flex flex-col"
+      >
+        <div class="flex items-center justify-between p-6">
+          <DialogTitle class="text-lg font-semibold text-foreground">
+            Menu
+          </DialogTitle>
+        </div>
+
+    <!-- Mobile Navigation Links -->
+    <nav class="flex flex-col items-center justify-center flex-1 space-y-8">
+      <HeaderLink
+        href={`/${lang}`}
+        aria-label={t(lang as "en" | "es", "menu.home")}
+        lang={lang}
+        class="block py-4 text-2xl font-semibold text-foreground hover:text-primary transition-colors"
+      >
+        {t(lang as "en" | "es", "menu.home")}
+      </HeaderLink>
+      <HeaderLink
+        href={`/${lang}/blog`}
+        aria-label={t(lang as "en" | "es", "menu.blog")}
+        lang={lang}
+        class="block py-4 text-2xl font-semibold text-foreground hover:text-primary transition-colors"
+      >
+        {t(lang as "en" | "es", "menu.blog")}
+      </HeaderLink>
+      <HeaderLink
+        href={`/${lang}/about`}
+        aria-label={t(lang as "en" | "es", "menu.about")}
+        lang={lang}
+        class="block py-4 text-2xl font-semibold text-foreground hover:text-primary transition-colors"
+      >
+        {t(lang as "en" | "es", "menu.about")}
+      </HeaderLink>
+      <HeaderLink
+        href={`/${lang}/tags`}
+        aria-label={t(lang as "en" | "es", "menu.tags")}
+        lang={lang}
+        class="block py-4 text-2xl font-semibold text-foreground hover:text-primary transition-colors"
+      >
+        {t(lang as "en" | "es", "menu.tags")}
+      </HeaderLink>
+      <div class="min-[555px]:hidden grid grid-cols-[auto_auto] gap-2">
+        <a
+          href="https://www.linkedin.com/in/siete3/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors font-medium"
+          aria-label={t(lang as "en" | "es", "social.linkedin")}
+          title={t(lang as "en" | "es", "social.linkedin")}
         >
-          <X class="h-5 w-5" />
+          <Linkedin class="h-4 w-4 text-muted-foreground" />
+          LinkedIn
+        </a>
+        <a
+          href="https://x.com/area_73"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors font-medium"
+          aria-label={t(lang as "en" | "es", "social.x")}
+          title={t(lang as "en" | "es", "social.x")}
+        >
+          <X class="h-4 w-4 text-muted-foreground" />
+          X
+        </a>
+      </div>
+      <div class="min-[555px]:hidden grid grid-cols-[auto_auto] gap-2">
+        <button
+          data-lang-switch="es"
+          class={"px-2 py-1 rounded text-xs font-bold transition " +
+            (lang === "es"
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted text-muted-foreground hover:bg-accent")}
+          aria-current={lang === "es" ? "page" : undefined}
+        >
+          ES
+        </button>
+        <button
+          data-lang-switch="en"
+          class={"px-2 py-1 rounded text-xs font-bold transition " +
+            (lang === "en"
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted text-muted-foreground hover:bg-accent")}
+          aria-current={lang === "en" ? "page" : undefined}
+        >
+          EN
         </button>
       </div>
-
-      <!-- Mobile Navigation Links -->
-      <nav class="flex flex-col items-center justify-center flex-1 space-y-8">
-        <HeaderLink
-          href={`/${lang}`}
-          aria-label={t(lang as "en" | "es", "menu.home")}
-          lang={lang}
-          class="block py-4 text-2xl font-semibold text-foreground hover:text-primary transition-colors"
-        >
-          {t(lang as "en" | "es", "menu.home")}
-        </HeaderLink>
-        <HeaderLink
-          href={`/${lang}/blog`}
-          aria-label={t(lang as "en" | "es", "menu.blog")}
-          lang={lang}
-          class="block py-4 text-2xl font-semibold text-foreground hover:text-primary transition-colors"
-        >
-          {t(lang as "en" | "es", "menu.blog")}
-        </HeaderLink>
-        <HeaderLink
-          href={`/${lang}/about`}
-          aria-label={t(lang as "en" | "es", "menu.about")}
-          lang={lang}
-          class="block py-4 text-2xl font-semibold text-foreground hover:text-primary transition-colors"
-        >
-          {t(lang as "en" | "es", "menu.about")}
-        </HeaderLink>
-        <HeaderLink
-          href={`/${lang}/tags`}
-          aria-label={t(lang as "en" | "es", "menu.tags")}
-          lang={lang}
-          class="block py-4 text-2xl font-semibold text-foreground hover:text-primary transition-colors"
-        >
-          {t(lang as "en" | "es", "menu.tags")}
-        </HeaderLink>
-        <div class="min-[555px]:hidden grid grid-cols-[auto_auto] gap-2">
-          <a
-            href="https://www.linkedin.com/in/siete3/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors font-medium"
-            aria-label={t(lang as "en" | "es", "social.linkedin")}
-            title={t(lang as "en" | "es", "social.linkedin")}
-          >
-            <Linkedin class="h-4 w-4 text-muted-foreground" />
-            LinkedIn
-          </a>
-          <a
-            href="https://x.com/area_73"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors font-medium"
-            aria-label={t(lang as "en" | "es", "social.x")}
-            title={t(lang as "en" | "es", "social.x")}
-          >
-            <X class="h-4 w-4 text-muted-foreground" />
-            X
-          </a>
-        </div>
-        <div class="min-[555px]:hidden grid grid-cols-[auto_auto] gap-2">
-          <button
-            data-lang-switch="es"
-            class={"px-2 py-1 rounded text-xs font-bold transition " +
-              (lang === "es"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-accent")}
-            aria-current={lang === "es" ? "page" : undefined}
-          >
-            ES
-          </button>
-          <button
-            data-lang-switch="en"
-            class={"px-2 py-1 rounded text-xs font-bold transition " +
-              (lang === "en"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-accent")}
-            aria-current={lang === "en" ? "page" : undefined}
-          >
-            EN
-          </button>
-        </div>
-      </nav>
-    </div>
-
-    <script is:inline>
-      if (typeof window !== "undefined") {
-        const mobileMenuBtn = document.getElementById("mobile-menu-btn");
-        const mobileMenuOverlay = document.getElementById(
-          "mobile-menu-overlay"
-        );
-        const mobileMenuClose = document.getElementById("mobile-menu-close");
-
-        let mobileMenuOpen = false;
-
-        // Make function globally available
-        window.toggleMobileMenu = (show) => {
-          mobileMenuOpen = typeof show === "boolean" ? show : !mobileMenuOpen;
-          mobileMenuOverlay.classList.toggle("hidden", !mobileMenuOpen);
-          mobileMenuBtn.setAttribute(
-            "aria-expanded",
-            mobileMenuOpen ? "true" : "false"
-          );
-          // Prevent body scroll when menu is open
-          document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
-        };
-
-        mobileMenuBtn.addEventListener("click", () => {
-          toggleMobileMenu();
-        });
-
-        mobileMenuClose.addEventListener("click", () => {
-          toggleMobileMenu(false);
-        });
-
-        // Add event listeners to all mobile menu links and buttons
-        const mobileMenuLinks = mobileMenuOverlay.querySelectorAll("a, button");
-        mobileMenuLinks.forEach((link) => {
-          link.addEventListener("click", () => {
-            if (mobileMenuOpen) {
-              toggleMobileMenu(false);
-            }
-          });
-        });
-
-        // Close menu when clicking outside
-        mobileMenuOverlay.addEventListener("click", (e) => {
-          if (e.target === mobileMenuOverlay) {
-            toggleMobileMenu(false);
-          }
-        });
-
-        // Close menu on escape key
-        document.addEventListener("keydown", (e) => {
-          if (mobileMenuOpen && e.key === "Escape") {
-            toggleMobileMenu(false);
-          }
-        });
-
-        // Close menu on window resize to desktop
-        window.addEventListener("resize", () => {
-          if (window.innerWidth >= 768 && mobileMenuOpen) {
-            toggleMobileMenu(false);
-          }
-        });
-      }
-    </script>
+    </nav>
+      </DialogContent>
+    </Dialog>
   </div>
+
+  <script is:inline>
+    // Lo único que el runtime del diálogo no cubre: al pasar a desktop el
+    // menú móvil deja de tener sentido, y sus enlaces navegan, así que hay
+    // que cerrarlo en ambos casos.
+    (() => {
+      const dialog = document.getElementById("mobile-menu");
+      if (!dialog) return;
+
+      const close = () =>
+        dialog.dispatchEvent(
+          new CustomEvent("dialog:set", { detail: { open: false } })
+        );
+
+      dialog
+        .querySelectorAll('[data-slot="dialog-content"] a, [data-slot="dialog-content"] button')
+        .forEach((el) => el.addEventListener("click", close));
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 768) close();
+      });
+    })();
+  </script>
 </header>
