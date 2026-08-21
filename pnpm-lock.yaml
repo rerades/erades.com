@@ -46,6 +46,9 @@ importers:
       '@astrojs/sitemap':
         specifier: 3.7.3
         version: 3.7.3
+      '@data-slot/dialog':
+        specifier: ^0.2.166
+        version: 0.2.166
       '@data-slot/dropdown-menu':
         specifier: ^0.2.166
         version: 0.2.166
@@ -493,6 +496,9 @@ packages:
 
   '@data-slot/core@0.2.166':
     resolution: {integrity: sha512-/DuzMFIqiefdjheX5fMhaqs4YPp0/t+/pN9EgnB2jLSDk8384WkBCPGq76T/Ypb0MjVlHFiexKDnx9+k+bdcjw==}
+
+  '@data-slot/dialog@0.2.166':
+    resolution: {integrity: sha512-ioMkbfCMVt4x8VrNEa0V32ncs57Q3GEVqEn+uDUBoOU6Qyv2q1ebI0IMkK/54kSeUHut7FilECGUJzuvc7TJAQ==}
 
   '@data-slot/dropdown-menu@0.2.166':
     resolution: {integrity: sha512-8U9jUWlufUmHf75+w/10GHVNDc9XjfJCjVKuBWhkFbTFq68ROCzb+g/DugI/uXxz08qZWmky4nQK9kStjlet5A==}
@@ -5437,6 +5443,10 @@ snapshots:
   '@ctrl/tinycolor@4.1.0': {}
 
   '@data-slot/core@0.2.166': {}
+
+  '@data-slot/dialog@0.2.166':
+    dependencies:
+      '@data-slot/core': 0.2.166
 
   '@data-slot/dropdown-menu@0.2.166':
     dependencies:
