@@ -1,0 +1,125 @@
+---
+title: "Why software factories fail"
+description: "Notes on Dex's essay (HumanLayer): why the lights-off factory doesn't hold up, which structural constraint breaks it, and what to do instead."
+pubDate: 2026-08-22
+tags:
+  - software-factory
+  - ai-coding
+  - code-quality
+  - artificial-intelligence
+  - best-practices
+categories:
+  - AI
+  - Crafting
+draft: false
+heroImage: /blog-placeholder-14.jpg
+---
+
+Dex, from HumanLayer, wrote [_Why Software Factories Fail_](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/main/wsff.md) with a subtitle that says most of it already: _harness engineering is not enough_. These are my notes, and why it resonated.
+
+The thesis: the **lights-off software factory** — the one where no human reads or writes code — doesn't work. And it doesn't fail for lack of skill, or badly configured linters, or not spending enough tokens. It fails because of a structural limitation in how models are trained and evaluated.
+
+## The argument in one line
+
+> There is no penalty for eroding a codebase's maintainability.
+
+Everything else follows from that.
+
+## Why RL can't fix it
+
+Take SWE-bench as the example. Fifteen-minute tasks, scraped from open source repos. The reward is one bit:
+
+- `FAIL_TO_PASS` — did you fix what was asked?
+- `PASS_TO_PASS` — did you do it without breaking anything else?
+
+How you got there doesn't score. And out of that come the tics we all recognize:
+
+- `try/catch` around everything, including a `JSON.parse`
+- lazy casts that undermine the whole point of having types
+- shotgun surgery: touching eleven files for a one-line fix
+- code that works today and will be brutal to change in three months
+
+The underlying problem is one of **timescales**. Tests give feedback in seconds; the cost function of bad architecture is measured in weeks or months. There is no way to backprop from a production incident to the design decision that caused it. The fast loop can be optimized with RL. The slow one simply isn't visible.
+
+There's an uncomfortable corollary that closes the door on the easy fix:
+
+> A model that could reliably tell good code from bad code would probably have written the good version in the first place.
+
+That's why more review agents and more tokens **raise the floor but don't move the ceiling**. They act at inference time; the ceiling was set during training.
+
+## The signals
+
+| Source | Signal |
+|---|---|
+| [Faros AI](https://www.faros.ai/research/ai-acceleration-whiplash) (pre-merge) | +25% more PR comments · +22.7% longer comments · +31.3% of PRs merged without review |
+| [Faros AI](https://www.faros.ai/research/ai-acceleration-whiplash) (production) | Incidents per PR +242.7% · monthly incidents +57.9% · bugs per developer +54% |
+| Matt Pocock | "codebases are falling apart faster than they ever have before" |
+
+It's correlation, not proof, and Dex says so himself. What gives it weight is that he crashed into it personally: in July 2025 HumanLayer went full lights-off, specs and background agents only. The failure pattern repeated three times, always the same shape: a bug shows up that the agent can't solve, you end up hand-editing a codebase you stopped reading three months ago, with the site down and users angry. The third time, rewriting from scratch turned out to be cheaper.
+
+One nuance that I think is the single most important data point in the piece: **"brownfield" no longer means ten-year-old Java**. At the current pace, an agent-built codebase starts seizing up at **three to six months**.
+
+## Turning the lights back on
+
+If you have to be the judge, the answer isn't "review harder", it's **front-loading alignment**: moving decisions to the moment when changing your mind is still cheap. None of this is new — it's ordinary planning and architecture — except that now the model drafts it and you argue with the draft.
+
+**1. Product review.** A short doc with two agreements: the problem in user terms, not technical ones, and what success looks like. If it's something the user sees, don't describe it — **mock it**. A rough HTML mockup settles an argument that three paragraphs only prolong. Not everything needs one: a copy tweak or a bug with an obvious repro still goes oneshot.
+
+**2. System architecture.** How services, endpoints, schemas and queues talk to each other. Sequence diagrams, contracts, data models. This is where you head off the model's tics before they exist.
+
+**3. Program design.** The most neglected phase: dropping from architecture down to **the shape of the code**. Types, signatures, layout, call stacks. What worked for them wasn't Mermaid but lightweight pseudocode, using diff syntax when what matters is what changes:
+
+```diff
+ entrypoint
+   runCommand
++    handleCreateResource
++      ResourceClient.create(input)
++        POST /resources
++      renderResult
+-    legacyCreateFlow
+```
+
+And file-tree diffs, so you don't lose track of where things live:
+
+```diff
+ src
+ └── resource
++    ├── resource-client.ts      # NEW - wraps API contract calls
++    ├── resource-client.test.ts # NEW - covers request/response mapping
+~    └── resource-route.ts       # MODIFIED - wires create action into UI
+```
+
+Each of these artifacts is a decision you would otherwise make implicitly during code review: **the most expensive possible moment to change your mind**.
+
+**4. Vertical slices.** Models love horizontal plans in stack order: migrations → services → API → frontend. The problem is you can't _touch_ anything until the end. Before AI it was rare for anyone to write 500 lines without checking something along the way; now they'll write 2000 without blinking. The alternative is vertical slices: API contract with mock data you poke with `curl`, then frontend against the mock, then services, then the database. Reviewing 100-200 lines and resteering is incomparably cheaper than landing on the far side of 2000 with no idea what's broken.
+
+> 30 minutes of planning saves hours of review.
+
+## The 80/20 rule
+
+None of this applies to everything. Roughly 40% of tasks are small and go oneshot, maybe with a round or two of light feedback. Medium ones fold product and system design into **a single doc**, no phases. Only the large ones go through everything — and big refactors skip the product phase.
+
+## What I'm taking away
+
+Three things, and none of them is "use less AI":
+
+- **The lights-off factory doesn't hold up**, and the reason isn't configuration. It's that nobody is looking, and the degradation stays invisible until it's expensive.
+- **Specifying up front beats reviewing after the fact.** Not because review is redundant, but because a PR needing 50% rework — the norm for a oneshot — is an intellectual and emotional load on both the sender and the reviewer. Your problem isn't that you have too many PRs: it's that you have too many bad ones.
+- **Lint during the edit, not after.** The [SWE-Agent paper](https://arxiv.org/abs/2405.15793) showed back in 2024 that an edit tool with linting built in changes agent behavior drastically. A bot that comments on the PR at the end arrives too late: the model already built on top. Putting the signal inside the edit loop is a different order of thing.
+
+The article closes with something I appreciate, because it avoids easy defeatism. What it describes **are constraints, nothing more**:
+
+> You may be so busy trying to go 10-100x faster, and convincing yourself quality no longer matters, that you're missing the option of embracing the constraints and going 2-3x faster, safely.
+
+And the closing advice, in four lines: learn the constraints well, optimize your systems within them, seek leverage, and **read the dang code**.
+
+---
+
+**Sources**
+
+- [Why Software Factories Fail — full article](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/main/wsff.md)
+- [Advanced Context Engineering for Coding Agents](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/main/ace-fca.md)
+- [Faros AI — AI acceleration whiplash](https://www.faros.ai/research/ai-acceleration-whiplash)
+- [Dan Shapiro — The five levels from spicy autocomplete to the software factory](https://www.danshapiro.com/blog/2026/01/the-five-levels-from-spicy-autocomplete-to-the-software-factory/)
+- [Shotgun surgery (refactoring.guru)](https://refactoring.guru/smells/shotgun-surgery)
+- [Tracer bullets — Shape Up, ch. 11](https://basecamp.com/shapeup/3.2-chapter-11#integrate-one-slice)
