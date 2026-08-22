@@ -62,7 +62,10 @@
   },
   "results": {
     "showing": "Mostrando {shown} de {total} resultados",
-    "for": "para"
+    "for": "para",
+    "none": "No se encontraron resultados",
+    "noneHint": "Intenta con otros términos de búsqueda o cambia los filtros.",
+    "showAll": "Ver todos los posts"
   },
   "post": {
     "readTime": "{minutes} min de lectura",

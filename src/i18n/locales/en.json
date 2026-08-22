@@ -62,7 +62,10 @@
   },
   "results": {
     "showing": "Showing {shown} of {total} results",
-    "for": "for"
+    "for": "for",
+    "none": "No results found",
+    "noneHint": "Try other search terms or change the filters.",
+    "showAll": "See all posts"
   },
   "post": {
     "readTime": "{minutes} min read",
