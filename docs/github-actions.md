@@ -1,165 +1,102 @@
-# Pipeline de CI/CD
+# CI/CD
 
-Este directorio contiene la configuración de GitHub Actions del proyecto erades.com.
+Tres workflows en `.github/workflows/`. No hay workflow de despliegue: **Render
+despliega solo**, con `autoDeploy` por commit sobre `master` y sin caché de
+build.
 
-## Workflows
+## 1. CI (`ci.yml`)
 
-### 1. CI (`ci.yml`)
+En cada `push` y cada pull request contra `master`. Concurrencia por rama, con
+`cancel-in-progress`: un push nuevo cancela la ejecución anterior.
 
-El workflow principal, que corre en cada push y pull request:
+Seis jobs independientes, todos sobre `ubuntu-latest` con pnpm cacheado:
 
-- **Lint**: verifica el código con ESLint (timeout: 10 min)
-- **Unit Tests**: ejecuta los tests unitarios con Vitest y coverage (timeout: 15 min)
-- **E2E Tests**: ejecuta los tests end-to-end con Playwright en contenedor (timeout: 30 min)
-- **Visual Tests**: ejecuta los tests de regresión visual en contenedor (timeout: 20 min)
-- **Build**: construye la aplicación (timeout: 15 min)
+| Job | Qué corre |
+|---|---|
+| `Lint-Check` | `pnpm lint` (ESLint, `--max-warnings=0`) |
+| `Type-Check` | `pnpm typecheck` (`tsc --noEmit`) |
+| `Unit-Tests` | `pnpm test:unit` (Vitest) |
+| `E2E-Tests` | `pnpm test:e2e`. Playwright arranca el servidor él mismo (`webServer` en `playwright.config.ts`) |
+| `Visual-Regression-Tests` | `pnpm test:visual`, **dentro** del contenedor oficial de Playwright (bloque `container:`) |
+| `Build-App` | `pnpm build` |
 
-**Características:**
+Localmente, el equivalente rápido antes de empujar:
+`pnpm lint && pnpm typecheck && pnpm test:unit`.
 
-- Concurrencia para cancelar automáticamente las ejecuciones anteriores
-- Caché local de buildx para optimizar la construcción de la imagen Docker
-- Estrategia de «todo dentro del contenedor» para los tests E2E y visuales
+### El job visual es distinto al resto
 
-### 2. Update Visual Snapshots (`update-snapshots.yml`)
+Corre dentro de la imagen oficial de Playwright, no en el runner pelado. Eso es
+lo que hace reproducibles las baselines: el rasterizado del texto depende de la
+versión del navegador y de las fuentes del sistema. **Mantén el tag de la
+imagen y la versión de `@playwright/test` en `package.json` sincronizados** —
+un desajuste es una causa conocida de fallos (ver [docker.md](./docker.md)).
+Dependabot excluye `@playwright/test` de sus PRs agrupados justo para que ese
+bump llegue solo y se vea.
 
-Workflow manual para actualizar los snapshots de regresión visual:
+El job **se salta a sí mismo** en PRs que sólo tocan `docs/` o un `.md` de
+raíz, porque esos no pueden mover un píxel. El filtro vive en el paso
+«Decidir si la suite visual aplica», y no en un `paths-ignore` a nivel de
+workflow, porque un check requerido *saltado* se queda «pending» para siempre y
+bloquea el merge.
 
-- Se puede lanzar a mano desde GitHub Actions
-- Permite elegir entre el entorno «enhanced» o «basic»
-- Crea automáticamente un PR con los snapshots actualizados
-- Usa la misma caché local de buildx que el CI principal (timeout: 30 min)
+Ojo: **no** trata todo `*.md` como documentación. Los posts viven en
+`src/content/blog/**/*.md` y cambiar uno mueve el listado y el paginador.
 
-### 3. Security (`security.yml`)
+### Regenerar baselines visuales
 
-Escaneo de seguridad y dependencias:
+Actions → CI → *Run workflow* con `update_visual_snapshots = true`, descargar el
+artefacto `playwright-updated-snapshots` y copiarlo sobre
+`tests/visual-regression/visual-regression.spec.ts-snapshots/`. El porqué de
+no hacerlo en local, y qué mirar en el diff antes de commitear, en
+[docker.md](./docker.md).
 
-- Ejecuta `pnpm audit` semanalmente
-- Revisión de dependencias en los PRs
-- Escaneo automático de vulnerabilidades
+### Artefactos
 
-### 4. Auto Merge (`automerge.yml`)
+- `playwright-report` — informe HTML del E2E.
+- `playwright-visual-report` — informe HTML de la suite visual.
+- `playwright-updated-snapshots` — sólo con `update_visual_snapshots`.
+- Los `test-results` de la suite visual (con los `-diff.png`) sólo en fallo.
 
-Workflow automático para mergear PRs:
+## 2. Security (`security.yml`)
 
-- Se dispara al añadir la etiqueta «automerge»
-- Espera a que pasen todos los checks antes de mergear
-- Usa squash merge como método por defecto
+`pnpm audit --audit-level moderate`. Las excepciones y los pines viven en
+`pnpm-workspace.yaml`:
 
-### 5. Label Auto Merge (`label-automerge.yml`)
+- `overrides:` — transitivas con aviso que sus padres aún no han bumpeado
+  (sobre todo `@lhci/cli` y `lighthouse`). Revisar al actualizar esos paquetes.
+- `auditConfig.ignoreGhsas:` — lo que no tiene arreglo publicado, con el motivo
+  escrito al lado. Hoy sólo `GHSA-jmr9-qjv8-65gv` (`extract-zip`, que llega por
+  `@lhci/cli` y cuya ruta vulnerable no se ejecuta nunca aquí).
 
-Workflow que etiqueta automáticamente PRs para auto-merge:
+## 3. Lighthouse (`lighthouse.yml`)
 
-- Se dispara cuando el CI pasa
-- Añade la etiqueta «automerge» a los PRs que apuntan a master
+Semanal (lunes 05:00 UTC) y a mano. Mide **producción** y añade una fila a
+`lh.ndjson` en la rama huérfana `metrics`. Deliberadamente no se dispara con
+`push`. Todo el porqué está en [lighthouse.md](./lighthouse.md).
 
-## Configuración
+## Dependabot
 
-### Secrets necesarios
+`.github/dependabot.yml`: npm y GitHub Actions, semanal, agrupados. Con
+`@playwright/test` fuera del grupo, por lo dicho arriba.
 
-Para el despliegue hay que configurar estos secrets en el repositorio:
+## Cuando algo falla
 
-- `DEPLOY_KEY`: clave SSH del servidor
-- `DEPLOY_HOST`: hostname del servidor
-- `DEPLOY_PATH`: ruta en el servidor
-- `SNYK_TOKEN`: token de Snyk (opcional)
-- `CODECOV_TOKEN`: token de Codecov para coverage (opcional)
+**Toda la suite visual falla con timeout de 30 s esperando un selector.** No es
+una regresión de render: no hay nada escuchando en `BASE_URL`. La config visual
+no tiene `webServer`, así que espera un servidor ya arrancado. En local:
+`pnpm build && PORT=4321 pnpm start`, y comprueba con
+`curl -sI http://localhost:4321/es`. Y usa el servidor de producción, no
+`pnpm dev`: desde Astro 7, `astro dev` sólo escucha en IPv6 `[::1]`.
 
-### Configuración de ramas
+**Un snapshot visual falla y el diff es texto borroso.** Es tu máquina. Los
+diffs locales en Apple Silicon son enormes y esperados; sirven para ver *qué*
+cambió, nunca para bendecir una baseline.
 
-El proyecto usa `master` como rama principal. Todos los workflows están configurados para:
+**El check visual se queda pendiente para siempre.** Mira si el paso «Decidir
+si la suite visual aplica» lo saltó; el job debe terminar en verde igualmente,
+nunca ser saltado a nivel de workflow.
 
-- Correr en pushes a `master`
-- Correr en pull requests que apuntan a `master`
-- Desplegar automáticamente sólo desde `master`
-
-### Configuración de Dependabot
-
-El fichero `dependabot.yml` está configurado para:
-
-- Actualizar dependencias npm semanalmente
-- Actualizar GitHub Actions semanalmente
-- Ignorar actualizaciones major de paquetes críticos
-- Asignar automáticamente los PRs a @rerades
-
-## Estrategia de contenedores
-
-### Jobs de Node vs jobs de Docker
-
-**Jobs de Node** (lint, test, build):
-
-- Usan la caché de pnpm en el host
-- Instalan las dependencias en local
-- Corren en el runner de GitHub
-
-**Jobs de Docker** (E2E, Visual):
-
-- Construyen la imagen `erades-com-e2e` con caché local de buildx
-- Ejecutan los tests dentro del contenedor
-- Usan volúmenes con nombre para persistir datos
-
-### Caché optimizada
-
-- **Caché de pnpm**: para los jobs de Node (lint, test, build)
-- **Caché local de buildx**: para construir la imagen Docker en `/tmp/.buildx-cache`
-- **Volúmenes Docker**: para browsers, node_modules y el store de pnpm
-
-## Artefactos
-
-Los workflows generan estos artefactos:
-
-- `playwright-report`: informes HTML de los tests E2E
-- `visual-test-results`: resultados de los tests de regresión visual
-- `build-output`: build de la aplicación
-
-## Resolución de problemas
-
-### Fallan los tests visuales
-
-Si fallan los tests de regresión visual:
-
-1. Lanza a mano el workflow «Update Visual Snapshots»
-2. Revisa los cambios en el PR generado
-3. Acepta los cambios si son correctos
-
-### Fallan los tests E2E
-
-Si fallan los tests E2E:
-
-1. Comprueba que la aplicación construye correctamente
-2. Revisa los logs del contenedor Docker
-3. Confirma que webServer está configurado con `--host 0.0.0.0`
-
-### Falla el build
-
-Si falla el build:
-
-1. Comprueba que están instaladas todas las dependencias
-2. Revisa los logs de lint
-3. Asegúrate de que TypeScript compila correctamente
-
-### La caché de buildx no funciona
-
-Si la caché de buildx no funciona:
-
-1. Comprueba que el directorio `/tmp/.buildx-cache` tiene permisos de escritura
-2. Confirma que el runner tiene espacio en disco suficiente
-3. Revisa los logs del build de Docker
-
-### Timeouts
-
-Si los jobs fallan por timeout:
-
-- **Lint**: 10 minutos (suele bastar)
-- **Unit Tests**: 15 minutos (incluye coverage)
-- **Visual Tests**: 20 minutos (build + tests)
-- **E2E Tests**: 30 minutos (build + tests)
-- **Build**: 15 minutos (build de la aplicación)
-- **Update Snapshots**: 30 minutos (build + tests + PR)
-
-## Optimizaciones aplicadas
-
-- **Concurrencia**: evita colas infinitas cancelando las ejecuciones anteriores
-- **Caché local de buildx**: reduce el tiempo de construcción de la imagen Docker
-- **Timeouts**: evita jobs zombie y un uso excesivo de recursos
-- **Volúmenes con nombre**: consistencia entre local y CI
-- **Estrategia unificada**: todo dentro del contenedor para los tests E2E/visuales
+**`pnpm install --frozen-lockfile` falla tras tocar dependencias.** Comprueba
+que `pnpm-workspace.yaml` no tiene un placeholder en `allowBuilds` — es lo que
+deja `bejamas add`, y es una de las razones por las que no lo usamos (ver
+[bejamas-ui.md](./bejamas-ui.md)).

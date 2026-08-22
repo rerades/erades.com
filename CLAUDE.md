@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Area 73 (erades.com) — a multilingual (es/en) blog built with Astro 7 (server output, Node adapter, standalone mode), TypeScript (strict), and Tailwind CSS v4. Content is authored as Markdown/MDX and rendered via Astro content collections; search is powered by a build-time FlexSearch index served through an SSR API route. Package manager is **pnpm** (see `packageManager` in `package.json`); Node >= 22.13.
 
+Longer-form docs live in `docs/`: [`bejamas-ui.md`](docs/bejamas-ui.md) (how to bring in and adapt a UI primitive), [`bejamas-ui-presupuesto.md`](docs/bejamas-ui-presupuesto.md) (its measured cost), [`lighthouse.md`](docs/lighthouse.md) (the perf record), [`github-actions.md`](docs/github-actions.md) (CI/CD) and [`docker.md`](docs/docker.md) (visual baselines and the Playwright image).
+
 ## Commands
 
 ```bash
@@ -85,6 +87,7 @@ rather than alias prefixes. Keep that in mind when adding a rule.
 
 - `output: "server"` with `@astrojs/node` (standalone). **Both** locales are prefixed (`/es/...` and `/en/...`), so `astro.config.mjs` sets `i18n.routing.prefixDefaultLocale: true`; `/` redirects via `src/pages/index.astro`. Do not flip that flag back to `false`: every page lives under `src/pages/[lang]/`, and Astro 7 then treats the default locale's prefix as an invalid route and 404s half the site.
 - All localized pages live under `src/pages/[lang]/...` (e.g. `[lang]/blog/[...slug].astro`, `[lang]/blog/page/[page].astro`, `[lang]/tags/[tag]/[page].astro`). `lang` is validated/resolved per-route; there is no separate i18n routing middleware.
+- `src/middleware.ts` does exist, but it has nothing to do with routing or i18n: it only stamps security headers (`X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`) and a per-path `Cache-Control` on every response. If a route is being cached wrong in production, `getCacheControl()` there is the place — not the host config, which is deliberately provider-agnostic.
 - Root-level pages (`src/pages/index.astro`, `404.astro`, `rss.js`, `feed.js`, `en/rss.js`, `rss-viewer.astro`) exist outside `[lang]` for locale-root and cross-locale concerns (combined RSS feed, XSL viewer, etc).
 - Translation strings live in `src/i18n/locales/{en,es}.json`, accessed via `t(lang, key)` / `tWithInterpolation(lang, key, vars)` in `src/i18n/index.ts`. Missing keys return the key itself rather than throwing — check this when strings appear untranslated.
 
@@ -110,9 +113,23 @@ The codebase avoids ad-hoc `{condition && <div>}` sprinkled through templates in
 
 ### Path aliases
 
-Defined in both `astro.config.mjs` and `vitest.config.ts` (keep them in sync if changed):
+Defined in **three** places — `astro.config.mjs`, `vitest.config.ts` and `tsconfig.json` (`paths`). Adding or changing one means touching all three:
 - `@components` → `src/components`
 - `~` → `src`
+- `@/` → `src/` — exists only because bejamas/ui registry components are written against `@/lib/utils`. Prefer `~` for repo code.
+
+### UI primitives (bejamas/ui)
+
+`src/components/ui/**` holds components **copied from the bejamas/ui registry** (`separator`, `dropdown-menu`, `dialog`), driven at runtime by the `@data-slot/*` packages. They are the only components in the repo that carry client JS.
+
+- Copy them with `pnpm tsx scripts/add-bejamas-component.ts <name>`, never with `bejamas add` — that CLI adds itself to `dependencies`, injects `@apply` into the global CSS (forbidden here) and writes a placeholder into `pnpm-workspace.yaml` that breaks `pnpm install --frozen-lockfile`.
+- Registry files carry a `Do not edit` header, and the copy step overwrites them. Deliberate deviations are allowed but **must** be commented in place with the reason, or the next copy silently reverts them.
+- Every registry component ships classes that are dead in this repo (`animate-in`/`fade-*`/`zoom-*` need `tw-animate-css`; `cn-menu-*`/`no-scrollbar` come from `bejamas/tailwind.css`; `w-[var(--anchor-width)]` references a variable the runtime never writes). Prune them on copy.
+- Put `data-slot="<component>-trigger"` on the real `<button>` rather than using the registry `Trigger`: the runtime writes `aria-expanded`/`aria-haspopup` wherever that attribute sits, and `Trigger` puts it on an intermediate `<div>` (and drags in `class-variance-authority`).
+- Trigger and content must share one `data-slot` root — this is why the avatar button lives in `SocialProfileMenu.astro` and not in `Header.astro`.
+- `@data-slot/core` (16 KB raw) is already paid for; each new primitive only adds its own package. Nothing gates bundle size — no Lighthouse budgets exist any more — so check the deterministic `js` field in `lh.ndjson` before and after a migration.
+
+Full playbook, including which remaining components are worth migrating (and which are not — `BlogFilters` uses a native `<select>`), in `docs/bejamas-ui.md`; the measured cost of the two migrations done so far in `docs/bejamas-ui-presupuesto.md`.
 
 ## Conventions
 
