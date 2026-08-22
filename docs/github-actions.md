@@ -1,165 +1,165 @@
-# CI/CD Pipeline
+# Pipeline de CI/CD
 
-This directory contains the GitHub Actions configuration for the erades.com project.
+Este directorio contiene la configuración de GitHub Actions del proyecto erades.com.
 
 ## Workflows
 
 ### 1. CI (`ci.yml`)
 
-The main workflow that runs on every push and pull request:
+El workflow principal, que corre en cada push y pull request:
 
-- **Lint**: Verifies code with ESLint (timeout: 10min)
-- **Unit Tests**: Runs unit tests with Vitest and coverage (timeout: 15min)
-- **E2E Tests**: Runs end-to-end tests with Playwright in container (timeout: 30min)
-- **Visual Tests**: Runs visual regression tests in container (timeout: 20min)
-- **Build**: Builds the application (timeout: 15min)
+- **Lint**: verifica el código con ESLint (timeout: 10 min)
+- **Unit Tests**: ejecuta los tests unitarios con Vitest y coverage (timeout: 15 min)
+- **E2E Tests**: ejecuta los tests end-to-end con Playwright en contenedor (timeout: 30 min)
+- **Visual Tests**: ejecuta los tests de regresión visual en contenedor (timeout: 20 min)
+- **Build**: construye la aplicación (timeout: 15 min)
 
-**Features:**
+**Características:**
 
-- Concurrency to automatically cancel previous runs
-- Local buildx cache to optimize Docker image construction
-- "Everything inside container" strategy for E2E and visual tests
+- Concurrencia para cancelar automáticamente las ejecuciones anteriores
+- Caché local de buildx para optimizar la construcción de la imagen Docker
+- Estrategia de «todo dentro del contenedor» para los tests E2E y visuales
 
 ### 2. Update Visual Snapshots (`update-snapshots.yml`)
 
-Manual workflow to update visual regression snapshots:
+Workflow manual para actualizar los snapshots de regresión visual:
 
-- Can be executed manually from GitHub Actions
-- Allows choosing between "enhanced" or "basic" environment
-- Automatically creates a PR with updated snapshots
-- Uses the same local buildx cache as the main CI (timeout: 30min)
+- Se puede lanzar a mano desde GitHub Actions
+- Permite elegir entre el entorno «enhanced» o «basic»
+- Crea automáticamente un PR con los snapshots actualizados
+- Usa la misma caché local de buildx que el CI principal (timeout: 30 min)
 
 ### 3. Security (`security.yml`)
 
-Security and dependency scanning:
+Escaneo de seguridad y dependencias:
 
-- Runs `pnpm audit` weekly
-- Dependency review on PRs
-- Automatic vulnerability scanning
+- Ejecuta `pnpm audit` semanalmente
+- Revisión de dependencias en los PRs
+- Escaneo automático de vulnerabilidades
 
 ### 4. Auto Merge (`automerge.yml`)
 
-Automatic workflow for PR merging:
+Workflow automático para mergear PRs:
 
-- Runs when the "automerge" label is added
-- Waits for all checks to pass before merging
-- Uses squash merge as the default method
+- Se dispara al añadir la etiqueta «automerge»
+- Espera a que pasen todos los checks antes de mergear
+- Usa squash merge como método por defecto
 
 ### 5. Label Auto Merge (`label-automerge.yml`)
 
-Workflow that automatically labels PRs for auto-merge:
+Workflow que etiqueta automáticamente PRs para auto-merge:
 
-- Runs when CI passes successfully
-- Adds the "automerge" label to PRs targeting master
+- Se dispara cuando el CI pasa
+- Añade la etiqueta «automerge» a los PRs que apuntan a master
 
-## Configuration
+## Configuración
 
-### Required Secrets
+### Secrets necesarios
 
-For deployment, you need to configure these secrets in your repository:
+Para el despliegue hay que configurar estos secrets en el repositorio:
 
-- `DEPLOY_KEY`: SSH key for the server
-- `DEPLOY_HOST`: Server hostname
-- `DEPLOY_PATH`: Path on the server
-- `SNYK_TOKEN`: Snyk token (optional)
-- `CODECOV_TOKEN`: Codecov token for coverage (optional)
+- `DEPLOY_KEY`: clave SSH del servidor
+- `DEPLOY_HOST`: hostname del servidor
+- `DEPLOY_PATH`: ruta en el servidor
+- `SNYK_TOKEN`: token de Snyk (opcional)
+- `CODECOV_TOKEN`: token de Codecov para coverage (opcional)
 
-### Branch Configuration
+### Configuración de ramas
 
-The project uses `master` as the main branch. All workflows are configured to:
+El proyecto usa `master` como rama principal. Todos los workflows están configurados para:
 
-- Run on pushes to `master`
-- Run on pull requests targeting `master`
-- Deploy automatically only from `master`
+- Correr en pushes a `master`
+- Correr en pull requests que apuntan a `master`
+- Desplegar automáticamente sólo desde `master`
 
-### Dependabot Configuration
+### Configuración de Dependabot
 
-The `dependabot.yml` file is configured to:
+El fichero `dependabot.yml` está configurado para:
 
-- Update npm dependencies weekly
-- Update GitHub Actions weekly
-- Ignore major updates of critical packages
-- Automatically assign PRs to @rerades
+- Actualizar dependencias npm semanalmente
+- Actualizar GitHub Actions semanalmente
+- Ignorar actualizaciones major de paquetes críticos
+- Asignar automáticamente los PRs a @rerades
 
-## Container Strategy
+## Estrategia de contenedores
 
-### Node Jobs vs Docker Jobs
+### Jobs de Node vs jobs de Docker
 
-**Node Jobs** (lint, test, build):
+**Jobs de Node** (lint, test, build):
 
-- Use pnpm cache on the host
-- Install dependencies locally
-- Run on GitHub runner
+- Usan la caché de pnpm en el host
+- Instalan las dependencias en local
+- Corren en el runner de GitHub
 
-**Docker Jobs** (E2E, Visual):
+**Jobs de Docker** (E2E, Visual):
 
-- Build `erades-com-e2e` image with local buildx cache
-- Run tests inside the container
-- Use named volumes for persistence
+- Construyen la imagen `erades-com-e2e` con caché local de buildx
+- Ejecutan los tests dentro del contenedor
+- Usan volúmenes con nombre para persistir datos
 
-### Optimized Cache
+### Caché optimizada
 
-- **pnpm cache**: For Node jobs (lint, test, build)
-- **Local buildx cache**: For Docker image construction in `/tmp/.buildx-cache`
-- **Docker volumes**: For browsers, node_modules and pnpm store
+- **Caché de pnpm**: para los jobs de Node (lint, test, build)
+- **Caché local de buildx**: para construir la imagen Docker en `/tmp/.buildx-cache`
+- **Volúmenes Docker**: para browsers, node_modules y el store de pnpm
 
-## Artifacts
+## Artefactos
 
-The workflows generate these artifacts:
+Los workflows generan estos artefactos:
 
-- `playwright-report`: HTML reports of E2E tests
-- `visual-test-results`: Visual regression test results
-- `build-output`: Application build
+- `playwright-report`: informes HTML de los tests E2E
+- `visual-test-results`: resultados de los tests de regresión visual
+- `build-output`: build de la aplicación
 
-## Troubleshooting
+## Resolución de problemas
 
-### Visual Tests Fail
+### Fallan los tests visuales
 
-If visual regression tests fail:
+Si fallan los tests de regresión visual:
 
-1. Run the "Update Visual Snapshots" workflow manually
-2. Review the changes in the generated PR
-3. Accept the changes if they are correct
+1. Lanza a mano el workflow «Update Visual Snapshots»
+2. Revisa los cambios en el PR generado
+3. Acepta los cambios si son correctos
 
-### E2E Tests Fail
+### Fallan los tests E2E
 
-If E2E tests fail:
+Si fallan los tests E2E:
 
-1. Verify that the application builds correctly
-2. Review Docker container logs
-3. Confirm that webServer is configured with `--host 0.0.0.0`
+1. Comprueba que la aplicación construye correctamente
+2. Revisa los logs del contenedor Docker
+3. Confirma que webServer está configurado con `--host 0.0.0.0`
 
-### Build Fails
+### Falla el build
 
-If the build fails:
+Si falla el build:
 
-1. Verify that all dependencies are installed
-2. Review linting logs
-3. Ensure TypeScript compiles correctly
+1. Comprueba que están instaladas todas las dependencias
+2. Revisa los logs de lint
+3. Asegúrate de que TypeScript compila correctamente
 
-### Buildx Cache Not Working
+### La caché de buildx no funciona
 
-If the buildx cache is not working:
+Si la caché de buildx no funciona:
 
-1. Verify that the `/tmp/.buildx-cache` directory has write permissions
-2. Confirm that the runner has sufficient disk space
-3. Review Docker build logs
+1. Comprueba que el directorio `/tmp/.buildx-cache` tiene permisos de escritura
+2. Confirma que el runner tiene espacio en disco suficiente
+3. Revisa los logs del build de Docker
 
 ### Timeouts
 
-If jobs fail due to timeout:
+Si los jobs fallan por timeout:
 
-- **Lint**: 10 minutes (usually sufficient)
-- **Unit Tests**: 15 minutes (includes coverage)
-- **Visual Tests**: 20 minutes (build + tests)
-- **E2E Tests**: 30 minutes (build + tests)
-- **Build**: 15 minutes (application build)
-- **Update Snapshots**: 30 minutes (build + tests + PR)
+- **Lint**: 10 minutos (suele bastar)
+- **Unit Tests**: 15 minutos (incluye coverage)
+- **Visual Tests**: 20 minutos (build + tests)
+- **E2E Tests**: 30 minutos (build + tests)
+- **Build**: 15 minutos (build de la aplicación)
+- **Update Snapshots**: 30 minutos (build + tests + PR)
 
-## Implemented Optimizations
+## Optimizaciones aplicadas
 
-- **Concurrency**: Prevents infinite queues by canceling previous runs
-- **Local buildx cache**: Reduces Docker image construction time
-- **Timeouts**: Prevents zombie jobs and excessive resource usage
-- **Named volumes**: Consistency between local and CI
-- **Unified strategy**: Everything inside container for E2E/visual tests
+- **Concurrencia**: evita colas infinitas cancelando las ejecuciones anteriores
+- **Caché local de buildx**: reduce el tiempo de construcción de la imagen Docker
+- **Timeouts**: evita jobs zombie y un uso excesivo de recursos
+- **Volúmenes con nombre**: consistencia entre local y CI
+- **Estrategia unificada**: todo dentro del contenedor para los tests E2E/visuales

@@ -1,12 +1,12 @@
-# Possible Errors
+# Errores posibles
 
-**DOCKER IMAGE FAILURE:**
-The error occurs because the Playwright version in your project (@playwright/test 1.55.0) does not match the version of the Docker image you're using (mcr.microsoft.com/playwright:v1.54.0-jammy). To avoid these issues, you should always align the image version with your Playwright dependency. The image tag now lives in the `container:` block of the `Visual-Regression-Tests` job in `.github/workflows/ci.yml` — keep it in sync with `@playwright/test` in `package.json` (Dependabot deliberately excludes that package from its grouped PRs for this reason).
-It also explains how to parameterize the version with environment variables to facilitate future updates.
+**FALLO DE LA IMAGEN DOCKER:**
+el error aparece porque la versión de Playwright del proyecto (`@playwright/test` 1.55.0) no coincide con la de la imagen Docker (`mcr.microsoft.com/playwright:v1.54.0-jammy`). Para evitarlo, el tag de la imagen tiene que ir siempre alineado con la dependencia de Playwright. El tag vive ahora en el bloque `container:` del job `Visual-Regression-Tests` en `.github/workflows/ci.yml` — mantenlo en sync con `@playwright/test` en `package.json` (Dependabot excluye ese paquete de sus PRs agrupados precisamente por esto).
+También se puede parametrizar la versión con variables de entorno para facilitar actualizaciones futuras.
 
-- Keeping versions out of sync is not recommended: **Keeping image and library out of sync is asking for bugs next month.**
+- No conviene desincronizar las versiones: **dejar imagen y librería desfasadas es pedir bugs el mes que viene.**
 
-- **DECISION MADE:** I will use the Docker file version as reference and modify my package.json to match because images are updated less frequently than packages (I may need to downgrade package.json), and occasionally update the Docker file version and match it with package.json
+- **DECISIÓN TOMADA:** uso la versión de la imagen Docker como referencia y ajusto `package.json` para que coincida, porque las imágenes se actualizan menos a menudo que los paquetes (puede hacer falta bajar la versión en `package.json`). De vez en cuando actualizo la imagen y vuelvo a alinear `package.json`.
 
 # Baselines visuales
 
