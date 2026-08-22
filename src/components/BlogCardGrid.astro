@@ -37,7 +37,7 @@ const postTags = Array.isArray(post.tags || (post.data && post.data.tags))
 
 <a href={href} class="block group h-full" aria-label="grid-card">
   <div
-    class="h-full bg-card border rounded-xl shadow-soft hover:shadow-medium transition-shadow duration-300 overflow-hidden borderh-full flex flex-col"
+    class="h-full bg-card border rounded-xl shadow-soft hover:shadow-medium transition-shadow duration-300 overflow-hidden flex flex-col"
   >
     <ShowWhen when={post.heroImage || (post.data && post.data.heroImage)}>
       <div

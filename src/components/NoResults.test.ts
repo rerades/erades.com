@@ -7,9 +7,7 @@ import { renderAstroComponent } from "../test/helpers.ts";
 describe("NoResults", () => {
   test("renders no results message", async () => {
     const result = await renderAstroComponent(NoResults, {
-      props: {
-        query: "test search",
-      },
+      props: {},
     });
 
     const title = getByText(result, "No se encontraron resultados");
@@ -18,9 +16,7 @@ describe("NoResults", () => {
 
   test("renders suggestion text", async () => {
     const result = await renderAstroComponent(NoResults, {
-      props: {
-        query: "test search",
-      },
+      props: {},
     });
 
     const suggestion = getByText(
@@ -32,9 +28,7 @@ describe("NoResults", () => {
 
   test("renders reset link with default href", async () => {
     const result = await renderAstroComponent(NoResults, {
-      props: {
-        query: "test search",
-      },
+      props: {},
     });
 
     const link = getByRole(result, "link");
@@ -46,7 +40,6 @@ describe("NoResults", () => {
   test("renders reset link with custom href", async () => {
     const result = await renderAstroComponent(NoResults, {
       props: {
-        query: "test search",
         onResetHref: "/custom-reset",
       },
     });
@@ -58,40 +51,37 @@ describe("NoResults", () => {
 
   test("renders search icon", async () => {
     const result = await renderAstroComponent(NoResults, {
-      props: {
-        query: "test search",
-      },
+      props: {},
     });
 
     const icon = result.querySelector("svg");
     expect(icon).not.toBeNull();
   });
 
-  test("renders with empty query", async () => {
+  // Los textos estaban escritos en espanol dentro del componente, asi que en
+  // /en/search salia media pagina en el idioma equivocado. Estos dos casos son
+  // los que fallan si alguien vuelve a incrustarlos.
+  test("traduce los textos con lang=en", async () => {
     const result = await renderAstroComponent(NoResults, {
-      props: {
-        query: "",
-      },
+      props: { lang: "en" },
     });
 
-    const title = getByText(result, "No se encontraron resultados");
-    expect(title).not.toBeNull();
+    expect(getByText(result, "No results found")).not.toBeNull();
+    expect(
+      getByText(result, "Try other search terms or change the filters.")
+    ).not.toBeNull();
+    expect(getByRole(result, "link").textContent?.trim()).toBe("See all posts");
   });
 
-  test("renders with undefined query", async () => {
-    const result = await renderAstroComponent(NoResults, {
-      props: {},
-    });
+  test("sin lang cae en espanol", async () => {
+    const result = await renderAstroComponent(NoResults, { props: {} });
 
-    const title = getByText(result, "No se encontraron resultados");
-    expect(title).not.toBeNull();
+    expect(getByText(result, "No se encontraron resultados")).not.toBeNull();
   });
 
   test("renders title with correct classes", async () => {
     const result = await renderAstroComponent(NoResults, {
-      props: {
-        query: "test search",
-      },
+      props: {},
     });
 
     const title = getByText(result, "No se encontraron resultados");
@@ -103,9 +93,7 @@ describe("NoResults", () => {
 
   test("renders link with correct classes", async () => {
     const result = await renderAstroComponent(NoResults, {
-      props: {
-        query: "test search",
-      },
+      props: {},
     });
 
     const link = getByRole(result, "link");
@@ -117,9 +105,7 @@ describe("NoResults", () => {
 
   test("renders icon with correct classes", async () => {
     const result = await renderAstroComponent(NoResults, {
-      props: {
-        query: "test search",
-      },
+      props: {},
     });
 
     const icon = result.querySelector("svg");
@@ -131,9 +117,7 @@ describe("NoResults", () => {
 
   test("renders suggestion with correct classes", async () => {
     const result = await renderAstroComponent(NoResults, {
-      props: {
-        query: "test search",
-      },
+      props: {},
     });
 
     const suggestion = getByText(
