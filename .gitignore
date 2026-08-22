@@ -1,11 +1,8 @@
 # lighthouse
+# .lighthouseci/ lo escribe `lh:collect`; metrics/ es el borrador local de
+# `lh:record` (el histórico vive en la rama `metrics`)
 .lighthouseci/
-# borrador local de lh:record; el histórico vive en la rama `metrics`
 metrics/
-coverage-lighthouse/
-db/lighthouse/
-.lighthouseci/
-coverage-lighthouse/
 
 # cspell
 .cspell/
