@@ -32,14 +32,22 @@ cada primitiva nueva solo añade su propio paquete.
 
 ## Presupuestos de Lighthouse
 
-`lighthouserc.cjs` fija 200 KB de script y 80 KB de hoja de estilo. Se pasan
-con holgura: 36 KB y 62 KB. El CSS es el que va más justo (78 % del
-presupuesto), y eso viene de antes de esta migración.
+**Ya no hay.** Cuando se midió esto existía un `lighthouserc.cjs` con 200 KB de
+script y 80 KB de hoja de estilo, todas las aserciones en `warn`. Ese fichero
+desapareció al retirar el servidor LHCI (#169): hoy sólo quedan
+`lighthouserc.prod.cjs` y su variante desktop, que **recogen** métricas contra
+producción y no afirman nada.
+
+Como referencia de dónde estaba el sitio frente a aquellos límites: 36 KB de
+script y 62 KB de CSS. El CSS iba más justo (78 % del presupuesto) y eso venía
+de antes de esta migración.
+
+Lo que vigila hoy los bytes es el campo `js` de `lh.ndjson`, que es
+determinista: una subida ahí es siempre real. Ver [lighthouse.md](./lighthouse.md).
 
 ## Métricas
 
-Todas las aserciones de `lighthouserc.cjs` son `warn`, así que ninguna
-bloquea. Medido en local con `numberOfRuns=3`:
+Medido en local con `numberOfRuns=3`:
 
 - **TBT = 0 ms** antes y después. Es la métrica que el JS afecta, y no se
   mueve: el runtime no bloquea el hilo principal.
