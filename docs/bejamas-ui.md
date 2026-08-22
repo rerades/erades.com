@@ -12,7 +12,7 @@ merece la pena migrar. El coste medido de lo ya migrado está en
 | `cn()` | `src/lib/utils.ts` | `clsx` + `tailwind-merge`. Es el único helper que el registry da por supuesto. |
 | `components.json` | raíz | Escrito a mano. Estilo `bejamas-juno`, iconos `lucide`. No lo generó ningún CLI. |
 | Script de copia | `scripts/add-bejamas-component.ts` | Lee el registry y **sólo escribe ficheros**. |
-| Componentes | `src/components/ui/<componente>/` | `separator`, `dropdown-menu`, `dialog`. |
+| Componentes | `src/components/ui/<componente>/` | `separator`, `dropdown-menu`, `dialog`, `native-select`. |
 | Runtime | `@data-slot/*` en `dependencies` | Un paquete por primitiva, más `@data-slot/core` compartido. |
 
 `src/lib/**` está en la regla de capa base de `eslint.config.js` junto a
@@ -83,7 +83,7 @@ Luego, en este orden:
 
 Se permiten, pero **comentadas en el propio fichero** con el motivo, porque la
 cabecera dice «Do not edit» y sin el comentario la siguiente copia las borra.
-Las dos que hay hoy:
+Las que hay hoy:
 
 - `DropdownMenuItem` acepta `href` y entonces renderiza `<a>`. Un
   `<div role="menuitem">` pierde clic central, ctrl+clic y «abrir en pestaña
@@ -91,6 +91,9 @@ Las dos que hay hoy:
   propio `select`, hace falta un listener de 10 líneas en el consumidor que
   reabra el enlace cuando `source === "keyboard"`.
 - `DropdownMenuContent` y `DialogContent`, podados como en el punto 3.
+- `NativeSelect` usa `ChevronDown` de `@lucide/astro` en vez del `SemanticIcon`
+  del registry (punto 4), y de `native-select` no se copió
+  `NativeSelectOptGroup`: no hay ningún `<select>` con grupos.
 
 ## Tests
 
@@ -112,27 +115,40 @@ Cada migración deja tres cosas:
 ## Qué migrar y qué no
 
 La pregunta no es «¿existe el componente en bejamas/ui?» sino **«¿qué hace el
-runtime que mi versión no hace?»**. Las dos migraciones hechas se justifican
-solas:
+runtime que mi versión no hace?»**. Las dos migraciones con runtime se
+justifican solas:
 
 - el dropdown a mano no tenía navegación con flechas, roles `menu`/`menuitem`,
   typeahead ni devolución del foco;
 - el menú móvil llevaba un `aria-hidden="true"` escrito en el markup que seguía
   ahí con el menú abierto, y no tenía focus trap.
 
-Con eso en la mano, del resto de componentes interactivos:
+El criterio que sale de ahí, y que se aplicó a todos los componentes de
+`src/components/` en la revisión de 2026-08-22: **migrar cuando la primitiva
+borra fontanería que hoy mantenemos a mano** (un envoltorio posicionado, un
+manejador de teclado, un estado ARIA) — no cuando sólo renombra clases.
 
 | Componente | Veredicto |
 |---|---|
-| `BlogFilters` | **No.** Usa un `<select>` nativo. Cambiarlo por un Select en JS es cambiar accesibilidad y teclado gratis del navegador por un bundle. |
-| `LanguageSwitch`, `ViewModeToggle` | **No.** Son enlaces y botones sin estado de runtime; no hay nada que un ToggleGroup arregle. |
+| `BlogFilters` | **Sí, a `native-select`** (hecho). Ojo con la pregunta mal planteada: el `select` con runtime del registry sigue siendo un **no** —cambiar el `<select>` nativo por un widget en JS es pagar con bundle lo que el navegador da gratis—, pero `native-select` **conserva** el `<select>` nativo y lo único que aporta es el envoltorio `relative` y el chevron absoluto, que aquí estaban escritos a mano. Cero dependencias npm nuevas. |
+| `SearchInput` | **No.** Ni `input` ni `input-group`. `input` sólo cambia clases y arrastra `class-variance-authority`. `input-group` sí borraría el icono posicionado a mano, pero trae además `Input`, `cva` y un `<script is:inline>` a **todas** las páginas (el buscador se renderiza dos veces por página, móvil y escritorio) a cambio de que pulsar la lupa enfoque el campo. El combobox de verdad sigue siendo un *quizá* si algún día hay sugerencias: hoy no hay ninguna que anunciar. |
+| `BlogCardGrid`, `BlogCardList` | **No** a `card`. La tarjeta va envuelta en un `<a>` y tiene su propio grid; los slots de `Card` (`CardHeader`/`CardContent`/`CardFooter`) habría que doblarlos para que encajen. Se cambia markup propio por markup ajeno peleado. |
+| Píldoras de tags y categorías | **No** a `badge`. Es la duplicación más real que queda (seis sitios), pero `Badge` viene con `h-5` y `rounded-full` fijos y aquí son `rounded` de 4 px; con overrides en cada llamada no queda nada de la primitiva. Si algún día se unifican las píldoras, hazlo con un componente propio antes que con `Badge`. |
+| `Footer` | **No** a `link-group`. La estructura casa (`div > h2 + ul > li > a`), pero `LinkGroupList` trae `flex-col` y la del footer es `flex-wrap` horizontal: son grupos distintos de Tailwind, así que ambas se aplican y rompen el layout. Pelear con eso cuesta más que las cuatro clases que hay. |
+| `SocialProfileMenu` (el avatar) | **No** a `avatar`. Es un `<img>` con `rounded-full object-cover`; `Avatar` añade un `<span>` envolvente y no borra nada. |
+| `Paginator` | **No.** No hay primitiva de paginación en el registry. `button` repetiría los cuatro estilos de enlace, sí, pero con `active:scale-98` y su propio sizing: cambio visual grande a cambio de nada funcional. |
+| `LanguageSwitch`, `ViewModeToggle` | **No.** Son enlaces y botones sin estado de runtime; no hay nada que un ToggleGroup arregle. Además `ViewModeToggle` son `<a>`, y `toggle-group` espera botones. |
 | `ThemeToggle` | **Marginal.** Un `<button>` con `aria-label` y un `is:inline` de 10 líneas. Sólo si algún día necesita estado de tres valores (claro/oscuro/sistema). |
-| `SearchInput` | **Quizá.** Un combobox de verdad (roles `combobox`/`listbox`, flechas, anuncio de resultados) sí es trabajo que no queremos escribir. Mide antes: es la página con más JS ya. |
+| `Header`, `HeaderLink` | **No** a `navigation-menu`: es una lista plana de enlaces, sin submenús. El `Dialog` del menú móvil ya está migrado. |
+| `NoResults`, `ResultsInfo`, `SearchPageWrapper` | **No.** Texto y un enlace. `alert` tiene semántica de aviso, no de estado vacío. |
+| `BaseHead`, `FormattedDate`, `GoogleAnalytics`, `LinkedinIcon`, `IconWrapper`, `Show`/`If`/`Then`/`Else` | **No aplican.** No renderizan UI propia o son control de flujo. |
 
 ## El coste
 
 `@data-slot/core` (16 KB brutos) **ya está pagado**: cada primitiva nueva sólo
-añade su propio paquete (13 KB el dropdown, 4 KB el diálogo). Eso hace que la
+añade su propio paquete (13 KB el dropdown, 4 KB el diálogo). Las primitivas
+sin runtime —`separator`, `native-select`— no añaden nada: son `.astro` que se
+renderizan en el servidor y no mandan un byte al navegador. Eso hace que la
 tercera migración sea mucho más barata que la primera — pero también que la
 primera saliera 5× por encima de lo estimado.
 

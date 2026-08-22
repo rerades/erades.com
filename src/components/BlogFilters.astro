@@ -1,5 +1,6 @@
 ---
-import { ArrowDownWideNarrow, ChevronDown } from "@lucide/astro";
+import { ArrowDownWideNarrow } from "@lucide/astro";
+import { NativeSelect, NativeSelectOption } from "./ui/native-select";
 import ViewModeToggle from "./ViewModeToggle.astro";
 import ShowWhen from "./ShowWhen.astro";
 import { t } from "../i18n";
@@ -67,26 +68,26 @@ function getCategoryHrefLocal(cat: string) {
       <span class="text-sm text-muted-foreground flex items-center shrink-0">
         <ArrowDownWideNarrow class="h-4 w-4 text-muted-foreground" />
       </span>
-      <div class="relative w-40 max-w-full min-w-0">
-        <select
-          name="sortBy"
-          class="w-full h-10 px-3 pr-8 py-2 rounded-md border bg-input text-foreground appearance-none focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
-          onchange="this.form.submit()"
+      {/*
+        El <select> sigue siendo nativo: el teclado y la accesibilidad los pone
+        el navegador. Lo que aporta NativeSelect es el envoltorio relativo y el
+        chevron absoluto, que aquí estaban escritos a mano.
+      */}
+      <NativeSelect
+        name="sortBy"
+        class="w-40 max-w-full min-w-0"
+        onchange="this.form.submit()"
+      >
+        <NativeSelectOption value="date-desc" selected={sortBy === "date-desc"}
+          >{t(lang, "filters.sort.dateDesc")}</NativeSelectOption
         >
-          <option value="date-desc" selected={sortBy === "date-desc"}
-            >{t(lang, "filters.sort.dateDesc")}</option
-          >
-          <option value="date-asc" selected={sortBy === "date-asc"}
-            >{t(lang, "filters.sort.dateAsc")}</option
-          >
-          <option value="title" selected={sortBy === "title"}
-            >{t(lang, "filters.sort.title")}</option
-          >
-        </select>
-        <ChevronDown
-          class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-        />
-      </div>
+        <NativeSelectOption value="date-asc" selected={sortBy === "date-asc"}
+          >{t(lang, "filters.sort.dateAsc")}</NativeSelectOption
+        >
+        <NativeSelectOption value="title" selected={sortBy === "title"}
+          >{t(lang, "filters.sort.title")}</NativeSelectOption
+        >
+      </NativeSelect>
     </div>
     <!-- Selector visual grid/lista -->
     <ViewModeToggle viewMode={viewMode} lang={lang} />
