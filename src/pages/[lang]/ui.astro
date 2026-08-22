@@ -1,0 +1,86 @@
+---
+// Galería de componentes, sólo en dev: `pnpm dev` -> http://localhost:4321/es/ui
+import BlogCard from "../../components/BlogCard.astro";
+import BlogFilters from "../../components/BlogFilters.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import LanguageSwitch from "../../components/LanguageSwitch.astro";
+import NoResults from "../../components/NoResults.astro";
+import Paginator from "../../components/Paginator.astro";
+import ResultsInfo from "../../components/ResultsInfo.astro";
+import RssButtons from "../../components/RssButtons.astro";
+import SearchInput from "../../components/SearchInput.astro";
+import ThemeToggle from "../../components/ThemeToggle.astro";
+import ViewModeToggle from "../../components/ViewModeToggle.astro";
+import "../../styles/global.css";
+
+if (!import.meta.env.DEV) return new Response(null, { status: 404 });
+
+const lang = Astro.params.lang === "en" ? "en" : "es";
+
+const post = {
+  id: `${lang}/demo-post`,
+  title: "Un post de ejemplo",
+  description: "Descripción de ejemplo para ver cómo respira la tarjeta.",
+  pubDate: new Date("2026-01-15"),
+  tags: ["astro", "tailwind"],
+  categories: ["Frontend"],
+  content: "palabra ".repeat(600),
+};
+---
+
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>UI · componentes</title>
+  </head>
+  <body class="bg-background text-foreground p-8 space-y-12">
+    <header class="flex items-center gap-4">
+      <h1 class="font-serif text-3xl font-bold mr-auto">Componentes</h1>
+      <a href={`/${lang === "es" ? "en" : "es"}/ui`} class="underline"
+        >lang: {lang}</a
+      >
+      <ThemeToggle />
+    </header>
+
+    <section>
+      <h2 class="text-sm uppercase text-muted-foreground mb-3">BlogCard</h2>
+      <div class="grid gap-6 md:grid-cols-2">
+        <BlogCard post={post} lang={lang} index={0} />
+        <BlogCard post={post} lang={lang} index={1} variant="list" />
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-sm uppercase text-muted-foreground mb-3">BlogFilters</h2>
+      <BlogFilters
+        categories={["Todas", "Frontend", "Backend"]}
+        selectedCategory="Todas"
+        sortBy="date-desc"
+        viewMode="grid"
+        lang={lang}
+        getCategoryHref={() => "#"}
+      />
+    </section>
+
+    <section>
+      <h2 class="text-sm uppercase text-muted-foreground mb-3">Paginator</h2>
+      <Paginator currentPage={2} totalPages={5} getPageHref={() => "#"} lang={lang} />
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-sm uppercase text-muted-foreground mb-3">Sueltos</h2>
+      <ResultsInfo shown={6} total={42} query="astro" lang={lang} />
+      <ViewModeToggle viewMode="grid" lang={lang} />
+      <SearchInput query="astro" lang={lang} />
+      <LanguageSwitch lang={lang} />
+      <RssButtons lang={lang} />
+      <FormattedDate date={post.pubDate} lang={lang} />
+    </section>
+
+    <section>
+      <h2 class="text-sm uppercase text-muted-foreground mb-3">NoResults</h2>
+      <div class="text-center"><NoResults lang={lang} /></div>
+    </section>
+  </body>
+</html>
