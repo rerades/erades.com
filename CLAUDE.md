@@ -103,6 +103,23 @@ rather than alias prefixes. Keep that in mind when adding a rule.
 - `src/pages/api/search.ts` is an SSR-only route (`export const prerender = false`) that loads that JSON at request time, builds ephemeral FlexSearch `Document`/`Index` instances (metadata fields + full content), and returns merged/deduplicated matches. The index is rebuilt per-request from the static JSON file, not persisted in memory — if search behavior seems stale, check whether `public/search-index.json` was regenerated.
 - `SearchInput.astro` / `SearchPageWrapper.astro` / `HeaderSearchBox.astro` are the client-facing pieces that call this API.
 
+### Component documentation
+
+Every component in `src/components/**` carries a JSDoc block at the top of its
+frontmatter, in the bejamas/ui tag format (`@component`, `@title`,
+`@description`, `@usage`, and for the `ui/` primitives also `@preview`, `@api`,
+`@examples`). `pnpm docs:components` extracts it to `docs/components/`, and
+`/es/dev/componentes` renders it next to a live preview (dev only — the route
+404s in production).
+
+**A new component is not finished until it has that block and the docs are
+regenerated.** Write only what a parser cannot deduce — what the component is
+for and how it is used. The props table and the slot list are read from
+`interface Props` and from the markup, so never hand-write them: they would go
+stale on the next rename. Live previews are optional and live in
+`src/components/dev/previews/<PascalCase>.astro`; a component without one shows
+a note saying which file to add.
+
 ### Conditional-rendering component pattern
 
 The codebase avoids ad-hoc `{condition && <div>}` sprinkled through templates in favor of small dedicated Astro components: `Show`/`ShowWhen`, `If`/`Then`/`Else`. These use named slots (`Astro.slots.has("then")`) rather than string/children inspection. Reuse these instead of reintroducing inline boolean rendering in `.astro` files.

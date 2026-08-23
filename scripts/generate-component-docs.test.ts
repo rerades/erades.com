@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   findMissing,
+  kebabCase,
   parseDocBlock,
+  parseProps,
+  parseSlots,
   readBarrel,
   rewriteUpstream,
 } from "./generate-component-docs";
@@ -95,5 +98,58 @@ describe("findMissing", () => {
 
   it("ignora componentes ajenos al primitivo", () => {
     expect(findMissing("<Button>x</Button>", barrel, "Widget")).toEqual([]);
+  });
+});
+
+describe("parseProps", () => {
+  const { rows, extendsClause } = parseProps(`
+interface Props extends HTMLAttributes<"div"> {
+  /** Página actual (1-indexed) */
+  currentPage: number;
+  getPageHref?: (page: number) => string;
+  readonly class?: string;
+  lang?: "es" | "en";
+}
+`);
+
+  it("lee nombre, tipo, obligatoriedad y el /** */ de encima", () => {
+    expect(rows[0]).toEqual({
+      name: "currentPage",
+      type: "number",
+      required: true,
+      doc: "Página actual (1-indexed)",
+    });
+  });
+
+  it("no se traga la flecha de un tipo función como fin de línea", () => {
+    expect(rows[1]).toMatchObject({
+      name: "getPageHref",
+      type: "(page: number) => string",
+      required: false,
+    });
+  });
+
+  it("quita el readonly y conserva el extends", () => {
+    expect(rows[2]?.name).toBe("class");
+    expect(extendsClause).toBe('HTMLAttributes<"div">');
+  });
+
+  it("no inventa props cuando no hay interface", () => {
+    expect(parseProps("const { x } = Astro.props;").rows).toEqual([]);
+  });
+});
+
+describe("parseSlots", () => {
+  it("distingue el slot por defecto de los que tienen nombre", () => {
+    expect(parseSlots('<slot name="then" /><slot /><slot name="then" />')).toEqual(
+      ["then", "default"]
+    );
+  });
+});
+
+describe("kebabCase", () => {
+  it("convierte el nombre del componente en el de su doc", () => {
+    expect(kebabCase("BlogCardGrid")).toBe("blog-card-grid");
+    expect(kebabCase("If")).toBe("if");
   });
 });

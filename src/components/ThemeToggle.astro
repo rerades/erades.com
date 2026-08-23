@@ -1,4 +1,20 @@
 ---
+/**
+ * @component ThemeToggle
+ * @title Theme Toggle
+ * @description El interruptor de tema claro/oscuro. La preferencia se guarda en `localStorage` y se aplica antes de pintar, para que no haya un fogonazo blanco al cargar en oscuro.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import ThemeToggle from "./ThemeToggle.astro";
+ * ---
+ *
+ * <ThemeToggle />
+ * ```
+ */
 import { Sun, Moon } from "@lucide/astro";
 interface Props {}
 ---

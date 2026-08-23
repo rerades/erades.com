@@ -1,4 +1,34 @@
 ---
+/**
+ * @component BlogList
+ * @title Blog List
+ * @description Orquesta un listado completo: filtros, tarjetas, paginador, contador de resultados y estado vacío. Las páginas de blog, tags y búsqueda son todas este componente con props distintas.
+ *
+ *
+ * Recibe `posts` (el total, para contar) y `paginatedPosts` (lo que pinta) por separado.
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import BlogList from "./BlogList.astro";
+ * ---
+ *
+ * <BlogList
+ *   posts={posts}
+ *   paginatedPosts={paginatedPosts}
+ *   categories={categories}
+ *   selectedCategory={selectedCategory}
+ *   sortBy={sortBy}
+ *   viewMode="grid"
+ *   currentPage={1}
+ *   totalPages={3}
+ *   getCategoryHref={getCategoryHref}
+ *   getPageHref={getPageHref}
+ *   lang="es"
+ * />
+ * ```
+ */
 import BlogFilters from "./BlogFilters.astro";
 import BlogCard from "./BlogCard.astro";
 import Paginator from "./Paginator.astro";

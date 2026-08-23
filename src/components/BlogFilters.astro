@@ -1,4 +1,28 @@
 ---
+/**
+ * @component BlogFilters
+ * @title Blog Filters
+ * @description Filtro por categoría, orden y modo de vista. Es un formulario GET: el estado vive en la URL, no en JavaScript, y por eso el listado es enlazable y sobrevive a una recarga.
+ *
+ *
+ * El orden usa el `NativeSelect` de bejamas/ui, que se envía solo con `onchange`.
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import BlogFilters from "./BlogFilters.astro";
+ * ---
+ *
+ * <BlogFilters
+ *   categories={categories}
+ *   selectedCategory={selectedCategory}
+ *   sortBy={sortBy}
+ *   viewMode={viewMode}
+ *   lang="es"
+ * />
+ * ```
+ */
 import { ArrowDownWideNarrow } from "@lucide/astro";
 import { NativeSelect, NativeSelectOption } from "./ui/native-select";
 import ViewModeToggle from "./ViewModeToggle.astro";

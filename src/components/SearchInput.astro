@@ -1,4 +1,22 @@
 ---
+/**
+ * @component SearchInput
+ * @title Search Input
+ * @description El campo de busqueda, con su etiqueta accesible y el valor actual de la consulta. No busca nada por sí mismo: quien lo envuelve decide a dónde va el formulario.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import SearchInput from "./SearchInput.astro";
+ * ---
+ *
+ * <form action="/es/search" method="get">
+ *   <SearchInput query={query} lang="es" />
+ * </form>
+ * ```
+ */
 import { Search } from "@lucide/astro";
 interface Props {
   query?: string;

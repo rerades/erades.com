@@ -1,4 +1,20 @@
 ---
+/**
+ * @component NoResults
+ * @title No Results
+ * @description El estado vacío de un listado: un mensaje y, si se le da `onResetHref`, un enlace para quitar los filtros.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import NoResults from "./NoResults.astro";
+ * ---
+ *
+ * <NoResults onResetHref="/es/blog" lang="es" />
+ * ```
+ */
 import { Search as SearchIcon } from "@lucide/astro";
 import { t } from "../i18n";
 

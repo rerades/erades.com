@@ -1,4 +1,27 @@
 ---
+/**
+ * @component Paginator
+ * @title Paginator
+ * @description Paginación con anterior, siguiente y números. Navega con enlaces reales, no con JavaScript: cada página tiene su URL y se puede compartir.
+ *
+ *
+ * Con `disableInactive` los extremos se pintan apagados en vez de desaparecer, para que la barra no cambie de ancho al llegar al final.
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import Paginator from "./Paginator.astro";
+ * ---
+ *
+ * <Paginator
+ *   currentPage={2}
+ *   totalPages={5}
+ *   getPageHref={(page) => `/es/blog/page/${page}`}
+ *   lang="es"
+ * />
+ * ```
+ */
 import ShowWhen from "./ShowWhen.astro";
 import If from "./If.astro";
 import Then from "./Then.astro";

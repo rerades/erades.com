@@ -1,4 +1,22 @@
 ---
+/**
+ * @component BaseHead
+ * @title Base Head
+ * @description Todo lo que va en el <head> de cualquier página: metadatos globales, canónica, Open Graph, Twitter Card, los tres feeds RSS y Google Analytics.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import BaseHead from "./BaseHead.astro";
+ * ---
+ *
+ * <head>
+ *   <BaseHead title={title} description={description} image={heroImage} />
+ * </head>
+ * ```
+ */
 import { SITE_TITLE } from "../consts";
 import GoogleAnalytics from "./GoogleAnalytics.astro";
 

@@ -1,10 +1,10 @@
 # Dropdown Menu
 
-> Generado por `pnpm docs:components` desde el JSDoc de [`DropdownMenu.astro`](../../src/components/ui/dropdown-menu/DropdownMenu.astro). No editar a mano: los cambios se pierden en la siguiente copia del registry.
+> Generado por `pnpm docs:components` desde [`DropdownMenu.astro`](../../src/components/ui/dropdown-menu/DropdownMenu.astro). No editar a mano.
 
 Action and selection menus with runtime-owned open, highlight, and committed selection state.
 
-## Exports en este repo
+## Importar
 
 > Del registry de bejamas/ui. Se han descartado Trigger, Portal, Group,
 > Shortcut, RadioGroup, RadioItem y CheckboxItem: los dos primeros arrastraban
@@ -12,17 +12,33 @@ Action and selection menus with runtime-owned open, highlight, and committed sel
 > no existen aquí, y ninguno se usa. El trigger va con `data-slot` sobre el
 > propio &lt;button>, que es donde deben ir aria-haspopup y aria-expanded.
 
-- `DropdownMenu` — `DropdownMenu.astro`
-- `DropdownMenuContent` — `DropdownMenuContent.astro`
-- `DropdownMenuItem` — `DropdownMenuItem.astro`
-- `DropdownMenuLabel` — `DropdownMenuLabel.astro`
-- `DropdownMenuSeparator` — `DropdownMenuSeparator.astro`
-
 ```astro
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "./ui/dropdown-menu";
 ```
 
-Ruta relativa desde `src/components/`, que es como se importan aquí (ver `BlogFilters.astro`, `Header.astro`).
+Ruta relativa desde `src/components/`, que es como se importa aquí.
+
+## Props
+
+Extiende `HTMLAttributes<"div">`.
+
+| Prop | Tipo | Obligatoria | Descripción |
+| --- | --- | --- | --- |
+| `defaultOpen` | `boolean` | — |  |
+| `defaultValue` | `string \| null` | — |  |
+| `defaultValues` | `string[]` | — |  |
+| `closeOnClickOutside` | `boolean` | — |  |
+| `closeOnEscape` | `boolean` | — |  |
+| `closeOnSelect` | `boolean` | — |  |
+| `lockScroll` | `boolean` | — |  |
+| `highlightItemOnHover` | `boolean` | — |  |
+| `class` | `string` | — |  |
+
+## Slots
+
+- `default`
+
+Detectados en el markup; los slots con nombre se comprueban con `Astro.slots.has()`.
 
 > **Ojo:** los ejemplos de abajo vienen del registry y usan `DropdownMenuCheckboxItem`, `DropdownMenuGroup`, `DropdownMenuRadioItem`, `DropdownMenuTrigger`, que esta copia no exporta (el motivo, arriba). Adáptalos.
 

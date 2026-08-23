@@ -1,4 +1,21 @@
 ---
+/**
+ * @component IconWrapper
+ * @title Icon Wrapper
+ * @description Pinta un icono de `@lucide/astro` solo si se le pasa uno. Evita el `{Icon && <Icon />}` repetido en cada sitio donde el icono es opcional.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import IconWrapper from "./IconWrapper.astro";
+ * import { House } from "@lucide/astro";
+ * ---
+ *
+ * <IconWrapper Icon={House} className="h-4 w-4" />
+ * ```
+ */
 interface Props {
   Icon?: any;
   className?: string;
