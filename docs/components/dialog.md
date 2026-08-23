@@ -1,29 +1,40 @@
 # Dialog
 
-> Generado por `pnpm docs:components` desde el JSDoc de [`Dialog.astro`](../../src/components/ui/dialog/Dialog.astro). No editar a mano: los cambios se pierden en la siguiente copia del registry.
+> Generado por `pnpm docs:components` desde [`Dialog.astro`](../../src/components/ui/dialog/Dialog.astro). No editar a mano.
 
 An accessible modal window for focused content or user actions with customizable open/close behavior.
 
 [Figma](https://www.figma.com/design/koxai7zw5vIuBzuVxe5T2l/bejamas-ui?node-id=2543-9384&t=YFStJ3V8fXEO8QD8-4)
 
-## Exports en este repo
+## Importar
 
 > Del registry de bejamas/ui. Descartados Trigger, Description y Footer:
 > el disparador va con `data-slot` sobre el propio &lt;button> (así el runtime
 > pone ahí aria-expanded), y los otros dos no se usan.
 
-- `Dialog` — `Dialog.astro`
-- `DialogClose` — `DialogClose.astro`
-- `DialogContent` — `DialogContent.astro`
-- `DialogHeader` — `DialogHeader.astro`
-- `DialogOverlay` — `DialogOverlay.astro`
-- `DialogTitle` — `DialogTitle.astro`
-
 ```astro
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogOverlay, DialogTitle } from "./ui/dialog";
 ```
 
-Ruta relativa desde `src/components/`, que es como se importan aquí (ver `BlogFilters.astro`, `Header.astro`).
+Ruta relativa desde `src/components/`, que es como se importa aquí.
+
+## Props
+
+Extiende `HTMLAttributes<"div">`.
+
+| Prop | Tipo | Obligatoria | Descripción |
+| --- | --- | --- | --- |
+| `defaultOpen` | `boolean` | — |  |
+| `class` | `string` | — |  |
+| `closeOnClickOutside` | `boolean` | — |  |
+| `closeOnEscape` | `boolean` | — |  |
+| `lockScroll` | `boolean` | — |  |
+
+## Slots
+
+- `default`
+
+Detectados en el markup; los slots con nombre se comprueban con `Astro.slots.has()`.
 
 > **Ojo:** los ejemplos de abajo vienen del registry y usan `DialogDescription`, `DialogFooter`, `DialogTrigger`, que esta copia no exporta (el motivo, arriba). Adáptalos.
 

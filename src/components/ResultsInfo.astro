@@ -1,4 +1,20 @@
 ---
+/**
+ * @component ResultsInfo
+ * @title Results Info
+ * @description El «mostrando N de M» de un listado, con la consulta si la hubo. No se pinta cuando no hay nada que contar.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import ResultsInfo from "./ResultsInfo.astro";
+ * ---
+ *
+ * <ResultsInfo shown={10} total={42} query="astro" lang="es" />
+ * ```
+ */
 import ShowWhen from "./ShowWhen.astro";
 import { t } from "../i18n";
 interface Props {

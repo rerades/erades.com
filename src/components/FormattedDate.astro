@@ -1,4 +1,20 @@
 ---
+/**
+ * @component FormattedDate
+ * @title Formatted Date
+ * @description Una fecha en un `<time datetime>`, formateada según el idioma. El atributo `datetime` lleva siempre la fecha ISO, que es lo que leen los buscadores y los lectores de pantalla.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import FormattedDate from "./FormattedDate.astro";
+ * ---
+ *
+ * <FormattedDate date={post.data.pubDate} lang="es" />
+ * ```
+ */
 interface Props {
   date: Date;
   lang?: string;

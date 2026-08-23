@@ -1,4 +1,20 @@
 ---
+/**
+ * @component BlogCardGrid
+ * @title Blog Card (rejilla)
+ * @description La tarjeta de un post en modo rejilla: imagen destacada, título, fecha y descripción. `index` decide la carga de la imagen: las primeras van eager.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import BlogCardGrid from "./BlogCardGrid.astro";
+ * ---
+ *
+ * <BlogCardGrid post={post} lang="es" index={0} />
+ * ```
+ */
 import tags from "@lucide/astro/icons/tags";
 import FormattedDate from "./FormattedDate.astro";
 import ShowWhen from "./ShowWhen.astro";

@@ -1,12 +1,24 @@
 ---
 /**
- * Botones ES/EN. Existe porque este markup se renderiza dos veces —una en la
+ * @component LanguageSwitch
+ * @title Language Switch
+ * @description Botones ES/EN. Existe porque este markup se renderiza dos veces —una en la
  * barra de escritorio y otra dentro del menú móvil— y estaba duplicado a mano:
  * de ahí salieron los ids `lang-es`/`lang-en` repetidos que dejaban muertos los
  * botones del móvil. Con un solo origen, ese fallo no puede volver por copia.
  *
  * El comportamiento no vive aquí: un único listener delegado en Header.astro
  * atiende a todos los `[data-lang-switch]` del documento, haya los que haya.
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import LanguageSwitch from "./LanguageSwitch.astro";
+ * ---
+ *
+ * <LanguageSwitch lang="es" class="ml-auto" />
+ * ```
  */
 interface Props {
   lang: string;
