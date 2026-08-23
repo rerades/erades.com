@@ -74,7 +74,13 @@ export default defineConfig({
       },
       filter: (page) => {
         // Excluir páginas de prueba y desarrollo
-        return !page.includes("/test/") && !page.includes("/_dev/");
+        // /dev/componentes solo responde en `pnpm dev` (404 en producción),
+        // pero mejor que no llegue nunca al sitemap.
+        return (
+          !page.includes("/test/") &&
+          !page.includes("/_dev/") &&
+          !page.includes("/dev/componentes")
+        );
       },
       changefreq: "weekly",
       priority: 0.7,

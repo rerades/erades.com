@@ -1,0 +1,39 @@
+---
+import { ChevronDown } from "@lucide/astro";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "../../ui/dropdown-menu";
+---
+
+{/*
+  El disparador es el propio <button> con `data-slot="dropdown-menu-trigger"`,
+  no el `DropdownMenuTrigger` del registry: aquí se descartó, y es donde el
+  runtime tiene que poner aria-haspopup y aria-expanded. Mismo patrón que
+  SocialProfileMenu.astro. Los ejemplos de la doc de abajo vienen del registry
+  y sí lo usan: no compilan en este repo.
+*/}
+<DropdownMenu class="relative inline-block">
+  <button
+    type="button"
+    data-slot="dropdown-menu-trigger"
+    class="flex items-center gap-1 rounded-md border bg-card px-3 py-2 text-sm"
+  >
+    Abrir menú
+    <ChevronDown class="h-4 w-4 text-muted-foreground" />
+  </button>
+
+  <DropdownMenuContent align="start" class="w-56">
+    <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+    <DropdownMenuItem>Editar</DropdownMenuItem>
+    <DropdownMenuItem href="/es/blog">
+      Ir al blog (renderiza &lt;a&gt;)
+    </DropdownMenuItem>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem>Borrar</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
