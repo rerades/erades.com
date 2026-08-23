@@ -11,6 +11,7 @@
     "build": "pnpm run build:flexsearch && astro build",
     "start": "HOST=0.0.0.0 node ./dist/server/entry.mjs",
     "build:flexsearch": "tsx scripts/generate-flexsearch-index.ts",
+    "docs:components": "tsx scripts/generate-component-docs.ts",
     "preview": "astro preview",
     "lh:collect": "lhci collect --config=./lighthouserc.prod.cjs && lhci collect --config=./lighthouserc.prod.desktop.cjs --collect.additive",
     "lh:record": "tsx scripts/lh-record.ts",

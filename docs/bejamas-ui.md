@@ -78,6 +78,10 @@ Luego, en este orden:
    runtime busca disparador y contenido bajo el mismo nodo raíz. Si el botón
    vive en otro componente, múdalo (el del avatar se mudó de `Header.astro` a
    `SocialProfileMenu.astro`).
+7. **Regenera la doc**: `pnpm docs:components` y commitea `docs/components/`.
+   Sale del JSDoc que el registry trae en la cabecera del componente, así que
+   una poda que no se refleje en el `index.ts` deja la doc mintiendo — ver
+   [`components/README.md`](./components/README.md).
 
 ### Desviaciones del registry
 
