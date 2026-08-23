@@ -14,7 +14,11 @@ export default getViteConfig({
     globals: true,
     environment: "./src/test/happy-dom-ssr.ts",
     setupFiles: ["./src/test/setup.ts"],
-    include: ["src/**/*.test.{ts,tsx,js}", "src/**/*.spec.{ts,tsx,js}"],
+    include: [
+      "src/**/*.test.{ts,tsx,js}",
+      "src/**/*.spec.{ts,tsx,js}",
+      "scripts/**/*.test.ts",
+    ],
     exclude: [
       "node_modules",
       "dist",

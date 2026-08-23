@@ -78,6 +78,10 @@ Luego, en este orden:
    runtime busca disparador y contenido bajo el mismo nodo raíz. Si el botón
    vive en otro componente, múdalo (el del avatar se mudó de `Header.astro` a
    `SocialProfileMenu.astro`).
+7. **Regenera la doc**: `pnpm docs:components` y commitea `docs/components/`.
+   Sale del JSDoc que el registry trae en la cabecera del componente, así que
+   una poda que no se refleje en el `index.ts` deja la doc mintiendo — ver
+   [`components/README.md`](./components/README.md).
 
 ### Desviaciones del registry
 
@@ -94,6 +98,22 @@ Las que hay hoy:
 - `NativeSelect` usa `ChevronDown` de `@lucide/astro` en vez del `SemanticIcon`
   del registry (punto 4), y de `native-select` no se copió
   `NativeSelectOptGroup`: no hay ningún `<select>` con grupos.
+
+## Verlos en marcha
+
+`/es/dev/componentes` — solo con `pnpm dev`; en producción devuelve 404 y no
+entra en el sitemap. Por componente: la pieza viva arriba y debajo su
+documentación, la que genera `pnpm docs:components`.
+
+Los previews viven en `src/components/dev/previews/` y se escriben a mano por
+un motivo: los ejemplos de la doc vienen del registry y usan piezas que aquí se
+podaron (`DropdownMenuTrigger`, `DropdownMenuRadioItem`…), así que no compilan.
+El preview es la versión que sí funciona en este repo, con el `data-slot` sobre
+el `<button>` real. Un componente sin preview sale con un aviso diciendo qué
+fichero falta.
+
+Cuelga de `[lang]` aunque no se traduzca: una página sin prefijo de idioma no
+llega a ejecutarse (ver CLAUDE.md, sección de routing).
 
 ## Tests
 

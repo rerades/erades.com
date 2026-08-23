@@ -1,0 +1,25 @@
+---
+import { NativeSelect, NativeSelectOption } from "../../ui/native-select";
+---
+
+<div class="flex flex-wrap items-end gap-6">
+  {
+    (["sm", "default", "lg"] as const).map((size) => (
+      <label class="flex flex-col gap-1 text-sm">
+        <span class="text-muted-foreground">size="{size}"</span>
+        <NativeSelect size={size} class="w-40">
+          <NativeSelectOption value="date-desc">Más reciente</NativeSelectOption>
+          <NativeSelectOption value="date-asc">Más antiguo</NativeSelectOption>
+          <NativeSelectOption value="title">Título</NativeSelectOption>
+        </NativeSelect>
+      </label>
+    ))
+  }
+
+  <label class="flex flex-col gap-1 text-sm">
+    <span class="text-muted-foreground">aria-invalid</span>
+    <NativeSelect aria-invalid="true" class="w-40">
+      <NativeSelectOption value="">Elige una opción</NativeSelectOption>
+    </NativeSelect>
+  </label>
+</div>

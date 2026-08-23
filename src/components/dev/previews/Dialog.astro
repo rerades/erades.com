@@ -1,0 +1,41 @@
+---
+import { X } from "@lucide/astro";
+
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../../ui/dialog";
+---
+
+{/*
+  Igual que el dropdown: `data-slot="dialog-trigger"` sobre el <button> real,
+  porque el `DialogTrigger` del registry no se copió. Ver Header.astro, que usa
+  este mismo patrón para el menú móvil. El runtime aporta focus trap,
+  aria-modal y devolución del foco al cerrar.
+*/}
+<Dialog id="dev-dialog">
+  <button
+    type="button"
+    data-slot="dialog-trigger"
+    class="rounded-md border bg-card px-3 py-2 text-sm"
+  >
+    Abrir diálogo
+  </button>
+
+  <DialogContent class="max-w-md p-6">
+    <DialogHeader class="mb-2 flex items-center justify-between">
+      <DialogTitle class="text-lg font-semibold">Un diálogo</DialogTitle>
+      <DialogClose class="rounded p-1 hover:bg-accent" aria-label="Cerrar">
+        <X class="h-4 w-4" />
+      </DialogClose>
+    </DialogHeader>
+    <p class="text-sm text-muted-foreground">
+      Escape cierra, el foco queda atrapado dentro y vuelve al disparador al
+      salir. Nada de eso lo hace este fichero: lo pone el runtime de
+      <code>@data-slot</code>.
+    </p>
+  </DialogContent>
+</Dialog>

@@ -1,0 +1,127 @@
+---
+// Banco de trabajo de los primitivos de src/components/ui: a la izquierda la
+// doc que genera `pnpm docs:components`, arriba la pieza viva con la que
+// trastear. Existe porque la doc generada viene del registry y sus ejemplos
+// usan exports que aquí se podaron; los previews de src/components/dev/previews
+// son la versión que sí compila en este repo.
+//
+// Solo en `pnpm dev`: es una herramienta, no una sección del blog. En
+// producción devuelve 404, así que no toca baselines visuales ni bytes. El
+// sitemap la excluye aparte, en astro.config.mjs.
+//
+// Vive bajo [lang] porque con `i18n.routing.prefixDefaultLocale: true` una
+// página sin prefijo de idioma no llega a ejecutarse (lo mismo que le pasa a
+// rss-viewer.astro). No se traduce: es una herramienta, va en castellano, y
+// `lang` solo sirve para construir los enlaces de la navegación.
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+import { getCollection, render } from "astro:content";
+
+import "../../../../styles/global.css";
+
+if (!import.meta.env.DEV) {
+  return new Response(null, { status: 404 });
+}
+
+const docs = (await getCollection("componentes")).sort((a, b) =>
+  a.id.localeCompare(b.id)
+);
+
+const { lang, slug } = Astro.params;
+const current = docs.find((doc) => doc.id === slug);
+
+if (slug !== undefined && current === undefined) {
+  return new Response(null, { status: 404 });
+}
+
+const previews = import.meta.glob<{ default: AstroComponentFactory }>(
+  "../../../../components/dev/previews/*.astro",
+  { eager: true }
+);
+// El id de la colección es el nombre del fichero de doc (`dropdown-menu`) y
+// los .astro van en PascalCase, como manda la convención del repo.
+const pascalCase = (id: string): string =>
+  id.replace(/(^|-)(\w)/g, (_, __, letter: string) => letter.toUpperCase());
+
+const Preview = current
+  ? previews[`../../../../components/dev/previews/${pascalCase(current.id)}.astro`]
+      ?.default
+  : undefined;
+
+const Content = current ? (await render(current)).Content : undefined;
+---
+
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{current ? current.id : "Componentes"} · dev</title>
+  </head>
+  <body class="bg-background text-foreground">
+    <div class="mx-auto flex max-w-6xl gap-8 p-6">
+      <nav class="w-48 shrink-0">
+        <a href={`/${lang}/dev/componentes`} class="text-sm font-semibold">Componentes</a>
+        <ul class="mt-4 space-y-1">
+          {
+            docs.map((doc) => (
+              <li>
+                <a
+                  href={`/${lang}/dev/componentes/${doc.id}`}
+                  class:list={[
+                    "block rounded px-2 py-1 text-sm hover:bg-accent",
+                    doc.id === slug && "bg-accent font-medium",
+                  ]}
+                >
+                  {doc.id}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <main class="min-w-0 flex-1">
+        {
+          current === undefined && (
+            <div class="prose max-w-none">
+              <h1>Componentes</h1>
+              <p>
+                Los primitivos copiados del registry de bejamas/ui. Elige uno a
+                la izquierda: arriba sale la pieza viva y debajo su
+                documentación, generada con <code>pnpm docs:components</code>{" "}
+                desde el JSDoc del propio componente.
+              </p>
+              <p>
+                Esta página solo existe en <code>pnpm dev</code>.
+              </p>
+            </div>
+          )
+        }
+
+        {
+          Preview && (
+            <section class="mb-8">
+              <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                Preview
+              </h2>
+              <div class="rounded-lg border bg-card p-8">
+                <Preview />
+              </div>
+            </section>
+          )
+        }
+
+        {
+          current && Preview === undefined && (
+            <p class="mb-8 rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+              Sin preview vivo. Añade{" "}
+              <code>src/components/dev/previews/{current.id}.astro</code>.
+            </p>
+          )
+        }
+
+        {Content && <article class="prose max-w-none"><Content /></article>}
+      </main>
+    </div>
+  </body>
+</html>

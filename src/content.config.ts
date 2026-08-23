@@ -18,4 +18,16 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { blog };
+// La doc que `pnpm docs:components` genera en docs/components. Se carga como
+// colección para que el pipeline de Markdown (y con él expressive-code) la
+// renderice en /dev/componentes sin escribir un parser. Sin schema: los
+// ficheros son Markdown pelado, sin frontmatter. El README es el índice del
+// directorio en GitHub y la ruta ya tiene el suyo.
+const componentes = defineCollection({
+  loader: glob({
+    base: "./docs/components",
+    pattern: ["*.md", "!README.md"],
+  }),
+});
+
+export const collections = { blog, componentes };
