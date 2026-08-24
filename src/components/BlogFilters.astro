@@ -25,12 +25,21 @@ const {
   lang = "es",
 } = Astro.props as Props;
 
-function getCategoryHrefLocal(cat: string) {
-  if (!tag) return getCategoryHref ? getCategoryHref(cat) : "#";
-  if (cat === "Todas") {
-    return `/tags/${tag}/` + (sortBy ? `?sortBy=${sortBy}` : "");
-  }
-  return `/tags/${tag}/${cat}/` + (sortBy ? `?sortBy=${sortBy}` : "");
+/**
+ * Builds a category chip href. The page-provided builder always wins:
+ * tag pages already pass localized URLs with `category` as a query param.
+ * The `tag` fallback used to take precedence and emit unprefixed
+ * `/tags/{tag}/{category}/` paths, which 404 with prefixDefaultLocale.
+ */
+function getCategoryHrefLocal(cat: string): string {
+  if (getCategoryHref) return getCategoryHref(cat);
+  if (!tag) return "#";
+
+  const params = new URLSearchParams();
+  if (cat !== "Todas") params.set("category", cat);
+  if (sortBy) params.set("sortBy", sortBy);
+  const query = params.toString();
+  return `/${lang}/tags/${tag}/` + (query ? `?${query}` : "");
 }
 ---
 

@@ -194,7 +194,7 @@ describe("BlogFilters.astro", () => {
       expect(technologyLink).toBeTruthy();
     });
 
-    test("debería generar enlaces correctos para categorías con tag", async () => {
+    test("debería generar enlaces localizados para categorías con tag", async () => {
       // Arrange
       const mockProps = {
         categories: ["Technology", "Todas"],
@@ -202,6 +202,7 @@ describe("BlogFilters.astro", () => {
         sortBy: "date-desc",
         viewMode: "grid",
         tag: "javascript",
+        lang: "es" as const,
       };
 
       // Act
@@ -210,8 +211,43 @@ describe("BlogFilters.astro", () => {
       });
 
       // Assert
-      const todasLink = result.querySelector('a[href*="/tags/javascript/"]');
+      const todasLink = result.querySelector('a[href="/es/tags/javascript/?sortBy=date-desc"]');
+      const technologyLink = result.querySelector(
+        'a[href="/es/tags/javascript/?category=Technology&sortBy=date-desc"]'
+      );
       expect(todasLink).toBeTruthy();
+      expect(technologyLink).toBeTruthy();
+      expect(result.querySelector('a[href^="/tags/"]')).toBeNull();
+    });
+
+    test("debería preferir getCategoryHref aunque también se pase tag", async () => {
+      const mockProps = {
+        categories: ["javascript", "Todas"],
+        selectedCategory: "Todas",
+        sortBy: "date-desc",
+        viewMode: "grid",
+        tag: "javascript",
+        lang: "es" as const,
+        getCategoryHref: (cat: string) =>
+          cat === "Todas"
+            ? "/es/tags/javascript/"
+            : `/es/tags/javascript/?category=${cat}`,
+      };
+
+      const result = await renderAstroComponent(BlogFilters, {
+        props: mockProps,
+      });
+
+      expect(
+        result.querySelector('a[href="/es/tags/javascript/"]')
+      ).toBeTruthy();
+      expect(
+        result.querySelector('a[href="/es/tags/javascript/?category=javascript"]')
+      ).toBeTruthy();
+      expect(result.querySelector('a[href^="/tags/"]')).toBeNull();
+      expect(
+        result.querySelector('a[href*="/tags/javascript/javascript"]')
+      ).toBeNull();
     });
   });
 

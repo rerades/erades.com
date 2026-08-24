@@ -56,6 +56,14 @@ test.describe("Tags y Categorías", () => {
     console.log("encodedTag:: ", encodedTag);
     await page.waitForURL(`/es/tags/${encodedTag}/`);
     expect(page.url()).toMatch(`/es/tags/${encodedTag}/`);
+    const categoryHrefs = await page.locator("#filters a").evaluateAll((els) =>
+      els.map((el) => el.getAttribute("href") ?? "")
+    );
+    expect(categoryHrefs.length).toBeGreaterThan(0);
+    for (const href of categoryHrefs) {
+      expect(href.startsWith("/es/tags/")).toBe(true);
+      expect(href.startsWith("/tags/")).toBe(false);
+    }
     // Verificar que la página de tag individual muestra posts (si existen)
     const blogPosts = page.locator(
       '[aria-label="grid-card"], [aria-label="list-card"]'
