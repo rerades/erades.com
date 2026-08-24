@@ -70,7 +70,6 @@ atiende a todos los `[data-lang-switch]` del documento, haya los que haya. | 2 |
 
 Con `disableInactive` los extremos se pintan apagados en vez de desaparecer, para que la barra no cambie de ancho al llegar al final. | 9 |
 | [Results Info](./results-info.md) | El «mostrando N de M» de un listado, con la consulta si la hubo. No se pinta cuando no hay nada que contar. | 4 |
-| [RSS Buttons](./rss-buttons.md) | Los dos enlaces a los feeds: el del idioma actual y el combinado. | 1 |
 | [Search Input](./search-input.md) | El campo de busqueda, con su etiqueta accesible y el valor actual de la consulta. No busca nada por sí mismo: quien lo envuelve decide a dónde va el formulario. | 2 |
 | [Show When](./show-when.md) | Renderiza su contenido solo si la condicion se cumple. Trata el array vacío como falso, que es el caso que más veces se escapa con un `&&` a pelo.
 

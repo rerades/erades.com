@@ -417,6 +417,19 @@ async function main(): Promise<void> {
   const index = path.join(OUT_DIR, "README.md");
   await fs.writeFile(index, renderIndex(docs), "utf-8");
 
+  // Borrar un componente tiene que borrar su doc. Sin esto, el fichero se
+  // queda documentando algo que ya no existe y nadie lo nota, que es
+  // exactamente lo que la doc generada venía a evitar.
+  const vigentes = new Set([...docs.map((d) => `${d.id}.md`), "README.md"]);
+  const huerfanas = (await fs.readdir(OUT_DIR)).filter(
+    (f) => f.endsWith(".md") && !vigentes.has(f)
+  );
+
+  for (const file of huerfanas) {
+    await fs.rm(path.join(OUT_DIR, file));
+    process.stdout.write(`huérfana borrada: ${file}\n`);
+  }
+
   const undocumented = siteFiles.length + uiDirs.length - docs.length;
   process.stdout.write(
     `${docs.length} componente(s) en docs/components/` +
