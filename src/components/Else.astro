@@ -1,4 +1,25 @@
 ---
+/**
+ * @component Else
+ * @title Else
+ * @description La rama falsa de un `If`. No decide nada: solo envuelve el contenido para que `If` lo reciba como el slot `else`.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import If from "./If.astro";
+ * import Then from "./Then.astro";
+ * import Else from "./Else.astro";
+ * ---
+ *
+ * <If condition={posts.length > 0}>
+ *   <Then slot="then">Hay posts</Then>
+ *   <Else slot="else">No hay ninguno</Else>
+ * </If>
+ * ```
+ */
 // This component is now just a wrapper for the "else" slot
 ---
 

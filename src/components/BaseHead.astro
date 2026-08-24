@@ -1,4 +1,22 @@
 ---
+/**
+ * @component BaseHead
+ * @title Base Head
+ * @description Todo lo que va en el <head> de cualquier página: metadatos globales, canónica, Open Graph, Twitter Card, los tres feeds RSS y Google Analytics.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import BaseHead from "./BaseHead.astro";
+ * ---
+ *
+ * <head>
+ *   <BaseHead title={title} description={description} image={heroImage} />
+ * </head>
+ * ```
+ */
 import { SITE_TITLE } from "../consts";
 import GoogleAnalytics from "./GoogleAnalytics.astro";
 
@@ -24,19 +42,19 @@ const { title, description, image = "/blog-placeholder-1.jpg" } = Astro.props;
   rel="alternate"
   type="application/rss+xml"
   title="RSS Feed (Español)"
-  href={new URL("rss.xml", Astro.site)}
+  href={new URL("rss", Astro.site)}
 />
 <link
   rel="alternate"
   type="application/rss+xml"
   title="RSS Feed (English)"
-  href={new URL("en/rss.xml", Astro.site)}
+  href={new URL("en/rss", Astro.site)}
 />
 <link
   rel="alternate"
   type="application/rss+xml"
   title="RSS Feed (Todos)"
-  href={new URL("feed.xml", Astro.site)}
+  href={new URL("feed", Astro.site)}
 />
 
 <meta name="generator" content={Astro.generator} />

@@ -10,9 +10,9 @@
 // sitemap la excluye aparte, en astro.config.mjs.
 //
 // Vive bajo [lang] porque con `i18n.routing.prefixDefaultLocale: true` una
-// página sin prefijo de idioma no llega a ejecutarse (lo mismo que le pasa a
-// rss-viewer.astro). No se traduce: es una herramienta, va en castellano, y
-// `lang` solo sirve para construir los enlaces de la navegación.
+// página sin prefijo de idioma no llega a ejecutarse (ver CLAUDE.md). No se
+// traduce: es una herramienta, va en castellano, y `lang` solo sirve para
+// construir los enlaces de la navegación.
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import { getCollection, render } from "astro:content";
 

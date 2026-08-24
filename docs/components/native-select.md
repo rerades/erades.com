@@ -1,23 +1,35 @@
 # Native Select
 
-> Generado por `pnpm docs:components` desde el JSDoc de [`NativeSelect.astro`](../../src/components/ui/native-select/NativeSelect.astro). No editar a mano: los cambios se pierden en la siguiente copia del registry.
+> Generado por `pnpm docs:components` desde [`NativeSelect.astro`](../../src/components/ui/native-select/NativeSelect.astro). No editar a mano.
 
 A styled native HTML select element with consistent design system integration.
 
-## Exports en este repo
+## Importar
 
 > Desviación del registry (ver docs/bejamas-ui.md): no se exporta
 > `NativeSelectOptGroup` —ni se copia su fichero— porque aquí no hay ningún
 > &lt;select> con grupos. Si algún día lo hay, vuelve a copiarlo con el script.
 
-- `NativeSelect` — `NativeSelect.astro`
-- `NativeSelectOption` — `NativeSelectOption.astro`
-
 ```astro
 import { NativeSelect, NativeSelectOption } from "./ui/native-select";
 ```
 
-Ruta relativa desde `src/components/`, que es como se importan aquí (ver `BlogFilters.astro`, `Header.astro`).
+Ruta relativa desde `src/components/`, que es como se importa aquí.
+
+## Props
+
+Extiende `HTMLAttributes<"select">`.
+
+| Prop | Tipo | Obligatoria | Descripción |
+| --- | --- | --- | --- |
+| `class` | `string` | — |  |
+| `size` | `"sm" \| "default" \| "lg"` | — |  |
+
+## Slots
+
+- `default`
+
+Detectados en el markup; los slots con nombre se comprueban con `Astro.slots.has()`.
 
 > **Ojo:** los ejemplos de abajo vienen del registry y usan `NativeSelectOptGroup`, que esta copia no exporta (el motivo, arriba). Adáptalos.
 

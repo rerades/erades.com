@@ -1,4 +1,23 @@
 ---
+/**
+ * @component Then
+ * @title Then
+ * @description La rama verdadera de un `If`. No decide nada: solo envuelve el contenido para que `If` lo reciba como el slot `then`.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import If from "./If.astro";
+ * import Then from "./Then.astro";
+ * ---
+ *
+ * <If condition={hasResults}>
+ *   <Then slot="then">Resultados</Then>
+ * </If>
+ * ```
+ */
 // This component is now just a wrapper for the "then" slot
 ---
 

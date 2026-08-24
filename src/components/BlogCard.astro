@@ -1,4 +1,20 @@
 ---
+/**
+ * @component BlogCard
+ * @title Blog Card
+ * @description Despacha a la tarjeta de rejilla o a la de lista según `variant`. Existe para que quien pinta un listado no tenga que saber cuál de las dos toca.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import BlogCard from "./BlogCard.astro";
+ * ---
+ *
+ * <BlogCard post={post} variant="grid" lang="es" index={0} />
+ * ```
+ */
 import BlogCardGrid from "./BlogCardGrid.astro";
 import BlogCardList from "./BlogCardList.astro";
 interface Props {

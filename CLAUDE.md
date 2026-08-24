@@ -88,7 +88,7 @@ rather than alias prefixes. Keep that in mind when adding a rule.
 - `output: "server"` with `@astrojs/node` (standalone). **Both** locales are prefixed (`/es/...` and `/en/...`), so `astro.config.mjs` sets `i18n.routing.prefixDefaultLocale: true`; `/` redirects via `src/pages/index.astro`. Do not flip that flag back to `false`: every page lives under `src/pages/[lang]/`, and Astro 7 then treats the default locale's prefix as an invalid route and 404s half the site.
 - All localized pages live under `src/pages/[lang]/...` (e.g. `[lang]/blog/[...slug].astro`, `[lang]/blog/page/[page].astro`, `[lang]/tags/[tag]/[page].astro`). `lang` is validated/resolved per-route; there is no separate i18n routing middleware.
 - `src/middleware.ts` does exist, but it has nothing to do with routing or i18n: it only stamps security headers (`X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`) and a per-path `Cache-Control` on every response. If a route is being cached wrong in production, `getCacheControl()` there is the place — not the host config, which is deliberately provider-agnostic.
-- Root-level files (`src/pages/index.astro`, `404.astro`, `rss.js`, `feed.js`, `en/rss.js`, `rss-viewer.astro`) exist outside `[lang]` for locale-root and cross-locale concerns (combined RSS feed, XSL viewer, etc). **But only the endpoints actually route**: with `prefixDefaultLocale: true` a non-prefixed `.astro` *page* never runs — `/rss` and `/feed` return 200 while `/rss-viewer` 404s (nothing links to it, so nobody noticed). Any new page goes under `src/pages/[lang]/`, even one that has nothing to say about language.
+- Root-level files (`src/pages/index.astro`, `404.astro`, `rss.js`, `feed.js`, `en/rss.js`) exist outside `[lang]` for locale-root and cross-locale concerns (the combined RSS feed, the locale redirect). **Only endpoints belong there**: with `prefixDefaultLocale: true` a non-prefixed `.astro` *page* never runs — `/rss` and `/feed` return 200, but `rss-viewer.astro` sat there 404ing until it was deleted, unnoticed because nothing linked to it. Any new page goes under `src/pages/[lang]/`, even one that has nothing to say about language.
 - Translation strings live in `src/i18n/locales/{en,es}.json`, accessed via `t(lang, key)` / `tWithInterpolation(lang, key, vars)` in `src/i18n/index.ts`. Missing keys return the key itself rather than throwing — check this when strings appear untranslated.
 
 ### Content collections
@@ -102,6 +102,23 @@ rather than alias prefixes. Keep that in mind when adding a rule.
 - `pnpm build` first runs `scripts/generate-flexsearch-index.ts`, which walks `src/content/blog`, parses frontmatter with `gray-matter`, and writes a flattened doc list to `public/search-index.json` (locale-prefixed `path`, lowercase `id`).
 - `src/pages/api/search.ts` is an SSR-only route (`export const prerender = false`) that loads that JSON at request time, builds ephemeral FlexSearch `Document`/`Index` instances (metadata fields + full content), and returns merged/deduplicated matches. The index is rebuilt per-request from the static JSON file, not persisted in memory — if search behavior seems stale, check whether `public/search-index.json` was regenerated.
 - `SearchInput.astro` / `SearchPageWrapper.astro` / `HeaderSearchBox.astro` are the client-facing pieces that call this API.
+
+### Component documentation
+
+Every component in `src/components/**` carries a JSDoc block at the top of its
+frontmatter, in the bejamas/ui tag format (`@component`, `@title`,
+`@description`, `@usage`, and for the `ui/` primitives also `@preview`, `@api`,
+`@examples`). `pnpm docs:components` extracts it to `docs/components/`, and
+`/es/dev/componentes` renders it next to a live preview (dev only — the route
+404s in production).
+
+**A new component is not finished until it has that block and the docs are
+regenerated.** Write only what a parser cannot deduce — what the component is
+for and how it is used. The props table and the slot list are read from
+`interface Props` and from the markup, so never hand-write them: they would go
+stale on the next rename. Live previews are optional and live in
+`src/components/dev/previews/<PascalCase>.astro`; a component without one shows
+a note saying which file to add.
 
 ### Conditional-rendering component pattern
 

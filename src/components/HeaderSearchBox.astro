@@ -1,4 +1,20 @@
 ---
+/**
+ * @component HeaderSearchBox
+ * @title Header Search Box
+ * @description El `SearchInput` envuelto en el formulario que lo envía a `/{lang}/search`. Separado del input porque este último también se usa dentro de la propia página de búsqueda, donde el formulario ya existe.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import HeaderSearchBox from "./HeaderSearchBox.astro";
+ * ---
+ *
+ * <HeaderSearchBox lang="es" />
+ * ```
+ */
 import SearchInput from "./SearchInput.astro";
 ---
 

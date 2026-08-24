@@ -103,7 +103,8 @@ Las que hay hoy:
 
 `/es/dev/componentes` — solo con `pnpm dev`; en producción devuelve 404 y no
 entra en el sitemap. Por componente: la pieza viva arriba y debajo su
-documentación, la que genera `pnpm docs:components`.
+documentación, la que genera `pnpm docs:components`. Están los cuatro
+primitivos y los 27 componentes del sitio, con el mismo formato.
 
 Los previews viven en `src/components/dev/previews/` y se escriben a mano por
 un motivo: los ejemplos de la doc vienen del registry y usan piezas que aquí se

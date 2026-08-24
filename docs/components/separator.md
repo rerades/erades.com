@@ -1,20 +1,18 @@
 # Separator
 
-> Generado por `pnpm docs:components` desde el JSDoc de [`Separator.astro`](../../src/components/ui/separator/Separator.astro). No editar a mano: los cambios se pierden en la siguiente copia del registry.
+> Generado por `pnpm docs:components` desde [`Separator.astro`](../../src/components/ui/separator/Separator.astro). No editar a mano.
 
 Visual separator for grouping content, supporting horizontal and vertical orientation.
 
 Estado: **stable** · [Figma](https://www.figma.com/design/koxai7zw5vIuBzuVxe5T2l/bejamas-ui?node-id=2511-5829&t=YFStJ3V8fXEO8QD8-4)
 
-## Exports en este repo
-
-- `Separator` — `Separator.astro`
+## Importar
 
 ```astro
 import { Separator } from "./ui/separator";
 ```
 
-Ruta relativa desde `src/components/`, que es como se importan aquí (ver `BlogFilters.astro`, `Header.astro`).
+Ruta relativa desde `src/components/`, que es como se importa aquí.
 
 ## Preview
 

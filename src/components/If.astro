@@ -1,4 +1,27 @@
 ---
+/**
+ * @component If
+ * @title If
+ * @description Condicional con dos ramas. Usa slots con nombre (`Astro.slots.has()`) en vez de inspeccionar los hijos, así que la rama que no se cumple no llega a renderizarse.
+ *
+ *
+ * Es la alternativa del repo al ternario incrustado en el markup. Para una sola rama, `ShowWhen`.
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import If from "./If.astro";
+ * import Then from "./Then.astro";
+ * import Else from "./Else.astro";
+ * ---
+ *
+ * <If condition={totalPages > 1}>
+ *   <Then slot="then"><Paginator /></Then>
+ *   <Else slot="else">Una sola página</Else>
+ * </If>
+ * ```
+ */
 interface Props {
   condition: boolean;
 }

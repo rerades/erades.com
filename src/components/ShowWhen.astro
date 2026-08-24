@@ -1,4 +1,24 @@
 ---
+/**
+ * @component ShowWhen
+ * @title Show When
+ * @description Renderiza su contenido solo si la condicion se cumple. Trata el array vacío como falso, que es el caso que más veces se escapa con un `&&` a pelo.
+ *
+ *
+ * Para dos ramas, `If` con `Then` y `Else`.
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import ShowWhen from "./ShowWhen.astro";
+ * ---
+ *
+ * <ShowWhen when={tags}>
+ *   <TagList tags={tags} />
+ * </ShowWhen>
+ * ```
+ */
 interface Props {
   when: unknown;
 }

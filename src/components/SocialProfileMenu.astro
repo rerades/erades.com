@@ -1,4 +1,29 @@
 ---
+/**
+ * @component SocialProfileMenu
+ * @title Social Profile Menu
+ * @description El menú del avatar: nombre, correo y enlaces sociales dentro de un `DropdownMenu` de bejamas/ui.
+ *
+ *
+ * El botón del avatar vive aquí y no en `Header.astro` porque el disparador y el contenido tienen que colgar de la misma raíz `data-slot="dropdown-menu"`.
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import SocialProfileMenu from "./SocialProfileMenu.astro";
+ * ---
+ *
+ * <SocialProfileMenu
+ *   name="Ricardo"
+ *   email="hola@erades.com"
+ *   linkedinUrl="https://linkedin.com/in/..."
+ *   xUrl="https://x.com/..."
+ *   avatarSrc={avatar.src}
+ *   lang="es"
+ * />
+ * ```
+ */
 import { ChevronDown, X } from "@lucide/astro";
 import Linkedin from "./LinkedinIcon.astro";
 import { t } from "../i18n";
