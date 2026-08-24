@@ -3,10 +3,12 @@ import { describe, expect, it } from "vitest";
 import {
   findMissing,
   kebabCase,
+  markdownTableCell,
   parseDocBlock,
   parseProps,
   parseSlots,
   readBarrel,
+  renderIndex,
   rewriteUpstream,
 } from "./generate-component-docs";
 
@@ -52,6 +54,20 @@ describe("parseDocBlock", () => {
 
   it("devuelve {} cuando no hay bloque", () => {
     expect(parseDocBlock("---\nconst x = 1;\n---")).toEqual({});
+  });
+
+  it("conserva los párrafos extra de @description", () => {
+    const source = [
+      "/**",
+      " * @description Primera línea.",
+      " *",
+      " * Segunda con a | b.",
+      " * @usage x",
+      " */",
+    ].join("\n");
+    expect(parseDocBlock(source).description).toBe(
+      "Primera línea.\n\nSegunda con a | b."
+    );
   });
 });
 
@@ -151,5 +167,44 @@ describe("kebabCase", () => {
   it("convierte el nombre del componente en el de su doc", () => {
     expect(kebabCase("BlogCardGrid")).toBe("blog-card-grid");
     expect(kebabCase("If")).toBe("if");
+  });
+});
+
+describe("markdownTableCell", () => {
+  it("aplana saltos de línea y escapa tuberías", () => {
+    expect(markdownTableCell("Primera.\n\nSegunda con a | b.")).toBe(
+      "Primera. Segunda con a \\| b."
+    );
+  });
+});
+
+describe("renderIndex", () => {
+  it("mete la descripción multilínea en una sola fila", () => {
+    const index = renderIndex([
+      {
+        id: "blog-filters",
+        kind: "sitio",
+        sourcePath: "src/components/BlogFilters.astro",
+        importPath: "./BlogFilters.astro",
+        doc: {
+          title: "Blog Filters",
+          description: "Filtro GET.\n\nEl orden usa NativeSelect.",
+        },
+        barrel: null,
+        props: [
+          { name: "lang", type: '"es" | "en"', required: true, doc: "" },
+        ],
+        propsExtends: null,
+        slots: [],
+      },
+    ]);
+
+    const row = index
+      .split("\n")
+      .find((line) => line.includes("./blog-filters.md"));
+
+    expect(row).toBe(
+      "| [Blog Filters](./blog-filters.md) | Filtro GET. El orden usa NativeSelect. | 1 |"
+    );
   });
 });

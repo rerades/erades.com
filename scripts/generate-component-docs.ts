@@ -198,6 +198,14 @@ export function findMissing(
 export const kebabCase = (name: string): string =>
   name.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
 
+/**
+ * Una celda de tabla Markdown no admite saltos de línea (cierran la fila)
+ * ni `|` crudo (parte la columna: un tipo `"es" | "en"` se volvería tres).
+ */
+export function markdownTableCell(text: string): string {
+  return text.replace(/\s+/g, " ").trim().replace(/\|/g, "\\|");
+}
+
 function renderProps(component: ComponentDoc): readonly string[] {
   const { props, propsExtends } = component;
   if (props.length === 0 && propsExtends === null) return [];
@@ -208,15 +216,12 @@ function renderProps(component: ComponentDoc): readonly string[] {
   }
   if (props.length === 0) return [...out];
 
-  // Un tipo unión (`"es" | "en"`) parte la fila en columnas si no se escapa.
-  const cell = (text: string): string => text.replace(/\|/g, "\\|");
-
   out.push(
     "| Prop | Tipo | Obligatoria | Descripción |",
     "| --- | --- | --- | --- |",
     ...props.map(
       (p) =>
-        `| \`${p.name}\` | \`${cell(p.type)}\` | ${p.required ? "sí" : "—"} | ${cell(p.doc)} |`
+        `| \`${p.name}\` | \`${markdownTableCell(p.type)}\` | ${p.required ? "sí" : "—"} | ${markdownTableCell(p.doc)} |`
     ),
     ""
   );
@@ -314,7 +319,7 @@ export function renderIndex(docs: readonly ComponentDoc[]): string {
       .filter((d) => d.kind === kind)
       .map(
         (d) =>
-          `| [${d.doc.title ?? d.id}](./${d.id}.md) | ${d.doc.description ?? ""} | ${d.props.length} |`
+          `| [${d.doc.title ?? d.id}](./${d.id}.md) | ${markdownTableCell(d.doc.description ?? "")} | ${d.props.length} |`
       );
     return ["| Componente | Descripción | Props |", "| --- | --- | --- |", ...rows];
   };
