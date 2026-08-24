@@ -1,19 +1,24 @@
 ---
 import { getCollection } from "astro:content";
-import Layout from "../../../../layouts/BlogLayout.astro";
+import Layout from "../../../../layouts/BlogPost.astro";
 import BlogList from "../../../../components/BlogList.astro";
 import { filterPostsByTag } from "../tag-utils";
 import { sortPosts, SORT_BY_OPTIONS } from "../../../../utils/sort-utils";
-import tag from "@lucide/astro/icons/tag";
 
-const { lang: langParam } = Astro.params;
+const { lang: langParam, tag: tagParam, page: pageParam } = Astro.params;
 const lang = langParam ?? "es";
+const tag = tagParam ?? "";
+const currentPage = Number(pageParam);
+
+if (!Number.isInteger(currentPage) || currentPage < 1) {
+  return new Response(null, { status: 404 });
+}
+
 const allPosts = (await getCollection("blog")).filter(
   (p) => !p.data.draft && p.id.startsWith(`${lang}/`)
 );
 const postsWithTag = filterPostsByTag(allPosts, tag);
 
-// Extraer categorías únicas de los posts filtrados
 const categories = [
   "Todas",
   ...Array.from(
@@ -32,7 +37,7 @@ const sortBy = SORT_BY_OPTIONS.includes(sortByRaw as any)
   ? (sortByRaw as (typeof SORT_BY_OPTIONS)[number])
   : "date-desc";
 const viewMode: "grid" | "list" =
-  (url.searchParams.get("view") as "grid" | "list") || "grid";
+  (url.searchParams.get("viewMode") as "grid" | "list") || "grid";
 
 function filterByCategory(posts: any[], category: string): any[] {
   if (category === "Todas") return posts;
@@ -47,10 +52,8 @@ function filterByCategory(posts: any[], category: string): any[] {
 const filteredPosts = filterByCategory(postsWithTag, selectedCategory);
 const sortedPosts = sortPosts(filteredPosts, sortBy);
 
-// Paginación
 const POSTS_PER_PAGE = 6;
 const totalPages = Math.ceil(sortedPosts.length / POSTS_PER_PAGE);
-const currentPage = page;
 const paginatedPosts = sortedPosts.slice(
   (currentPage - 1) * POSTS_PER_PAGE,
   currentPage * POSTS_PER_PAGE
@@ -60,6 +63,7 @@ const getCategoryHref = (cat: string) => {
   const params = new URLSearchParams();
   if (cat !== "Todas") params.set("category", cat);
   if (sortBy) params.set("sortBy", sortBy);
+  if (viewMode) params.set("viewMode", viewMode);
   return (
     `/${lang}/tags/${tag}/` + (params.toString() ? `?${params.toString()}` : "")
   );
@@ -68,6 +72,7 @@ const getPageHref = (page: number) => {
   const params = new URLSearchParams();
   if (selectedCategory !== "Todas") params.set("category", selectedCategory);
   if (sortBy) params.set("sortBy", sortBy);
+  if (viewMode) params.set("viewMode", viewMode);
   return (
     (page === 1 ? `/${lang}/tags/${tag}/` : `/${lang}/tags/${tag}/${page}/`) +
     (params.toString() ? `?${params.toString()}` : "")
@@ -95,5 +100,6 @@ const getPageHref = (page: number) => {
     getCategoryHref={getCategoryHref}
     getPageHref={getPageHref}
     tag={tag}
+    lang={lang}
   />
 </Layout>
