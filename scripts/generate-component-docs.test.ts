@@ -208,3 +208,24 @@ describe("renderIndex", () => {
     );
   });
 });
+
+// El build ya revienta si un preview no compila, porque `import.meta.glob` los
+// importa en eager. Lo que no detecta es el que falta: ese solo pinta un aviso
+// en una página que nadie mira en CI. De ahí este test.
+describe("previews vivos", () => {
+  it("cada componente documentado tiene el suyo", async () => {
+    const fs = await import("node:fs/promises");
+
+    const documentados = (await fs.readdir("docs/components"))
+      .filter((file) => file.endsWith(".md") && file !== "README.md")
+      .map((file) => file.slice(0, -".md".length));
+    const previews = new Set(
+      (await fs.readdir("src/components/dev/previews")).map((file) =>
+        kebabCase(file.replace(/\.astro$/, ""))
+      )
+    );
+
+    expect(documentados.length).toBeGreaterThan(0);
+    expect(documentados.filter((id) => !previews.has(id))).toEqual([]);
+  });
+});

@@ -1,0 +1,32 @@
+---
+import BlogFilters from "../../BlogFilters.astro";
+
+const categories = ["Todas", "Astro", "Funcional", "IA"];
+---
+
+<div class="space-y-8">
+  <div>
+    <p class="mb-2 text-xs text-muted-foreground">en el listado del blog</p>
+    <BlogFilters
+      categories={categories}
+      selectedCategory="todas"
+      sortBy="date-desc"
+      viewMode="grid"
+      lang="es"
+    />
+  </div>
+
+  <div>
+    <p class="mb-2 text-xs text-muted-foreground">
+      con tag: los enlaces de categoría apuntan dentro del tag
+    </p>
+    <BlogFilters
+      categories={categories}
+      selectedCategory="astro"
+      sortBy="title"
+      viewMode="list"
+      tag="astro"
+      lang="en"
+    />
+  </div>
+</div>

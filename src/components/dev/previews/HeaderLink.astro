@@ -1,0 +1,13 @@
+---
+// El icono lo elige la propia ruta, y el estado activo lo decide comparando
+// con Astro.url.pathname: en esta página no coincide ninguna.
+import HeaderLink from "../../HeaderLink.astro";
+---
+
+<nav class="flex items-center gap-4 text-sm">
+  <HeaderLink href="/es" lang="es">Inicio</HeaderLink>
+  <HeaderLink href="/es/blog" lang="es">Blog</HeaderLink>
+  <HeaderLink href="/es/about" lang="es">Sobre mí</HeaderLink>
+  <HeaderLink href="/es/tags" lang="es">Tags</HeaderLink>
+  <HeaderLink href="/es/otra" lang="es">Sin icono</HeaderLink>
+</nav>

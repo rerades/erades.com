@@ -1,0 +1,18 @@
+---
+import ViewModeToggle from "../../ViewModeToggle.astro";
+---
+
+<div class="space-y-4 text-sm">
+  {
+    (["grid", "list"] as const).map((viewMode) => (
+      <div class="flex items-center gap-3">
+        <code class="w-32 text-muted-foreground">viewMode="{viewMode}"</code>
+        <ViewModeToggle viewMode={viewMode} lang="es" />
+      </div>
+    ))
+  }
+  <div class="flex items-center gap-3">
+    <code class="w-32 text-muted-foreground">lang="en"</code>
+    <ViewModeToggle viewMode="grid" lang="en" />
+  </div>
+</div>

@@ -1,0 +1,24 @@
+---
+import Paginator from "../../Paginator.astro";
+
+const getPageHref = (page: number): string => `#pagina-${page}`;
+---
+
+<div class="space-y-8">
+  {
+    [1, 3, 5].map((currentPage) => (
+      <div>
+        <p class="mb-2 text-xs text-muted-foreground">currentPage={currentPage} de 5</p>
+        <Paginator currentPage={currentPage} totalPages={5} getPageHref={getPageHref} lang="es" />
+      </div>
+    ))
+  }
+
+  <div>
+    <p class="mb-2 text-xs text-muted-foreground">
+      disableInactive: los extremos se apagan en vez de desaparecer, así la
+      barra no cambia de ancho
+    </p>
+    <Paginator currentPage={1} totalPages={5} getPageHref={getPageHref} disableInactive lang="en" />
+  </div>
+</div>

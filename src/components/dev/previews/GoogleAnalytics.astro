@@ -1,0 +1,19 @@
+---
+// Igual que BaseHead: solo emite <script>, y además solo si
+// PUBLIC_GA_MEASUREMENT_ID está definida. En local no suele estarlo, así que
+// lo normal es que el bloque de abajo salga vacío — que es el comportamiento
+// que interesa comprobar.
+import GoogleAnalytics from "../../GoogleAnalytics.astro";
+
+const measurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
+---
+
+<p class="mb-4 text-sm text-muted-foreground">
+  PUBLIC_GA_MEASUREMENT_ID: <code>{measurementId ?? "sin definir"}</code> —{" "}
+  {measurementId ? "carga gtag.js" : "el componente no emite nada"}
+</p>
+
+<div class="rounded border border-dashed p-4 text-xs text-muted-foreground">
+  <GoogleAnalytics />
+  (scripts, invisibles en la página)
+</div>

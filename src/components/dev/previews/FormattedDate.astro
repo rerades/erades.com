@@ -1,0 +1,22 @@
+---
+import FormattedDate from "../../FormattedDate.astro";
+
+const dates = [new Date("2026-01-09"), new Date("2026-08-24")];
+---
+
+<table class="text-sm">
+  <thead class="text-muted-foreground">
+    <tr><th class="pr-6 text-left font-normal">lang</th><th class="pr-6 text-left font-normal">es</th><th class="text-left font-normal">en</th></tr>
+  </thead>
+  <tbody>
+    {
+      dates.map((date) => (
+        <tr>
+          <td class="pr-6 font-mono text-xs text-muted-foreground">{date.toISOString().slice(0, 10)}</td>
+          <td class="pr-6"><FormattedDate date={date} lang="es" /></td>
+          <td><FormattedDate date={date} lang="en" /></td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

@@ -1,0 +1,18 @@
+---
+import LinkedinIcon from "../../LinkedinIcon.astro";
+---
+
+<div class="flex items-end gap-6 text-foreground">
+  {
+    ["size-4", "size-6", "size-10"].map((size) => (
+      <span class="flex flex-col items-center gap-1">
+        <LinkedinIcon class={size} />
+        <code class="text-xs text-muted-foreground">{size}</code>
+      </span>
+    ))
+  }
+  <span class="flex flex-col items-center gap-1 text-sky-600">
+    <LinkedinIcon class="size-6" />
+    <code class="text-xs text-muted-foreground">hereda currentColor</code>
+  </span>
+</div>

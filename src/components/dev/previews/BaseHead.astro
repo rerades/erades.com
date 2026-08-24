@@ -1,0 +1,22 @@
+---
+// BaseHead no pinta nada visible: solo emite <title>, <meta> y <link> para el
+// <head>. Aquí se renderiza de verdad —las etiquetas de abajo salen del
+// componente, no están escritas a mano— pero al caer dentro del <body> el
+// navegador las ignora. Para verlas en su sitio, el <head> de cualquier página
+// del blog en las herramientas de desarrollo.
+import BaseHead from "../../BaseHead.astro";
+---
+
+<p class="mb-4 text-sm text-muted-foreground">
+  Componente sin salida visible. Debajo hay una llamada real; inspecciona este
+  bloque en el DOM para ver las etiquetas que produce.
+</p>
+
+<div class="rounded border border-dashed p-4 text-xs text-muted-foreground">
+  <BaseHead
+    title="Las fábricas de software"
+    description="Por qué el software no se fabrica."
+    image="/blog-placeholder-2.jpg"
+  />
+  (etiquetas de &lt;head&gt;, invisibles en el body)
+</div>

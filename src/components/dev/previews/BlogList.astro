@@ -1,0 +1,29 @@
+---
+import { getCollection } from "astro:content";
+import BlogList from "../../BlogList.astro";
+
+const posts = (await getCollection("blog"))
+  .filter((post) => post.id.startsWith("es/") && !post.data.draft)
+  .slice(0, 6);
+const categories = [
+  "Todas",
+  ...new Set(posts.flatMap((post) => post.data.categories ?? [])),
+];
+---
+
+<BlogList
+  posts={posts}
+  paginatedPosts={posts.slice(0, 3)}
+  categories={categories}
+  selectedCategory="todas"
+  sortBy="date-desc"
+  viewMode="grid"
+  currentPage={1}
+  totalPages={2}
+  getCategoryHref={(cat) => `#${cat}`}
+  getPageHref={(page) => `#pagina-${page}`}
+  lang="es"
+  title="Blog"
+  description="El listado completo, con sus filtros y su paginador."
+  showTitle
+/>
