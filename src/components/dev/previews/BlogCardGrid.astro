@@ -1,0 +1,14 @@
+---
+import { getCollection } from "astro:content";
+import BlogCardGrid from "../../BlogCardGrid.astro";
+
+// Posts reales de la colección: una tarjeta con datos inventados deja de
+// parecerse a la de producción en cuanto cambia el esquema.
+const posts = (await getCollection("blog"))
+  .filter((post) => post.id.startsWith("es/") && !post.data.draft)
+  .slice(0, 3);
+---
+
+<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  {posts.map((post, index) => <BlogCardGrid post={post} lang="es" index={index} />)}
+</div>

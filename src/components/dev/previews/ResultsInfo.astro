@@ -1,0 +1,9 @@
+---
+import ResultsInfo from "../../ResultsInfo.astro";
+---
+
+<div class="space-y-3 text-sm">
+  <ResultsInfo shown={9} total={42} lang="es" />
+  <ResultsInfo shown={3} total={3} query="astro" lang="es" />
+  <ResultsInfo shown={0} total={0} query="nada" lang="en" />
+</div>

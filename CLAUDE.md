@@ -116,9 +116,11 @@ frontmatter, in the bejamas/ui tag format (`@component`, `@title`,
 regenerated.** Write only what a parser cannot deduce — what the component is
 for and how it is used. The props table and the slot list are read from
 `interface Props` and from the markup, so never hand-write them: they would go
-stale on the next rename. Live previews are optional and live in
-`src/components/dev/previews/<PascalCase>.astro`; a component without one shows
-a note saying which file to add.
+stale on the next rename. It also needs a live preview in
+`src/components/dev/previews/<PascalCase>.astro` — every component in the repo
+has one, and a component without it shows a note saying which file to add. The
+preview is real code, so `pnpm build` compiles it: a preview that drifts from
+the component's props breaks the build rather than rotting quietly.
 
 ### Conditional-rendering component pattern
 

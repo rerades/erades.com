@@ -1,0 +1,18 @@
+---
+// `Then` y `Else` no se ven solos: son las ramas con nombre que `If` decide.
+import If from "../../If.astro";
+import Then from "../../Then.astro";
+import Else from "../../Else.astro";
+---
+
+<div class="space-y-3 text-sm">
+  <If condition={true}>
+    <Then slot="then">condition={"{true}"} → se pinta la rama <code>then</code></Then>
+    <Else slot="else">esta no llega a renderizarse</Else>
+  </If>
+
+  <If condition={false}>
+    <Then slot="then">esta no llega a renderizarse</Then>
+    <Else slot="else">condition={"{false}"} → se pinta la rama <code>else</code></Else>
+  </If>
+</div>

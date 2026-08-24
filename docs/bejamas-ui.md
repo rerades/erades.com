@@ -110,8 +110,13 @@ Los previews viven en `src/components/dev/previews/` y se escriben a mano por
 un motivo: los ejemplos de la doc vienen del registry y usan piezas que aquí se
 podaron (`DropdownMenuTrigger`, `DropdownMenuRadioItem`…), así que no compilan.
 El preview es la versión que sí funciona en este repo, con el `data-slot` sobre
-el `<button>` real. Un componente sin preview sale con un aviso diciendo qué
-fichero falta.
+el `<button>` real. Hoy los tienen todos; uno sin preview sale con un aviso
+diciendo qué fichero falta.
+
+No son ficheros muertos: `import.meta.glob` los importa en eager, así que
+`pnpm build` los compila aunque la ruta devuelva 404 en producción. Un preview
+que se quede atrás respecto a las props de su componente rompe el build, que es
+justo lo que se quiere de un ejemplo.
 
 Cuelga de `[lang]` aunque no se traduzca: una página sin prefijo de idioma no
 llega a ejecutarse (ver CLAUDE.md, sección de routing).

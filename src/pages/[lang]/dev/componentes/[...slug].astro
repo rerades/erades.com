@@ -1,9 +1,9 @@
 ---
-// Banco de trabajo de los primitivos de src/components/ui: a la izquierda la
-// doc que genera `pnpm docs:components`, arriba la pieza viva con la que
-// trastear. Existe porque la doc generada viene del registry y sus ejemplos
-// usan exports que aquí se podaron; los previews de src/components/dev/previews
-// son la versión que sí compila en este repo.
+// Banco de trabajo de los componentes: a la izquierda la doc que genera
+// `pnpm docs:components`, arriba la pieza viva con la que trastear. Los
+// previews de src/components/dev/previews son código de verdad, no capturas:
+// para los primitivos de ui/ son además la única versión que compila aquí,
+// porque los ejemplos del registry usan exports que esta copia podó.
 //
 // Solo en `pnpm dev`: es una herramienta, no una sección del blog. En
 // producción devuelve 404, así que no toca baselines visuales ni bytes. El
@@ -86,10 +86,11 @@ const Content = current ? (await render(current)).Content : undefined;
             <div class="prose max-w-none">
               <h1>Componentes</h1>
               <p>
-                Los primitivos copiados del registry de bejamas/ui. Elige uno a
-                la izquierda: arriba sale la pieza viva y debajo su
-                documentación, generada con <code>pnpm docs:components</code>{" "}
-                desde el JSDoc del propio componente.
+                Todos los componentes del repo: los del sitio y los primitivos
+                copiados del registry de bejamas/ui. Elige uno a la izquierda:
+                arriba sale la pieza viva y debajo su documentación, generada
+                con <code>pnpm docs:components</code> desde el JSDoc del propio
+                componente.
               </p>
               <p>
                 Esta página solo existe en <code>pnpm dev</code>.
@@ -115,7 +116,7 @@ const Content = current ? (await render(current)).Content : undefined;
           current && Preview === undefined && (
             <p class="mb-8 rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
               Sin preview vivo. Añade{" "}
-              <code>src/components/dev/previews/{current.id}.astro</code>.
+              <code>src/components/dev/previews/{pascalCase(current.id)}.astro</code>.
             </p>
           )
         }

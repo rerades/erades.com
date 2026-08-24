@@ -1,0 +1,13 @@
+---
+import ShowWhen from "../../ShowWhen.astro";
+---
+
+<div class="space-y-3 text-sm">
+  <ShowWhen when={true}>when={"{true}"} → visible</ShowWhen>
+  <ShowWhen when={false}>when={"{false}"} → no llega a renderizarse</ShowWhen>
+  <ShowWhen when={0}>
+    when={"{0}"} → tampoco: la condición es la veracidad del valor, no su
+    existencia
+  </ShowWhen>
+  <ShowWhen when={"un texto"}>when={'{"un texto"}'} → visible</ShowWhen>
+</div>

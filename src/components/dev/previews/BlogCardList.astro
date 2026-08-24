@@ -1,0 +1,12 @@
+---
+import { getCollection } from "astro:content";
+import BlogCardList from "../../BlogCardList.astro";
+
+const posts = (await getCollection("blog"))
+  .filter((post) => post.id.startsWith("es/") && !post.data.draft)
+  .slice(0, 3);
+---
+
+<div class="space-y-6">
+  {posts.map((post, index) => <BlogCardList post={post} lang="es" index={index} />)}
+</div>

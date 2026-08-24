@@ -1,0 +1,11 @@
+---
+import { House, FileText, Hash } from "@lucide/astro";
+import IconWrapper from "../../IconWrapper.astro";
+---
+
+<div class="flex items-center gap-6 text-sm">
+  <span class="flex items-center gap-2"><IconWrapper Icon={House} /> por defecto</span>
+  <span class="flex items-center gap-2"><IconWrapper Icon={FileText} className="size-6 text-primary" /> con className</span>
+  <span class="flex items-center gap-2"><IconWrapper Icon={Hash} /> Hash</span>
+  <span class="flex items-center gap-2 text-muted-foreground"><IconWrapper /> sin Icon: no pinta nada</span>
+</div>
