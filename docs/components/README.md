@@ -49,3 +49,4 @@ su coste medido, en [`../bejamas-ui-presupuesto.md`](../bejamas-ui-presupuesto.m
 | [Theme Toggle](./theme-toggle.md) | El interruptor de tema claro/oscuro. La preferencia se guarda en `localStorage` y se aplica antes de pintar, para que no haya un fogonazo blanco al cargar en oscuro. | 0 |
 | [Then](./then.md) | La rama verdadera de un `If`. No decide nada: solo envuelve el contenido para que `If` lo reciba como el slot `then`. | 0 |
 | [View Mode Toggle](./view-mode-toggle.md) | Cambia el listado entre rejilla y lista. Son dos enlaces, no dos botones: el modo viaja en la URL como un filtro más. | 2 |
+| [View Transitions](./view-transitions.md) | El pegamento de las transiciones entre páginas: marca el título de la tarjeta que se acaba de pulsar para que vuele hasta el título del post. No renderiza nada; las animaciones en sí viven en `global.css`. Va en el `<head>`, dentro de `BaseHead`. | 0 |

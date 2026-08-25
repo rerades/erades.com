@@ -1,0 +1,53 @@
+---
+/**
+ * @component ViewTransitions
+ * @title View Transitions
+ * @description El pegamento de las transiciones entre páginas: marca el título de la tarjeta que se acaba de pulsar para que vuele hasta el título del post. No renderiza nada; las animaciones en sí viven en `global.css`. Va en el `<head>`, dentro de `BaseHead`.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import ViewTransitions from "./ViewTransitions.astro";
+ * ---
+ *
+ * <head>
+ *   <ViewTransitions />
+ * </head>
+ * ```
+ */
+interface Props {}
+---
+
+<script is:inline>
+  if ("startViewTransition" in document) {
+    // El nombre es fijo, no derivado del slug: en un listado hay N tarjetas y
+    // darle un nombre único a cada título crearía N grupos de snapshot que se
+    // animarían por separado. Se le pone al título de la tarjeta que el usuario
+    // acaba de tocar, y solo a esa.
+    const clearTitle = () => {
+      for (const el of document.querySelectorAll("[data-vt-title]")) {
+        el.style.viewTransitionName = "";
+        el.removeAttribute("data-vt-title");
+      }
+    };
+
+    document.addEventListener("pointerdown", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const card = target.closest("a[aria-label$='-card']");
+      if (!card) return;
+
+      clearTitle();
+      const title = card.querySelector("[aria-label='blog-card-title']");
+      if (!title) return;
+      title.style.viewTransitionName = "post-title";
+      title.setAttribute("data-vt-title", "");
+    });
+
+    // Al volver atrás desde bfcache el nombre seguiría puesto, y ensuciaría la
+    // siguiente transición emparejando un título que ya no es el pulsado.
+    window.addEventListener("pageshow", clearTitle);
+  }
+</script>

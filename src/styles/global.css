@@ -638,6 +638,14 @@ main {
   animation: vt-content-in var(--vt-duration) var(--vt-ease) both;
 }
 
+/* El título del post se empareja con el de la tarjeta que se acaba de pulsar
+   (ViewTransitions.astro le pone ese mismo nombre) y el navegador lo lleva
+   volando de una posición a la otra. Si se llega al post desde otro sitio, el
+   grupo solo existe en la página de entrada y se limita a aparecer. */
+.vt-post-title {
+  view-transition-name: post-title;
+}
+
 @keyframes vt-fade-out {
   to {
     opacity: 0;
