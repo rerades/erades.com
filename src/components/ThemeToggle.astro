@@ -37,18 +37,9 @@ interface Props {}
   </span>
 </button>
 <script is:inline>
-  if (typeof window !== "undefined") {
-    // Al cargar, aplicar preferencia guardada
-    const theme = localStorage.getItem("theme");
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else if (theme === "light") {
-      document.documentElement.classList.remove("dark");
-    }
-    const btn = document.getElementById("theme-toggle-btn");
-    btn.addEventListener("click", () => {
-      const isDark = document.documentElement.classList.toggle("dark");
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-    });
-  }
+  // El tema inicial lo aplica BaseHead en el <head>; aquí solo se alterna.
+  document.getElementById("theme-toggle-btn").addEventListener("click", () => {
+    const isDark = document.documentElement.classList.toggle("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  });
 </script>

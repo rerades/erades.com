@@ -1,0 +1,96 @@
+---
+/**
+ * @component ViewTransitions
+ * @title View Transitions
+ * @description El pegamento de las transiciones entre páginas: marca el título de la tarjeta que se acaba de pulsar para que vuele hasta el título del post, y decide si la navegación avanza o retrocede para que la animación vaya en el sentido correcto. No renderiza nada; las animaciones en sí viven en `global.css`. Va en el `<head>`, dentro de `BaseHead`.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import ViewTransitions from "./ViewTransitions.astro";
+ * ---
+ *
+ * <head>
+ *   <ViewTransitions />
+ * </head>
+ * ```
+ */
+interface Props {}
+---
+
+<script is:inline>
+  if ("startViewTransition" in document) {
+    // El nombre es fijo, no derivado del slug: en un listado hay N tarjetas y
+    // darle un nombre único a cada título crearía N grupos de snapshot que se
+    // animarían por separado. Se le pone al título de la tarjeta que el usuario
+    // acaba de tocar, y solo a esa.
+    const clearTitle = () => {
+      for (const el of document.querySelectorAll("[data-vt-title]")) {
+        el.style.viewTransitionName = "";
+        el.removeAttribute("data-vt-title");
+      }
+    };
+
+    document.addEventListener("pointerdown", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const card = target.closest("a[aria-label$='-card']");
+      if (!card) return;
+
+      clearTitle();
+      const title = card.querySelector("[aria-label='blog-card-title']");
+      if (!title) return;
+      title.style.viewTransitionName = "post-title";
+      title.setAttribute("data-vt-title", "");
+    });
+
+    // Al volver atrás desde bfcache el nombre seguiría puesto, y ensuciaría la
+    // siguiente transición emparejando un título que ya no es el pulsado.
+    window.addEventListener("pageshow", clearTitle);
+
+    // Los `types` de `@view-transition` son estáticos, así que la dirección no
+    // se puede sacar solo con CSS: hay que calcularla y añadir el tipo a mano,
+    // en los dos documentos (el que sale y el que entra).
+    const pageInfo = (url) => {
+      const path = new URL(url).pathname.replace(/\/$/, "");
+      const match = path.match(/^(.*?)(?:\/page)?\/(\d+)$/);
+      return match
+        ? { base: match[1], page: Number(match[2]) }
+        : { base: path, page: 1 };
+    };
+
+    // El número de página manda sobre el índice del historial: pulsar
+    // "anterior" en el paginador es un `push` (el índice sube) pero para el
+    // lector es ir hacia atrás.
+    const direction = (activation) => {
+      if (!activation || !activation.from) return "forward";
+
+      const from = pageInfo(activation.from.url);
+      const to = pageInfo(activation.entry.url);
+      if (from.base === to.base && from.page !== to.page) {
+        return to.page < from.page ? "back" : "forward";
+      }
+
+      const fromIndex = activation.from.index;
+      const toIndex = activation.entry.index;
+      if (fromIndex >= 0 && toIndex >= 0 && fromIndex !== toIndex) {
+        return toIndex < fromIndex ? "back" : "forward";
+      }
+
+      return "forward";
+    };
+
+    // `viewTransition` es null cuando la navegación no llega a animarse.
+    window.addEventListener("pageswap", (event) => {
+      if (!event.viewTransition) return;
+      event.viewTransition.types.add(direction(event.activation));
+    });
+
+    window.addEventListener("pagereveal", (event) => {
+      if (!event.viewTransition || !window.navigation) return;
+      event.viewTransition.types.add(direction(window.navigation.activation));
+    });
+  }
+</script>

@@ -19,6 +19,7 @@
  */
 import { SITE_TITLE } from "../consts";
 import GoogleAnalytics from "./GoogleAnalytics.astro";
+import ViewTransitions from "./ViewTransitions.astro";
 
 interface Props {
   title: string;
@@ -33,6 +34,17 @@ const { title, description, image = "/blog-placeholder-1.jpg" } = Astro.props;
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
+
+<!--
+  El tema se aplica aquí, en el <head>, y no desde ThemeToggle: en el <body>
+  llegaba un frame tarde, y con view transitions eso significa que el snapshot
+  de salida y el de entrada pueden diferir en tema durante ese frame.
+-->
+<script is:inline>
+  if (localStorage.getItem("theme") === "dark") {
+    document.documentElement.classList.add("dark");
+  }
+</script>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="sitemap" href="/sitemap-index.xml" />
@@ -80,6 +92,8 @@ const { title, description, image = "/blog-placeholder-1.jpg" } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+<ViewTransitions />
 
 <!-- Google Analytics - Non-blocking -->
 <GoogleAnalytics />
