@@ -585,96 +585,92 @@ code {
   border-radius: 0.5rem;
 }
 
-/* View Transitions API nativas */
+/* ---------------------------------------------------------------------------
+   View Transitions (API nativa, navegación multi-página)
+
+   No hay router de cliente: los enlaces siguen siendo <a href> normales y
+   `navigation: auto` es todo lo que hace falta para que el navegador anime la
+   navegación. Los navegadores sin soporte navegan sin animación, sin fallback.
+   --------------------------------------------------------------------------- */
 @view-transition {
   navigation: auto;
 }
 
-/* Configuración raíz para View Transitions */
 :root {
-  view-transition-name: none;
+  --vt-duration: 240ms;
+  --vt-duration-fast: 160ms;
+  --vt-ease: cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* Transición para el contenido principal */
+/* Header y footer son idénticos entre páginas. Dándoles nombre propio salen del
+   snapshot de `root`, y el navegador los deja quietos en vez de desvanecerlos y
+   volverlos a pintar en cada navegación. Cada uno aparece una sola vez por
+   documento, que es lo que exige que el nombre sea único. */
+header {
+  view-transition-name: site-header;
+}
+
+footer {
+  view-transition-name: site-footer;
+}
+
 main {
   view-transition-name: main-content;
 }
 
-/* Transiciones personalizadas */
+/* Lo que queda fuera de header/main/footer (el fondo, básicamente) hace un
+   cross-fade corto que sirve de puente mientras `main` se mueve. */
+::view-transition-old(root) {
+  animation: vt-fade-out var(--vt-duration-fast) var(--vt-ease) both;
+}
+
+::view-transition-new(root) {
+  animation: vt-fade-in var(--vt-duration-fast) var(--vt-ease) both;
+}
+
+/* El contenido sale hacia arriba y entra desde abajo. 8px bastan para dar
+   dirección; más que eso parece que la página salta. */
 ::view-transition-old(main-content) {
-  animation: slide-out-right 0.3s ease-in;
+  animation: vt-content-out var(--vt-duration) var(--vt-ease) both;
 }
 
 ::view-transition-new(main-content) {
-  animation: slide-in-left 0.3s ease-out;
+  animation: vt-content-in var(--vt-duration) var(--vt-ease) both;
 }
 
-/* Transición de desvanecimiento para elementos generales */
-::view-transition-old(root) {
-  animation: fade-out 0.2s ease-in;
-}
-
-::view-transition-new(root) {
-  animation: fade-in 0.2s ease-out;
-}
-
-/* Animaciones para las transiciones */
-
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 1.5s;
-  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-@keyframes slide-out-right {
-  from {
-    transform: translateX(0%);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(10%);
-    opacity: 0;
-  }
-}
-
-@keyframes slide-in-left {
-  from {
-    transform: translateX(-10%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0%);
-    opacity: 1;
-  }
-}
-
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
+@keyframes vt-fade-out {
   to {
     opacity: 0;
   }
 }
 
-@keyframes fade-in {
+@keyframes vt-fade-in {
   from {
     opacity: 0;
   }
+}
+
+@keyframes vt-content-out {
   to {
-    opacity: 1;
+    opacity: 0;
+    transform: translateY(-8px);
   }
 }
 
-/* Fallback para navegadores sin soporte a View Transitions */
+@keyframes vt-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Con movimiento reducido no queda animación ninguna: la página cambia y ya.
+   `!important` es necesario porque `::view-transition-old(*)` tiene
+   especificidad cero frente a las reglas con nombre de arriba. */
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(main-content),
-  ::view-transition-new(main-content) {
-    animation: none;
-  }
-
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: fade-out 0.1s ease-in, fade-in 0.1s ease-out;
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
