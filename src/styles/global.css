@@ -646,6 +646,16 @@ main {
   view-transition-name: post-title;
 }
 
+/* Retroceder invierte el sentido: el contenido sale hacia abajo y el nuevo
+   entra desde arriba. El tipo `back` lo pone ViewTransitions.astro. */
+html:active-view-transition-type(back)::view-transition-old(main-content) {
+  animation-name: vt-content-out-back;
+}
+
+html:active-view-transition-type(back)::view-transition-new(main-content) {
+  animation-name: vt-content-in-back;
+}
+
 @keyframes vt-fade-out {
   to {
     opacity: 0;
@@ -669,6 +679,20 @@ main {
   from {
     opacity: 0;
     transform: translateY(8px);
+  }
+}
+
+@keyframes vt-content-out-back {
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes vt-content-in-back {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
   }
 }
 

@@ -2,7 +2,7 @@
 
 > Generado por `pnpm docs:components` desde [`ViewTransitions.astro`](../../src/components/ViewTransitions.astro). No editar a mano.
 
-El pegamento de las transiciones entre páginas: marca el título de la tarjeta que se acaba de pulsar para que vuele hasta el título del post. No renderiza nada; las animaciones en sí viven en `global.css`. Va en el `<head>`, dentro de `BaseHead`.
+El pegamento de las transiciones entre páginas: marca el título de la tarjeta que se acaba de pulsar para que vuele hasta el título del post, y decide si la navegación avanza o retrocede para que la animación vaya en el sentido correcto. No renderiza nada; las animaciones en sí viven en `global.css`. Va en el `<head>`, dentro de `BaseHead`.
 
 ## Importar
 
