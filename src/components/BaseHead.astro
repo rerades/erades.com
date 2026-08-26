@@ -49,6 +49,30 @@ const { title, description, image = "/blog-placeholder-1.jpg" } = Astro.props;
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 
+<!--
+  Las dos caras que se usan por encima del pliegue en todas las páginas: Raleway
+  para el cuerpo, Inter para el nav. Van precargadas porque el `font-display:
+  optional` de global.css solo usa la fuente si llega dentro del bloqueo
+  inicial; sin esto, en un runner de CI no llegaba y la página entera se
+  pintaba con la tipografía del sistema. `crossorigin` es obligatorio para
+  fuentes aunque sean del mismo origen: sin él el navegador descarga el fichero
+  dos veces.
+-->
+<link
+  rel="preload"
+  href="/fonts/Raleway-VariableFont_wght.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+<link
+  rel="preload"
+  href="/fonts/Inter-Medium.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+
 <!-- RSS Feeds -->
 <link
   rel="alternate"

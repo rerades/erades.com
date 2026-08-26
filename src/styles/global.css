@@ -14,8 +14,13 @@
    reflujaba la página entera y /es/tags marcaba CLS 0,23 medido en la imagen
    de CI (0,008 en macOS, donde `sans-serif` resuelve a algo casi idéntico a
    Raleway — de ahí que el problema fuera invisible en local). Con `optional`
-   el navegador solo la usa si llega dentro del bloqueo inicial, y si no, la
-   deja cacheada para la siguiente página: CLS 0,0007.
+   el navegador solo la usa si llega dentro del bloqueo inicial: CLS 0,0007.
+   Va de la mano del `rel="preload"` de BaseHead, que es lo que hace que llegue
+   a tiempo — sin él, en el runner de CI no llegaba y la página se pintaba
+   entera con la tipografía del sistema. Con las dos piezas juntas el CLS
+   aguanta en 0 incluso metiendo 400 ms de latencia a las fuentes, mientras que
+   con `swap` + preload el salto vuelve entero (0,2298) en cuanto la red se
+   pone lenta.
 
    Un respaldo con `size-adjust` calzado a Arial se probó antes y no vale: la
    proporción entre Raleway y Arial cambia según el texto (-3 % con el
