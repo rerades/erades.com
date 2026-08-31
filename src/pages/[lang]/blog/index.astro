@@ -3,6 +3,11 @@ import Layout from "../../../layouts/BlogPost.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../../../consts";
 import { getCollection } from "astro:content";
 import BlogList from "../../../components/BlogList.astro";
+import {
+  ALL_CATEGORIES,
+  isAllCategories,
+  postHasCategory,
+} from "../../../utils/filter-posts";
 import { SORT_BY_OPTIONS, sortPosts } from "../../../utils/sort-utils";
 
 const { lang: langParam } = Astro.params;
@@ -13,7 +18,7 @@ const posts = (await getCollection("blog"))
 
 // Extraer categorías únicas
 const categories = [
-  "Todas",
+  ALL_CATEGORIES,
   ...Array.from(
     new Set(
       posts.flatMap((post) =>
@@ -24,7 +29,7 @@ const categories = [
 ];
 
 const url = new URL(Astro.request.url);
-const selectedCategory = url.searchParams.get("category") || "Todas";
+const selectedCategory = url.searchParams.get("category") || ALL_CATEGORIES;
 
 function isSortBy(value: string): value is (typeof SORT_BY_OPTIONS)[number] {
   return SORT_BY_OPTIONS.includes(value as any);
@@ -37,14 +42,14 @@ const rawViewMode = url.searchParams.get("viewMode");
 let viewMode: "grid" | "list" = rawViewMode === "list" ? "list" : "grid";
 
 function filterPosts(posts: any[], category: string, sort: string): any[] {
-  let filtered =
-    category === "Todas"
-      ? posts
-      : posts.filter((post) =>
-          Array.isArray(post.data.categories)
-            ? post.data.categories.includes(category)
-            : category === "Sin categoría"
-        );
+  const filtered = isAllCategories(category)
+    ? posts
+    : posts.filter((post) =>
+        postHasCategory(
+          Array.isArray(post.data.categories) ? post.data.categories : [],
+          category
+        )
+      );
   const safeSort = isSortBy(sort) ? sort : "date-desc";
   return sortPosts(filtered, safeSort);
 }
@@ -62,14 +67,14 @@ const paginatedPosts = filteredPosts.slice(
 
 const getCategoryHref = (cat: string) => {
   const params = new URLSearchParams();
-  if (cat !== "Todas") params.set("category", cat);
+  if (!isAllCategories(cat)) params.set("category", cat);
   if (sortBy) params.set("sortBy", sortBy);
   if (viewMode === "list") params.set("viewMode", viewMode);
   return `/${lang}/blog/` + (params.toString() ? `?${params.toString()}` : "");
 };
 const getPageHref = (page: number) => {
   const params = new URLSearchParams();
-  if (selectedCategory !== "Todas") params.set("category", selectedCategory);
+  if (!isAllCategories(selectedCategory)) params.set("category", selectedCategory);
   if (sortBy) params.set("sortBy", sortBy);
   if (viewMode === "list") params.set("viewMode", viewMode);
   return (
