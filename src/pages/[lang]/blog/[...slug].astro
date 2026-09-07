@@ -11,7 +11,12 @@ export async function getStaticPaths() {
   const langs = ["es", "en"];
   return langs.flatMap((lang) =>
     posts
-      .filter((post) => post.id.startsWith(`${lang}/`))
+      // Listings, RSS and search already drop drafts. Without this filter
+      // getStaticPaths prerendered them too, so a URL like
+      // /es/blog/functional/monads/ served unpublished markdown.
+      .filter(
+        (post) => post.id.startsWith(`${lang}/`) && !post.data.draft
+      )
       .map((post) => ({
         params: { lang, slug: post.id.replace(`${lang}/`, "") },
         props: post,

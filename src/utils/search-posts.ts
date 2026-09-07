@@ -1,6 +1,8 @@
 import { Document, Index } from "flexsearch";
 import fs from "fs/promises";
 
+import { isPublishedPost } from "./build-search-doc";
+
 const INDEX_PATH = "public/search-index.json";
 
 export interface BlogDoc {
@@ -88,8 +90,9 @@ export async function searchPosts(rawQuery: string): Promise<BlogDoc[]> {
     ]),
   ];
 
-  // Devuelve los documentos completos
+  // Devuelve los documentos publicados. El índice no debe contener drafts, pero
+  // un JSON viejo (o alguien pegándole a /search-index.json) no puede filtrarlos.
   return allIds
     .map((id) => docs.find((doc) => doc.id === id))
-    .filter((doc): doc is BlogDoc => Boolean(doc));
+    .filter((doc): doc is BlogDoc => doc !== undefined && isPublishedPost(doc));
 }

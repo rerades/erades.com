@@ -567,25 +567,6 @@
     "id": "es/css-load"
   },
   {
-    "title": "css-load",
-    "description": "Estrategias para cargar CSS de forma eficiente.",
-    "pubDate": "2025-08-23T00:00:00.000Z",
-    "tags": [
-      "css",
-      "performance",
-      "wpo"
-    ],
-    "categories": [
-      "css",
-      "best-practices"
-    ],
-    "draft": true,
-    "heroImage": "/blog-placeholder-10.jpg",
-    "content": "\n## A igualdad de especificidad ¿quién gana?\n\n### Precedencia\n\n!important > inline > autor > user agent. Luego especificidad. Luego orden.\n",
-    "path": "/es/blog/css-precedence",
-    "id": "es/css-precedence"
-  },
-  {
     "title": "sistema de partículas",
     "pubDate": "2019-01-11T00:00:00.000Z",
     "description": "Explorando técnicas de animación de sistemas de partículas utilizando Canvas y JavaScript para crear efectos visuales dinámicos",
@@ -698,26 +679,6 @@
     "content": "\n```javascript\n// Un memoizador más funcional\n\n// Podemos potenciar nuestro módulo añadiendo funciones más adelante\nvar Memoizer = (function () {\n  // Datos privados\n  var cache = {};\n  // ¡Las funciones nombradas son increíbles!\n  function cacher(func) {\n    return function () {\n      var key = JSON.stringify(arguments);\n      if (cache[key]) {\n        return cache[key];\n      } else {\n        val = func.apply(this, arguments);\n        cache[key] = val;\n        return val;\n      }\n    };\n  }\n  // Datos públicos\n  return {\n    memo: function (func) {\n      return cacher(func);\n    },\n  };\n})();\n\nvar fib = Memoizer.memo(function (n) {\n  if (n < 2) {\n    return 1;\n  } else {\n    return fib(n - 2) + fib(n - 1);\n  }\n});\n```\n",
     "path": "/es/blog/functional/memoize",
     "id": "es/functional/memoize"
-  },
-  {
-    "title": "monadas",
-    "description": "Explorando monadas como funtores especializados para manejar datos nulos y agilizar el manejo de errores en la programación funcional",
-    "pubDate": "2019-11-11",
-    "tags": [
-      "declarative",
-      "Pure functions",
-      "Inmutable",
-      "currying",
-      "functors"
-    ],
-    "categories": [
-      "functional"
-    ],
-    "draft": true,
-    "heroImage": "/blog-placeholder-8.jpg",
-    "content": "\nAsí que recordemos primero qué es un functor:\n\n    1. Es un objeto envolvente para contener nuestros datos\n    2. tiene una función de mapa para iterar sobre sus propios datos\n    3. preserva la identidad\n    4. puede ser componible\n\nPero los funtores por sí mismos no son convincentes, porque no se espera que\nsepan cómo manejar casos con **datos nulos**.<br /> `R.compose de Ramda`, por ejemplo,\nfallará si se le pasa una referencia a una función nula. Esto no es un defecto\nen el diseño; es intencional.\n\n- Los funtores mapean funciones de un tipo a otro.\n\n- Se puede encontrar un comportamiento más especializado en tipos de datos funcionales llamados monads.\n\n- Entre otras cosas, los monads pueden simplificar la gestión de errores en su código, permitiéndole\n  escribir composiciones de funciones fluidas.\n\n- ¿Cuál es su relación con los funtores? **Los monads son los contenedores\n  a los que los funtores \"alcanzan\".**\n",
-    "path": "/es/blog/functional/monads",
-    "id": "es/functional/monads"
   },
   {
     "title": "transductores",
@@ -901,26 +862,5 @@
     "content": "\n## ramificación de sentencias\n\nCualquier estructura que altera la secuencia de ejecución dentro del ámbito global o funcional. <br />\nEsto incluye:<br />\n\n```\nif\nelse\nswitch\nfor\nwhile\n```\n\nLas sentencias están diseñadas para ejecutarse de forma no lineal. Además del evidente efecto de hinchazón, la ramificación de sentencias tiende a volverse poco intuitiva a medida que avanza.\n\n## micro-ramificación\n\nLógica condicional contenida dentro de una sentencia que no afecta a la secuencia de ejecución de la sentencia.<br />\nLos siguientes operadores facilitan la micro-ramificación: <br />\n\n```\nternary (<cond> ? a : b)\n&&\n||\n```\n\nLa lógica fluye secuencialmente de arriba a abajo e incluso de izquierda a derecha. No hay bifurcaciones en el camino. Solo hay una sentencia de retorno y está al final, donde esperamos que esté. Lo mejor de todo es que es corto. Nada se desperdicia. De hecho, es lo suficientemente conciso como para ser apenas procedimental en absoluto.\n\nLas alternativas a la ramificación de sentencias se dividen en dos amplias categorías: **micro-ramificación** y **sin ramificación en absoluto**\n\n## Estrategias de micro-ramificación\n\n### Guardias (&&) y valores predeterminados (||)\n\n```javascript\n//invocar callback si hay uno\ncallback && callback();\n//retrasar por argumento o 20\ndelayBy(delay || 20);\n//eliminar el nodo de su padre\nnode && node.parent && node.parent.removeChild(node);\n//registrar una prueba en la consola si tenemos una\nwindow.console && console.log(\"test\");\n```\n\n<br />\n\n<blockquote> Algunas cosas tienen un lugar natural. Los pájaros en el cielo, los peces en el mar y una declaración de retorno al final de una función.</blockquote>\n\n<br />\n\n<div class=\"bibliography\">\nBibliografía:<br />\nhttps://javascriptweblog.wordpress.com/2010/07/26/no-more-ifs-alternatives-to-statement-branching-in-javascript/\n</div>\n",
     "path": "/es/blog/statement-branching-vs-micro-branching",
     "id": "es/statement-branching-vs-micro-branching"
-  },
-  {
-    "title": "WPO: Web Performance Optimization",
-    "description": "Expolorando la mejora de la optimización web con AI con los core web vitals",
-    "pubDate": "2025-08-26T00:00:00.000Z",
-    "tags": [
-      "javascript",
-      "wpo",
-      "google-core-web-vitals"
-    ],
-    "categories": [
-      "javascript",
-      "best-practices",
-      "core-web-vitals",
-      "wpo"
-    ],
-    "draft": true,
-    "heroImage": "/blog-placeholder-14.jpg",
-    "content": "\n## Exploración inicial\n\nDespués de crear esta web app [erades.com](https://erades.com) , me voy a centrar el los core web vitals de google.\n\nPara esta tarea me voy a centrar en lighthouse.\n\nLos primeros resultados son estos:\n\n### 2025-08-12\n\n#### Desktop\n\n- [Home](../../../../assets/lighthouse/2025-08-12-HOME.html)\n- [Post](../../../../assets/lighthouse/2025-08-12-POST.html)\n- [Search](../../../../assets/lighthouse/2025-08-12-SEARCH.html)\n- [Tags](../../../../assets/lighthouse/2025-08-12-TAGS.html)\n- [Blog](../../../../assets/lighthouse/2025-08-12-BLOG.html)\n\n#### mobile\n\n- [Home](../../../../assets/lighthouse/2025-08-12-HOME-mobile.html)\n- [Post](../../../../assets/lighthouse/2025-08-12-POST-mobile.html)\n- [Search](../../../../assets/lighthouse/2025-08-12-SEARCH-mobile.html)\n- [Tags](../../../../assets/lighthouse/2025-08-12-TAGS-mobile.html)\n- [Blog](../../../../assets/lighthouse/2025-08-12-BLOG-mobile.html)\n\n## Primeros pensamientos\n\nLos datos arrojan buenos resultados en parte se debe al stack tecnológico utilizado (Server side rendering y static site generation) y el meta-framework seleccionado Astro.\n\nPero para conseguir unos datos aceptables el desarrollador tiene que ser experto y haber peleado mucho en batallas de front para entender las mejores prácticas.\n\nAun así siempre se escapan cosas y se debería de tener una forma de controlar los core web vitals desde el principio para poder ir mejorando los números.\n\nPor otro lado para conseguir esto habría que incluir estas comprobaciones de forma programática.\n\nHoy en día los test unitarios y los e2e o funcionales forman parte ya del ADN de los desarrolladores, sin embargo veo que los test automáticos de regresión visual y los test de performance no acaban de calar en los desarrolladores , en parte creo que es por el aumento del tiempo al para ejecutar las pipelines.\n\nSin embargo considero que de los test automáticos de regresión visual son esenciales, de hecho si tuviera que elegir entre test unitarios o de componentes y test de regresión visual optaría por los de regresión.\n\nEn el caso de los test para WPO los desarrolladores creo que no se dan cuenta el valor que suponen estos test para negocio y piensan más en el trabajo que les supone realizar esos test que en el beneficio\n\n## Planteamiento del trabajo\n\n- Para poder sacar estadísticas de forma programática voy a buscar la forma de implementar lighthouse o herramientas parecidas\n\n### Plan de ataque (síntesis)\n\n1. Métricas de laboratorio automatizadas (synthetic): Lighthouse CI en local y en CI, con presupuestos de rendimiento y aserciones que rompen el build cuando te pasas. Reportes HTML/JSON almacenados como artefactos y/o en un servidor LHCI. ￼ ￼\n2. Métricas de campo (RUM): web-vitals en producción para LCP/INP/CLS reales, enviados a tu backend/GA4. Esto te evita optimizar a ciegas. ￼ ￼\n3. Benchmarks públicos: PSI/CrUX en CI para ver cómo te mide Google (Lighthouse + datos reales agregados). ￼ ￼\n4. Opcional power-up: sitespeed.io para rastrear múltiples URLs, grabar vídeos/filmstrips y presupuestos más finos; sube resultados a S3/GCS. ￼\n\n### Lighthouse\n\nInstalado lighthouse\n\nAlternativa rápida ejecutar:\n\n```bash\nnpx unlighthouse --site https://erades.com\n```\n\nEsto te da las métricas de todo el site.\n",
-    "path": "/es/blog/wpo/wpo",
-    "id": "es/wpo/wpo"
   }
 ]
