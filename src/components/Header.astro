@@ -30,6 +30,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { t } from "../i18n";
+import { getImage } from "astro:assets";
 import logoImage from "../assets/area73-small.png";
 import avatarImage from "../assets/avatar.png";
 
@@ -37,6 +38,12 @@ interface Props {
   lang: string;
 }
 const { lang } = Astro.props;
+
+// El header sale en todas las páginas: con `.src` a pelo se servían los PNG
+// originales (avatar de 500 px y 390 KB para pintarlo a 32). Se piden al doble
+// del tamaño pintado para pantallas retina.
+const logo = await getImage({ src: logoImage, width: 96, height: 96, format: "webp" });
+const avatar = await getImage({ src: avatarImage, width: 64, height: 64, format: "webp" });
 
 let isDark = false;
 if (typeof window !== "undefined") {
@@ -58,7 +65,7 @@ if (typeof window !== "undefined") {
       >
         <img
           loading="eager"
-          src={logoImage.src}
+          src={logo.src}
           alt={t(lang as "en" | "es", "logo.alt")}
           class="h-12 w-12 object-contain"
           width="48"
@@ -145,7 +152,7 @@ if (typeof window !== "undefined") {
             linkedinUrl="https://www.linkedin.com/in/siete3/"
             xUrl="https://x.com/area_73"
             lang={lang}
-            avatarSrc={avatarImage.src}
+            avatarSrc={avatar.src}
           />
         </div>
       </div>
