@@ -1,0 +1,138 @@
+---
+title: "El asteroide que está golpeando el desarrollo frontend"
+description: "Notas sobre el post de Nolan Lawson: por qué la «agent experience» es la nueva DX, por qué el frontend cae primero y dónde queda la experiencia de verdad."
+pubDate: 2026-09-13
+tags:
+  - ai-coding
+  - agent-experience
+  - frontend
+  - web-development
+  - artificial-intelligence
+categories:
+  - AI
+  - Crafting
+translationKey: "ai-take-aways/the-asteroid-hitting-frontend"
+draft: true
+---
+
+import { Bot, Rocket, Wrench } from "@lucide/astro";
+
+Nolan Lawson acaba de escribir [_The asteroid currently hitting frontend web development_](https://nolanlawson.com/2026/08/23/the-asteroid-currently-hitting-frontend-web-development/), y me ha resonado muchísimo. Los divulgadores de frontend con los que aprendimos todos —**Rauschmayer, Comeau, Dodds, Osmani**— o se están retirando o están pivotando hacia la IA.
+
+Me quedo con tres ideas de su post.
+
+## <Bot size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />1. La «agent experience» sustituye a la developer experience
+
+Cursor migró de Solid a React. Viget migró de Lit a React. **No porque React sea mejor, sino porque los agentes conocen React.** React está sobrerrepresentado en los pesos de entrenamiento, y cuando es un agente quien escribe tu código, gana el framework que mejor conoce.
+
+Los argumentos de ergonomía y rendimiento pesan menos cuando quien escribe el código es el agente.
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 230" role="img" aria-labelledby="ax-title" class="w-full h-auto text-current">
+    <title id="ax-title">Antes elegía framework el desarrollador por ergonomía y rendimiento; ahora pesa lo que el agente conoce de su entrenamiento</title>
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="10" y="20" width="280" height="190" rx="10" opacity="0.5" />
+      <rect x="350" y="20" width="280" height="190" rx="10" />
+    </g>
+    <g fill="currentColor" font-family="inherit" text-anchor="middle">
+      <text x="150" y="50" font-size="16" font-weight="700">DX</text>
+      <text x="150" y="70" font-size="12" opacity="0.7">elige el desarrollador</text>
+      <text x="150" y="110" font-size="14">ergonomía</text>
+      <text x="150" y="135" font-size="14">rendimiento</text>
+      <text x="150" y="160" font-size="14">tamaño del bundle</text>
+      <text x="150" y="190" font-size="12" opacity="0.7">Solid · Lit · Svelte…</text>
+
+      <text x="490" y="50" font-size="16" font-weight="700">AX</text>
+      <text x="490" y="70" font-size="12" opacity="0.7">elige el agente</text>
+      <text x="490" y="110" font-size="14">¿cuánto aparece en</text>
+      <text x="490" y="130" font-size="14">los datos de entrenamiento?</text>
+      <text x="490" y="190" font-size="12" opacity="0.7">React</text>
+    </g>
+    <g stroke="currentColor" stroke-width="2" fill="none">
+      <path d="M298 115 H340" />
+      <path d="M332 107 L342 115 L332 123" />
+    </g>
+  </svg>
+</figure>
+
+## <Rocket size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />2. El frontend es la capa de «yolo a producción»
+
+Una migración de base de datos necesita review, staging, escrutinio. ¿Un componente de React? La gente lo sube y listo. El frontend es lo bastante efímero como para que los agentes lo manejen con una supervisión humana mínima.
+
+**El asteroide golpea primero el frontend porque es donde la tolerancia al riesgo es más alta.**
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 200" role="img" aria-labelledby="risk-title" class="w-full h-auto text-current">
+    <title id="risk-title">Espectro de supervisión: la migración de base de datos recibe la máxima revisión y el componente de frontend la mínima, por eso el impacto llega antes al frontend</title>
+    <defs>
+      <linearGradient id="risk-grad" x1="0" x2="1">
+        <stop offset="0" stop-color="currentColor" stop-opacity="0.9" />
+        <stop offset="1" stop-color="currentColor" stop-opacity="0.15" />
+      </linearGradient>
+    </defs>
+    <rect x="20" y="90" width="600" height="14" rx="7" fill="url(#risk-grad)" />
+    <g fill="currentColor" text-anchor="middle" font-family="inherit">
+      <circle cx="60" cy="97" r="9" />
+      <circle cx="320" cy="97" r="9" />
+      <circle cx="580" cy="97" r="9" />
+      <text x="60" y="135" font-size="14" font-weight="700">Migración de BD</text>
+      <text x="60" y="155" font-size="12" opacity="0.7">review · staging</text>
+      <text x="320" y="135" font-size="14" font-weight="700">API de backend</text>
+      <text x="320" y="155" font-size="12" opacity="0.7">tests · review</text>
+      <text x="580" y="135" font-size="14" font-weight="700">Componente</text>
+      <text x="580" y="155" font-size="12" opacity="0.7">«súbelo y ya»</text>
+      <text x="20" y="190" font-size="12" text-anchor="start" opacity="0.7">más supervisión humana</text>
+      <text x="620" y="190" font-size="12" text-anchor="end" opacity="0.7">más autonomía del agente</text>
+    </g>
+    <g stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round">
+      <circle cx="520" cy="30" r="12" fill="currentColor" />
+      <path d="M508 22 L470 4" opacity="0.6" />
+      <path d="M510 34 L462 22" opacity="0.4" />
+      <path d="M530 42 L568 80" stroke-dasharray="4 5" />
+    </g>
+  </svg>
+</figure>
+
+## <Wrench size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />3. La oportunidad: arreglar monstruosidades hechas a base de _vibe coding_
+
+Ahora mismo, cantidades enormes de frontend generado por IA se están volviendo **carga estructural en producción**. Cuando esos sites sean lentos, inaccesibles o estén plagados de problemas, un «arréglame la web porfa» no va a bastar.
+
+La experiencia de verdad —**rendimiento, accesibilidad, arquitectura**— se convierte en la oportunidad de consultoría.
+
+## Lo que me llevo
+
+> La experiencia no ha muerto. Se ha movido aguas arriba.
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 170" role="img" aria-labelledby="up-title" class="w-full h-auto text-current">
+    <title id="up-title">La experiencia se desplaza de escribir código a auditar, reparar y enseñar a los agentes la visión de conjunto</title>
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="10" y="55" width="150" height="60" rx="10" opacity="0.5" stroke-dasharray="5 4" />
+      <rect x="240" y="10" width="390" height="46" rx="10" />
+      <rect x="240" y="62" width="390" height="46" rx="10" />
+      <rect x="240" y="114" width="390" height="46" rx="10" />
+    </g>
+    <g stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round">
+      <path d="M168 85 C200 85 205 33 232 33" />
+      <path d="M168 85 H232" />
+      <path d="M168 85 C200 85 205 137 232 137" />
+    </g>
+    <g fill="currentColor" font-family="inherit">
+      <text x="85" y="90" font-size="14" text-anchor="middle" opacity="0.7">escribir código</text>
+      <text x="260" y="38" font-size="14" font-weight="700">Auditar</text>
+      <text x="360" y="38" font-size="12" opacity="0.7">lo que el agente ya subió</text>
+      <text x="260" y="90" font-size="14" font-weight="700">Reparar</text>
+      <text x="360" y="90" font-size="12" opacity="0.7">rendimiento · a11y · arquitectura</text>
+      <text x="260" y="142" font-size="14" font-weight="700">Enseñar</text>
+      <text x="360" y="142" font-size="12" opacity="0.7">la visión de conjunto que aún falla</text>
+    </g>
+  </svg>
+</figure>
+
+De escribir código a **auditar, reparar y enseñar a los agentes** la visión de conjunto que todavía se les escapa.
+
+---
+
+**Fuentes**
+
+- [Nolan Lawson — The asteroid currently hitting frontend web development](https://nolanlawson.com/2026/08/23/the-asteroid-currently-hitting-frontend-web-development/)
