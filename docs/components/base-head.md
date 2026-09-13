@@ -20,6 +20,7 @@ Ruta relativa desde `src/components/`, que es como se importa aquí.
 | `description` | `string` | sí |  |
 | `image` | `string` | — |  |
 | `alternates` | `readonly { readonly lang: string; readonly href: string }[]` | — | Versiones de la página en cada idioma, incluida ella misma. Se pintan como `hreflang` y el selector de idioma las usa para saltar a la traducción. |
+| `preloadImage` | `{ readonly src: string; readonly srcset?: string }` | — | La imagen que será el LCP, si se sabe en el servidor. Se precarga con prioridad alta antes que las fuentes; `src` y `srcset` tienen que coincidir con los del `<img>` o se descarga dos veces. |
 
 ## Uso
 

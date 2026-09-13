@@ -13,6 +13,7 @@ type Props = Omit<CollectionEntry<"blog">["data"], "pubDate"> & {
   pubDate?: Date;
   lang: string;
   alternates?: ComponentProps<typeof BaseHead>["alternates"];
+  preloadImage?: ComponentProps<typeof BaseHead>["preloadImage"];
 };
 
 const {
@@ -24,12 +25,18 @@ const {
   categories,
   lang,
   alternates,
+  preloadImage,
 } = Astro.props;
 ---
 
 <html lang={lang}>
   <head>
-    <BaseHead title={title} description={description} alternates={alternates} />
+    <BaseHead
+      title={title}
+      description={description}
+      alternates={alternates}
+      preloadImage={preloadImage}
+    />
   </head>
 
   <body class="bg-background text-foreground min-h-screen flex flex-col">

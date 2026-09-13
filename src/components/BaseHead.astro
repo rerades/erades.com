@@ -19,6 +19,7 @@
  */
 import { SITE_TITLE } from "../consts";
 import GoogleAnalytics from "./GoogleAnalytics.astro";
+import ShowWhen from "./ShowWhen.astro";
 import ViewTransitions from "./ViewTransitions.astro";
 
 interface Props {
@@ -27,6 +28,8 @@ interface Props {
   image?: string;
   /** Versiones de la página en cada idioma, incluida ella misma. Se pintan como `hreflang` y el selector de idioma las usa para saltar a la traducción. */
   alternates?: readonly { readonly lang: string; readonly href: string }[];
+  /** La imagen que será el LCP, si se sabe en el servidor. Se precarga con prioridad alta antes que las fuentes; `src` y `srcset` tienen que coincidir con los del `<img>` o se descarga dos veces. */
+  preloadImage?: { readonly src: string; readonly srcset?: string };
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -36,6 +39,7 @@ const {
   description,
   image = "/blog-placeholder-1.jpg",
   alternates = [],
+  preloadImage,
 } = Astro.props;
 ---
 
@@ -55,6 +59,16 @@ const {
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="sitemap" href="/sitemap-index.xml" />
+
+<ShowWhen when={preloadImage}>
+  <link
+    rel="preload"
+    as="image"
+    href={preloadImage?.src}
+    imagesrcset={preloadImage?.srcset}
+    fetchpriority="high"
+  />
+</ShowWhen>
 
 <!--
   Las dos caras que se usan por encima del pliegue en todas las páginas: Raleway
