@@ -23,6 +23,7 @@
       "title": "Welcome to {siteTitle}",
       "description": "A space where I share ideas, knowledge and experiences about technology, development and modern design."
     },
+    "featured": { "title": "Latest posts" },
     "cta": {
       "title": "Ready to explore?",
       "description": "Discover all articles and find content that inspires you.",

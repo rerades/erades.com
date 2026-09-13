@@ -23,6 +23,7 @@
       "title": "Bienvenido a {siteTitle}",
       "description": "Un espacio donde comparto ideas, conocimientos y experiencias sobre tecnología, desarrollo y diseño moderno."
     },
+    "featured": { "title": "Últimos artículos" },
     "cta": {
       "title": "¿Listo para explorar?",
       "description": "Descubre todos los artículos y encuentra contenido que te inspire.",

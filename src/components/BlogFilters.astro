@@ -108,6 +108,7 @@ function getCategoryHrefLocal(cat: string): string {
       */}
       <NativeSelect
         name="sortBy"
+        aria-label={t(lang, "filters.sortLabel")}
         class="w-40 max-w-full min-w-0"
         onchange="this.form.submit()"
       >
