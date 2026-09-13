@@ -49,6 +49,18 @@ jobs:
       - name: Recoger métricas (mobile + desktop)
         run: pnpm lh:collect
 
+      # lh.ndjson sólo guarda medianas. Cuando una métrica del runner no
+      # coincide con la de local (p. ej. el LCP móvil saltando entre ~1,2 y
+      # ~4 s en la misma página), hace falta el informe entero para ver qué
+      # elemento tomó como LCP y en qué fase se fue el tiempo.
+      - name: Subir informes completos
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/lhr-*.json
+          retention-days: 14
+
       - name: Añadir fila al registro
         run: pnpm lh:record
         env:
