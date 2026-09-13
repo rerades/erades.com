@@ -73,6 +73,9 @@ const pageDescription = isValidLang
         </div>
 
         <!-- Featured Content -->
+        <!-- Solo para lectores de pantalla: los títulos de las tarjetas son h3 y
+             colgaban directamente del h1 (Lighthouse: heading-order). -->
+        <h2 class="sr-only">{t(lang, "home.featured.title")}</h2>
         <ul class="decoration-none grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {
             featured.map((post, index) => (

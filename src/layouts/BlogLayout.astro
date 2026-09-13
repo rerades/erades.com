@@ -17,18 +17,17 @@ interface Props {
 
 const { lang, frontmatter } = Astro.props as Props;
 const { title, description, pubDate, updatedDate, tags } = frontmatter;
+
+// Estas páginas tienen la misma ruta en los dos idiomas. El canonical ya lo
+// pone BaseHead: aquí había un segundo con `Astro.url` (http:// detrás del
+// proxy) y hreflang relativos, con el propio apuntando a la home.
+const rest = Astro.url.pathname.split("/").slice(2).join("/");
+const alternates = ["es", "en"].map((l) => ({ lang: l, href: `/${l}/${rest}` }));
 ---
 
 <html lang={lang}>
   <head>
-    <BaseHead title={title} description={description} />
-    <link rel="canonical" href={Astro.url} />
-    <link rel="alternate" href={`/${lang}/`} hreflang={lang} />
-    <link
-      rel="alternate"
-      href={`/${lang === "es" ? "en" : "es"}/${Astro.url.pathname.split("/").slice(2).join("/")}`}
-      hreflang={lang === "es" ? "en" : "es"}
-    />
+    <BaseHead title={title} description={description} alternates={alternates} />
   </head>
   <body class="bg-background text-foreground min-h-screen flex flex-col">
     <Header lang={lang} />

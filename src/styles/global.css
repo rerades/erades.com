@@ -332,7 +332,8 @@
     /* Colores base - paleta moderna y sofisticada */
     --background: hsl(0 0% 99%);
     --foreground: hsl(215 25% 15%);
-    --foreground-dim: hsl(215 05% 50%);
+    /* L45 y no L50: los h2 del footer se quedaban en 3,9:1 sobre el fondo. */
+    --foreground-dim: hsl(215 05% 45%);
 
     /* Superficie y tarjetas con sutiles variaciones */
     --card: hsl(0 0% 100%);
@@ -423,7 +424,8 @@ html.dark {
   --color-muted: hsl(180, 2%, 20%);
   --color-muted-foreground: var(--muted-foreground);
   --color-secondary: hsl(0, 0%, 23%);
-  --color-primary: hsl(12, 80%, 49%);
+  /* L42 y no L49: con el texto claro encima daba 3,8:1 (WCAG AA pide 4,5). */
+  --color-primary: hsl(12, 80%, 42%);
   --color-primary-foreground: hsl(215 16% 95%);
   --color-primary-background: hsl(215 16% 95%);
   --color-secondary-foreground: hsl(215 20% 65%);
@@ -535,9 +537,12 @@ añado esto para poder usar clases de tailwindCSS cuando se definen comom por ej
   --color-muted: hsl(215 16% 96%);
   --color-muted-foreground: var(--muted-foreground);
   --color-secondary: hsl(215 16% 95%);
-  --color-primary: hsl(0, 84%, 56%);
+  /* Contraste AA (4,5:1) con el texto que llevan encima, medido con
+     Lighthouse: el primario a L56 daba 3,7:1 en el botón de idioma, el chip y
+     la página activos; el texto secundario a L65, 2,3:1 en los chips. */
+  --color-primary: hsl(0, 84%, 45%);
   --color-primary-foreground: hsl(215 16% 95%);
-  --color-secondary-foreground: hsl(215 20% 65%);
+  --color-secondary-foreground: hsl(215 20% 40%);
   --color-header-background: hsl(215 16% 98%);
   /* header/footer divider: sigue a --header-border, que ya cambia en html.dark */
   --color-header-border: var(--header-border);

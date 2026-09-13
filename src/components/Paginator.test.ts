@@ -214,8 +214,10 @@ describe("Paginator", () => {
 
     const page1Link = getByText(result, "1");
     expect(page1Link?.getAttribute("aria-label")).toBe("Ir a página 1");
-    expect(page1Link?.getAttribute("aria-setsize")).toBe("5");
-    expect(page1Link?.getAttribute("aria-posinset")).toBe("1");
+    // aria-setsize/aria-posinset no están permitidos en un <a> (rol link):
+    // Lighthouse los marcaba como aria-allowed-attr.
+    expect(page1Link?.hasAttribute("aria-setsize")).toBe(false);
+    expect(page1Link?.hasAttribute("aria-posinset")).toBe(false);
   });
 
   test("handles single page correctly", async () => {
