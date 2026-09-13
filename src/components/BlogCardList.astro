@@ -20,6 +20,7 @@ import ShowWhen from "./ShowWhen.astro";
 import If from "./If.astro";
 import { Image } from "astro:assets";
 import { EAGER_LOAD_IMAGES_COUNT } from "../consts";
+import { resolveHeroImage } from "../utils/hero-image";
 import { t } from "../i18n";
 interface Props {
   post: any;
@@ -46,12 +47,13 @@ const get = (key: string) => post[key] ?? (post.data && post.data[key]);
         >
           <ShowWhen when={get("heroImage")}>
             <Image
-              src={get("heroImage")}
+              src={resolveHeroImage(get("heroImage"))}
               alt={get("title") ?? ""}
               class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
               style="display: block;"
               width={300}
               height={200}
+              densities={[1, 2]}
               loading={index < EAGER_LOAD_IMAGES_COUNT ? "eager" : "lazy"}
               fetchpriority={index < EAGER_LOAD_IMAGES_COUNT ? "high" : "auto"}
             />

@@ -20,6 +20,7 @@ import FormattedDate from "./FormattedDate.astro";
 import ShowWhen from "./ShowWhen.astro";
 import { Image } from "astro:assets";
 import { EAGER_LOAD_IMAGES_COUNT } from "../consts";
+import { resolveHeroImage } from "../utils/hero-image";
 import { tWithInterpolation } from "../i18n";
 
 interface Props {
@@ -60,11 +61,14 @@ const postTags = Array.isArray(post.tags || (post.data && post.data.tags))
         class="aspect-video bg-gradient-to-br from-primary/10 to-accent rounded-t-xl overflow-hidden"
       >
         <Image
-          src={post.heroImage || (post.data && post.data.heroImage)}
+          src={resolveHeroImage(
+            post.heroImage || (post.data && post.data.heroImage)
+          )}
           alt={post.title || (post.data && post.data.title) || ""}
           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           width={400}
           height={225}
+          densities={[1, 2]}
           loading={index < EAGER_LOAD_IMAGES_COUNT ? "eager" : "lazy"}
           fetchpriority={index < EAGER_LOAD_IMAGES_COUNT ? "high" : "auto"}
         />
