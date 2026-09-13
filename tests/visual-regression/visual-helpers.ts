@@ -19,9 +19,32 @@ import type { Page } from "@playwright/test";
  * 2. Aun resolviendo bien esa promesa, `ready` solo cubre las caras que el
  *    navegador YA ha pedido. Con `font-display: swap`, Inter 400 aparecía como
  *    `unloaded` justo antes de la captura. `FontFace.load()` fuerza la descarga.
+ * 3. Con `font-display: optional` (el de producción desde #183) cargarla no
+ *    basta: si no llega en ~100 ms, Chrome pinta con la del sistema durante
+ *    toda la vida de la página aunque luego termine de bajar. Desde que la
+ *    home precarga también su portada (#197), la carrera se perdía a veces y
+ *    fallaba una captura distinta en cada intento. Por eso se vuelven a
+ *    declarar las mismas @font-face de la hoja con `font-display: block`: esas
+ *    sí se aplican al llegar. Se leen del CSS de la página para no mantener
+ *    una copia de la lista de fuentes aquí.
  */
 const waitForFontsLoaded = async (page: Page): Promise<void> => {
   await page.evaluate(async () => {
+    const faces = Array.from(document.styleSheets).flatMap((sheet) => {
+      try {
+        return Array.from(sheet.cssRules).filter(
+          (rule): rule is CSSFontFaceRule => rule instanceof CSSFontFaceRule
+        );
+      } catch {
+        return [];
+      }
+    });
+    const style = document.createElement("style");
+    style.textContent = faces
+      .map((rule) => rule.cssText.replace(/font-display:\s*optional/, "font-display: block"))
+      .join("\n");
+    document.head.appendChild(style);
+
     await Promise.all(
       Array.from(document.fonts).map((face) => face.load().catch(() => face))
     );
