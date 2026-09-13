@@ -21,6 +21,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "translate:es-en": "dotenv -e .env -- tsx scripts/translate-posts.ts es en",
     "translate:en-es": "dotenv -e .env -- tsx scripts/translate-posts.ts en es",
+    "hero": "dotenv -e .env -- tsx scripts/generate-hero-image.ts",
     "test:unit": "vitest run --reporter=verbose",
     "test:unit:watch": "vitest",
     "test:e2e": "playwright test",

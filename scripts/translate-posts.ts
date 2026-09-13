@@ -6,7 +6,10 @@ import matter from "gray-matter";
 // Lee los idiomas desde argumentos de línea de comandos
 const [, , from = "es", to = "en"] = process.argv;
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.OPENROUTER_API_KEY,
+});
 
 function getSystemPrompt(from: string, to: string) {
   return `You are a translator from ${
@@ -22,7 +25,7 @@ async function translateText(
   to: string
 ): Promise<string> {
   const { choices } = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "openai/gpt-4",
     messages: [
       { role: "system", content: getSystemPrompt(from, to) },
       {
