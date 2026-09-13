@@ -2,6 +2,8 @@ import { promises as fs } from "fs";
 import path from "path";
 import matter from "gray-matter";
 
+import { buildSearchDoc, isPublishedPost } from "../src/utils/build-search-doc";
+
 const BLOG_DIR = path.join(process.cwd(), "src/content/blog");
 const OUTPUT_PATH = path.join(process.cwd(), "public/search-index.json");
 
@@ -28,25 +30,20 @@ async function main() {
   console.log(`[FlexSearch] Found ${files.length} markdown files.`);
 
   const docs = [];
-  for (const [i, file] of files.entries()) {
+  for (const file of files) {
     const raw = await fs.readFile(file, "utf-8");
     const { data, content } = matter(raw);
+    if (!isPublishedPost(data)) {
+      continue;
+    }
     const relPath = path.relative(BLOG_DIR, file).replace(/\\/g, "/");
-    const slugNoExt = relPath.replace(/\.mdx?$/, "");
-    const [locale, ...segments] = slugNoExt.split("/");
-    const normalizedLocale = locale === "en" ? "en" : "es"; // limit to supported locales
-    const blogPath = `/${normalizedLocale}/blog/${segments.join(
-      "/"
-    )}`.toLowerCase();
-    docs.push({
-      ...data,
-      tags: Array.isArray(data.tags) ? data.tags : [],
-      categories: Array.isArray(data.categories) ? data.categories : [],
-      heroImage: typeof data.heroImage === "string" ? data.heroImage : "",
-      content,
-      path: blogPath,
-      id: slugNoExt.toLowerCase(), // slug completo como id
-    });
+    docs.push(
+      buildSearchDoc({
+        data,
+        content,
+        relativePath: relPath,
+      })
+    );
   }
   console.log(`[FlexSearch] Parsed ${docs.length} documents.`);
 
