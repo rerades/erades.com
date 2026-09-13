@@ -25,11 +25,18 @@ interface Props {
   title: string;
   description: string;
   image?: string;
+  /** Versiones de la página en cada idioma, incluida ella misma. Se pintan como `hreflang` y el selector de idioma las usa para saltar a la traducción. */
+  alternates?: readonly { readonly lang: string; readonly href: string }[];
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = "/blog-placeholder-1.jpg" } = Astro.props;
+const {
+  title,
+  description,
+  image = "/blog-placeholder-1.jpg",
+  alternates = [],
+} = Astro.props;
 ---
 
 <!-- Global Metadata -->
@@ -97,6 +104,11 @@ const { title, description, image = "/blog-placeholder-1.jpg" } = Astro.props;
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
+{
+  alternates.map(({ lang, href }) => (
+    <link rel="alternate" hreflang={lang} href={new URL(href, Astro.site)} />
+  ))
+}
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>

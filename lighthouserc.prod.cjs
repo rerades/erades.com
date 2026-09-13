@@ -11,7 +11,7 @@ const URLS = [
   "https://erades.com/es/about",
   "https://erades.com/es/tags",
   "https://erades.com/es/search?q=func",
-  "https://erades.com/es/blog/ai-take-aways/i18n/",
+  "https://erades.com/es/blog/ia/i18n/",
 ];
 
 module.exports = {

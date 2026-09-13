@@ -19,6 +19,7 @@ Ruta relativa desde `src/components/`, que es como se importa aquí.
 | `title` | `string` | sí |  |
 | `description` | `string` | sí |  |
 | `image` | `string` | — |  |
+| `alternates` | `readonly { readonly lang: string; readonly href: string }[]` | — | Versiones de la página en cada idioma, incluida ella misma. Se pintan como `hreflang` y el selector de idioma las usa para saltar a la traducción. |
 
 ## Uso
 

@@ -22,11 +22,30 @@ type Props = CollectionEntry<"blog">;
 
 const { lang: langParam } = Astro.params;
 const lang = langParam ?? "es";
-const posts = (await getCollection("blog")).filter(
-  (p) => !p.data.draft && p.id.startsWith(`${lang}/`)
-);
-
 const post = Astro.props;
+
+// Cada idioma tiene su slug, así que la traducción se busca por
+// `translationKey` y no cambiando el prefijo de la URL.
+const postPath = (p: CollectionEntry<"blog">): string => {
+  const [postLang = "", ...rest] = p.id.split("/");
+  return `/${postLang}/blog/${rest.join("/")}/`;
+};
+const translationKey = post?.data?.translationKey;
+const translation = translationKey
+  ? (await getCollection("blog")).find(
+      (p) =>
+        !p.data.draft &&
+        p.data.translationKey === translationKey &&
+        !p.id.startsWith(`${lang}/`)
+    )
+  : undefined;
+const alternates = translation
+  ? [
+      { lang, href: postPath(post) },
+      { lang: translation.id.split("/")[0] ?? "", href: postPath(translation) },
+    ]
+  : [];
+
 let Content, pubDate, updatedDate, dataWithDates;
 if (post && post.data) {
   ({ Content } = await render(post));
@@ -85,6 +104,7 @@ if (post && post.data) {
       categories={dataWithDates?.categories || []}
       draft={!!dataWithDates?.draft}
       updatedDate={dataWithDates?.updatedDate}
+      alternates={alternates}
     >
       {Content ? <Content /> : null}
     </BlogPost>

@@ -58,6 +58,12 @@ async function translatePost(filePath: string, from: string, to: string) {
   fs.mkdirSync(path.dirname(destPath), { recursive: true });
   fs.writeFileSync(destPath, dest);
   console.log(`Traducido: ${filePath} → ${destPath}`);
+  if (!data.translationKey) {
+    console.log(
+      `  Falta emparejarlos: pon el mismo translationKey en los dos ficheros.`
+    );
+  }
+  console.log(`  Renombra ${destPath} a un slug en "${to}".`);
 }
 
 function getAllMarkdownFiles(dir: string): string[] {
@@ -81,9 +87,24 @@ async function main() {
     console.error(`No existe la carpeta: ${srcDir}`);
     process.exit(1);
   }
+  // Cada idioma tiene su slug, así que la traducción no se encuentra por nombre
+  // de fichero sino por `translationKey`. Sin esto, re-traduciría todo.
+  const destDir = path.join("src", "content", "blog", to);
+  const translatedKeys = new Set(
+    fs.existsSync(destDir)
+      ? getAllMarkdownFiles(destDir).map(
+          (f) => matter(fs.readFileSync(f, "utf-8")).data.translationKey
+        )
+      : []
+  );
   const files = getAllMarkdownFiles(srcDir);
   for (const srcPath of files) {
     const destPath = srcPath.replace(`/${from}/`, `/${to}/`);
+    const { translationKey } = matter(fs.readFileSync(srcPath, "utf-8")).data;
+    if (translationKey && translatedKeys.has(translationKey)) {
+      console.log(`Saltado: ${srcPath} (ya traducido, ${translationKey})`);
+      continue;
+    }
     if (fs.existsSync(destPath)) {
       console.log(
         `Saltado: ${srcPath} → ${destPath} (ya existe el fichero traducido)`
