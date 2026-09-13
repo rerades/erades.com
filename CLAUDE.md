@@ -28,8 +28,9 @@ pnpm test:e2e:headed          # Playwright headed with PWDEBUG
 pnpm test:visual              # Visual regression (needs a server on :4321, see below)
 pnpm test:visual:update       # Same, rewriting the snapshots
 
-pnpm translate:es-en          # Translate es posts -> en via OpenAI (needs .env with OPENAI_API_KEY)
+pnpm translate:es-en          # Translate es posts -> en via OpenRouter (needs .env with OPENROUTER_API_KEY)
 pnpm translate:en-es
+pnpm hero <post.mdx> ["extra"] # Hero image via OpenRouter (FLUX.2) → public/hero-<slug>.webp, sets heroImage on both locales
 ```
 
 Run a single unit test file: `pnpm exec vitest run src/components/BlogCard.test.ts`

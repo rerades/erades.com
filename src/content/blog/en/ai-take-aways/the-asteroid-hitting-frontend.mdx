@@ -1,0 +1,139 @@
+---
+title: "The asteroid hitting frontend web development (and why \"agent experience\" is the new DX)"
+description: "Notes on Nolan Lawson's post: why agent experience is replacing developer experience, why frontend gets hit first, and where real expertise goes next."
+pubDate: 2026-09-13
+heroImage: /hero-el-asteroide-del-frontend.webp
+tags:
+  - ai-coding
+  - agent-experience
+  - frontend
+  - web-development
+  - artificial-intelligence
+categories:
+  - AI
+  - Crafting
+translationKey: "ai-take-aways/the-asteroid-hitting-frontend"
+draft: false
+---
+
+import { Bot, Rocket, Wrench } from "@lucide/astro";
+
+Nolan Lawson just wrote [_The asteroid currently hitting frontend web development_](https://nolanlawson.com/2026/08/23/the-asteroid-currently-hitting-frontend-web-development/), and it resonated deeply. The frontend educators we all learned from —**Rauschmayer, Comeau, Dodds, Osmani**— are either bowing out or pivoting to AI.
+
+Three things from his post stuck with me.
+
+## <Bot size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />1. "Agent experience" is replacing developer experience
+
+Cursor migrated from Solid to React. Viget migrated from Lit to React. **Not because React is better — because the agents know React.** React is overrepresented in training weights, and when an agent writes your code, the framework it knows best wins.
+
+Ergonomics and performance arguments matter less when the agent is the one writing the code.
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 230" role="img" aria-labelledby="ax-title" class="w-full h-auto text-current">
+    <title id="ax-title">Developers used to pick frameworks for ergonomics and performance; now what the agent knows from training wins</title>
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="10" y="20" width="280" height="190" rx="10" opacity="0.5" />
+      <rect x="350" y="20" width="280" height="190" rx="10" />
+    </g>
+    <g fill="currentColor" font-family="inherit" text-anchor="middle">
+      <text x="150" y="50" font-size="16" font-weight="700">DX</text>
+      <text x="150" y="70" font-size="12" opacity="0.7">the developer chooses</text>
+      <text x="150" y="110" font-size="14">ergonomics</text>
+      <text x="150" y="135" font-size="14">performance</text>
+      <text x="150" y="160" font-size="14">bundle size</text>
+      <text x="150" y="190" font-size="12" opacity="0.7">Solid · Lit · Svelte…</text>
+
+      <text x="490" y="50" font-size="16" font-weight="700">AX</text>
+      <text x="490" y="70" font-size="12" opacity="0.7">the agent chooses</text>
+      <text x="490" y="110" font-size="14">how often does it show up</text>
+      <text x="490" y="130" font-size="14">in the training data?</text>
+      <text x="490" y="190" font-size="12" opacity="0.7">React</text>
+    </g>
+    <g stroke="currentColor" stroke-width="2" fill="none">
+      <path d="M298 115 H340" />
+      <path d="M332 107 L342 115 L332 123" />
+    </g>
+  </svg>
+</figure>
+
+## <Rocket size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />2. Frontend is the "yolo it to prod" layer
+
+A database migration needs review, staging, scrutiny. A React component? People just ship it. Frontend is ephemeral enough that agents will handle it with minimal human oversight.
+
+**The asteroid hits frontend first because the risk tolerance is highest.**
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 200" role="img" aria-labelledby="risk-title" class="w-full h-auto text-current">
+    <title id="risk-title">Oversight spectrum: database migrations get the most review and frontend components the least, which is why the impact lands on frontend first</title>
+    <defs>
+      <linearGradient id="risk-grad" x1="0" x2="1">
+        <stop offset="0" stop-color="currentColor" stop-opacity="0.9" />
+        <stop offset="1" stop-color="currentColor" stop-opacity="0.15" />
+      </linearGradient>
+    </defs>
+    <rect x="20" y="90" width="600" height="14" rx="7" fill="url(#risk-grad)" />
+    <g fill="currentColor" text-anchor="middle" font-family="inherit">
+      <circle cx="60" cy="97" r="9" />
+      <circle cx="320" cy="97" r="9" />
+      <circle cx="580" cy="97" r="9" />
+      <text x="60" y="135" font-size="14" font-weight="700">DB migration</text>
+      <text x="60" y="155" font-size="12" opacity="0.7">review · staging</text>
+      <text x="320" y="135" font-size="14" font-weight="700">Backend API</text>
+      <text x="320" y="155" font-size="12" opacity="0.7">tests · review</text>
+      <text x="580" y="135" font-size="14" font-weight="700">Component</text>
+      <text x="580" y="155" font-size="12" opacity="0.7">"just ship it"</text>
+      <text x="20" y="190" font-size="12" text-anchor="start" opacity="0.7">more human oversight</text>
+      <text x="620" y="190" font-size="12" text-anchor="end" opacity="0.7">more agent autonomy</text>
+    </g>
+    <g stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round">
+      <circle cx="520" cy="30" r="12" fill="currentColor" />
+      <path d="M508 22 L470 4" opacity="0.6" />
+      <path d="M510 34 L462 22" opacity="0.4" />
+      <path d="M530 42 L568 80" stroke-dasharray="4 5" />
+    </g>
+  </svg>
+</figure>
+
+## <Wrench size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />3. The opportunity is fixing vibe-coded monstrosities
+
+Massive amounts of AI-generated frontend are becoming **load-bearing in production** right now. When those sites are slow, inaccessible, or riddled with issues, "fix my website pls" won't cut it.
+
+Real expertise —**performance, accessibility, architecture**— becomes the consulting opportunity.
+
+## What I take away
+
+> The expertise didn't die. It moved upstream.
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 170" role="img" aria-labelledby="up-title" class="w-full h-auto text-current">
+    <title id="up-title">Expertise moves from writing code to auditing, repairing and teaching agents the big picture</title>
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="10" y="55" width="150" height="60" rx="10" opacity="0.5" stroke-dasharray="5 4" />
+      <rect x="240" y="10" width="390" height="46" rx="10" />
+      <rect x="240" y="62" width="390" height="46" rx="10" />
+      <rect x="240" y="114" width="390" height="46" rx="10" />
+    </g>
+    <g stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round">
+      <path d="M168 85 C200 85 205 33 232 33" />
+      <path d="M168 85 H232" />
+      <path d="M168 85 C200 85 205 137 232 137" />
+    </g>
+    <g fill="currentColor" font-family="inherit">
+      <text x="85" y="90" font-size="14" text-anchor="middle" opacity="0.7">writing code</text>
+      <text x="260" y="38" font-size="14" font-weight="700">Audit</text>
+      <text x="360" y="38" font-size="12" opacity="0.7">what the agent already shipped</text>
+      <text x="260" y="90" font-size="14" font-weight="700">Repair</text>
+      <text x="360" y="90" font-size="12" opacity="0.7">performance · a11y · architecture</text>
+      <text x="260" y="142" font-size="14" font-weight="700">Teach</text>
+      <text x="360" y="142" font-size="12" opacity="0.7">the big picture they still get wrong</text>
+    </g>
+  </svg>
+</figure>
+
+From writing code to **auditing, repairing, and teaching agents** the big picture they still get wrong.
+
+---
+
+**Sources**
+
+- [Nolan Lawson — The asteroid currently hitting frontend web development](https://nolanlawson.com/2026/08/23/the-asteroid-currently-hitting-frontend-web-development/)

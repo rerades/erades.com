@@ -182,7 +182,7 @@ The blog covers various topics including:
 Create a `.env` file for translation features:
 
 ```
-OPENAI_API_KEY=your_openai_api_key
+OPENROUTER_API_KEY=your_openrouter_api_key
 ```
 
 ### Build Process
