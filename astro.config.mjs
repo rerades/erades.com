@@ -50,6 +50,13 @@ export default defineConfig({
     },
   },
   site: "https://erades.com",
+  build: {
+    // El CSS del sitio es una sola hoja de ~10 KB y era el único recurso que
+    // bloqueaba el primer pintado (Lighthouse: render-blocking). Inline se
+    // ahorra ese viaje; a cambio no se cachea entre páginas, que con 10 KB no
+    // compensa.
+    inlineStylesheets: "always",
+  },
   // Cada idioma tiene su propio slug desde que se tradujeron las rutas. Estas
   // son las URLs antiguas, que ya estaban indexadas y enlazadas desde fuera.
   redirects: {
