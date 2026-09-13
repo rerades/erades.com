@@ -3,6 +3,11 @@ import Layout from "../../../../layouts/BlogPost.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../../../../consts";
 import { getCollection } from "astro:content";
 import BlogList from "../../../../components/BlogList.astro";
+import {
+  ALL_CATEGORIES,
+  isAllCategories,
+  postHasCategory,
+} from "../../../../utils/filter-posts";
 import { SORT_BY_OPTIONS, sortPosts } from "../../../../utils/sort-utils";
 
 const { page } = Astro.params;
@@ -15,7 +20,7 @@ const posts = (await getCollection("blog"))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const categories = [
-  "Todas",
+  ALL_CATEGORIES,
   ...Array.from(
     new Set(
       posts.flatMap((post) =>
@@ -25,9 +30,8 @@ const categories = [
   ),
 ];
 
-// Obtener la categoría seleccionada de la query string
 const selectedCategory =
-  Astro.url.searchParams.get("category")?.toLowerCase() || "todas";
+  Astro.url.searchParams.get("category") || ALL_CATEGORIES;
 
 function isSortBy(value: string): value is (typeof SORT_BY_OPTIONS)[number] {
   return SORT_BY_OPTIONS.includes(value as any);
@@ -39,23 +43,14 @@ const rawViewMode = Astro.url.searchParams.get("viewMode");
 let viewMode: "grid" | "list" = rawViewMode === "list" ? "list" : "grid";
 
 function filterPosts(posts: any[], category: string, sort: string): any[] {
-  let filtered;
-  if (category === "todas") {
-    filtered = posts;
-  } else {
-    filtered = posts.filter((post) => {
-      if (Array.isArray(post.data.categories)) {
-        const match = post.data.categories.some((cat: string) => {
-          const isMatch = cat.toLowerCase() === category;
-          return isMatch;
-        });
-        return match;
-      } else {
-        const isUncategorized = category === "uncategorized";
-        return isUncategorized;
-      }
-    });
-  }
+  const filtered = isAllCategories(category)
+    ? posts
+    : posts.filter((post) =>
+        postHasCategory(
+          Array.isArray(post.data.categories) ? post.data.categories : [],
+          category
+        )
+      );
   const safeSort = isSortBy(sort) ? sort : "date-desc";
   return sortPosts(filtered, safeSort);
 }
@@ -72,14 +67,14 @@ const paginatedPosts = filteredPosts.slice(
 
 const getCategoryHref = (cat: string) => {
   const params = new URLSearchParams();
-  if (cat.toLowerCase() !== "todas") params.set("category", cat.toLowerCase());
+  if (!isAllCategories(cat)) params.set("category", cat);
   if (sortBy) params.set("sortBy", sortBy);
   if (viewMode === "list") params.set("viewMode", viewMode);
   return `/${lang}/blog/` + (params.toString() ? `?${params.toString()}` : "");
 };
 const getPageHref = (page: number) => {
   const params = new URLSearchParams();
-  if (selectedCategory !== "todas") params.set("category", selectedCategory);
+  if (!isAllCategories(selectedCategory)) params.set("category", selectedCategory);
   if (sortBy) params.set("sortBy", sortBy);
   if (viewMode === "list") params.set("viewMode", viewMode);
   return (

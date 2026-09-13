@@ -294,4 +294,21 @@ test.describe("Blog", () => {
       .first();
     await expect(activeLastPage).toHaveText(lastPageNumber.toString());
   });
+
+  test("filtrar por AI desde la página 2 no deja el listado vacío", async ({
+    page,
+  }) => {
+    await page.goto("/es/blog/page/2");
+    await waitForPageReady(page);
+
+    const aiChip = page.getByRole("link", { name: "AI", exact: true }).first();
+    await aiChip.click();
+
+    await page.waitForURL(/[?&]category=AI(?:&|$)/);
+    await waitForPageReady(page);
+
+    const blogPosts = page.locator('[aria-label="grid-card"]');
+    expect(await blogPosts.count()).toBeGreaterThan(0);
+    expect(page.url()).not.toMatch(/[?&]category=ai(?:&|$)/);
+  });
 });
