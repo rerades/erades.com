@@ -94,7 +94,7 @@ const {
   </ShowWhen>
 
   <!-- Filtros -->
-  <div class="mx-auto sticky top-30 z-10">
+  <div class="mx-auto">
     <BlogFilters
       categories={categories}
       selectedCategory={selectedCategory}
@@ -105,17 +105,20 @@ const {
       lang={lang}
     />
   </div>
-  <!-- Resultados -->
-  <div class="mb-2 px-4 text-right">
-    <ShowWhen when={totalPages > 1}>
+  <!-- Paginador superior: sticky, hijo directo de <section> para que no quede confinado a una línea -->
+  <ShowWhen when={totalPages > 1}>
+    <div class="sticky top-24 z-10 w-fit mx-auto">
       <Paginator
-        customClass="relative top-[1.5rem]"
+        customClass="mt-0! p-2 rounded-lg bg-background/90 backdrop-blur"
         currentPage={currentPage}
         totalPages={totalPages}
         getPageHref={getPageHref}
         lang={lang}
       />
-    </ShowWhen>
+    </div>
+  </ShowWhen>
+  <!-- Resultados -->
+  <div class="mb-2 px-4 text-right">
     <ResultsInfo
       shown={paginatedPosts.length}
       total={posts.length}
