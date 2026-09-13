@@ -4,55 +4,51 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
 import { getCollection } from "astro:content";
 import BlogCard from "../../components/BlogCard.astro";
 import { t, tWithInterpolation } from "../../i18n";
-import Else from "../../components/Else.astro";
-import If from "../../components/If.astro";
-import Then from "../../components/Then.astro";
+import { getImage } from "astro:assets";
+import { resolveHeroImage } from "../../utils/hero-image";
 import { sortPosts } from "../../utils/sort-utils";
 
-const { lang: langParam } = Astro.params;
-const isValidLang = langParam === "es" || langParam === "en";
-const fallbackLang = (
-	Astro.cookies.get("lang")?.value ??
-	((Astro.request.headers.get("accept-language") || "")
-		.toLowerCase()
-		.startsWith("en")
-		? "en"
-		: "en")
-) as "es" | "en";
-const lang = (isValidLang ? (langParam as "es" | "en") : fallbackLang);
+// Estática: antes se renderizaba en cada petición solo para servir un 404 con
+// el idioma de la cookie cuando el parámetro no era es/en, y eso ya lo cubre
+// 404.astro. Prerenderizada, la portada del LCP sale en el build como fichero
+// en /_astro/ en vez de pasar por sharp en /_image en cada visita.
+export const prerender = true;
 
-if (!isValidLang) {
-	Astro.response.status = 404;
+export function getStaticPaths() {
+  return [{ params: { lang: "es" } }, { params: { lang: "en" } }];
 }
 
-const posts = isValidLang
-	? sortPosts(
-			(await getCollection("blog")).filter(
-				(p) => !p.data.draft && p.id.startsWith(`${lang}/`)
-			),
-			"date-desc"
-		)
-	: [];
-const featured = isValidLang ? posts.slice(0, 3) : [];
+const lang = Astro.params.lang as "es" | "en";
 
-const pageTitle = isValidLang
-	? SITE_TITLE
-	: `404 - ${t(lang, "error.404.title")} | ${SITE_TITLE}`;
-const pageDescription = isValidLang
-	? SITE_DESCRIPTION
-	: t(lang, "error.404.description");
+const posts = sortPosts(
+  (await getCollection("blog")).filter(
+    (p) => !p.data.draft && p.id.startsWith(`${lang}/`)
+  ),
+  "date-desc"
+);
+const featured = posts.slice(0, 3);
+
+// La portada de la primera tarjeta es el LCP de la home en móvil. Se precarga
+// con los mismos parámetros que BlogCardGrid (400x225, 1x y 2x) para que el
+// navegador reutilice la descarga en vez de pedirla dos veces.
+const lcpHero = featured[0]?.data.heroImage;
+const lcpSrc = lcpHero ? resolveHeroImage(lcpHero) : undefined;
+const lcpImage =
+  lcpSrc && typeof lcpSrc !== "string"
+    ? await getImage({ src: lcpSrc, width: 400, height: 225, densities: [1, 2] })
+    : undefined;
 ---
 
 <Layout
-  title={pageTitle}
-  description={pageDescription}
+  title={SITE_TITLE}
+  description={SITE_DESCRIPTION}
   tags={[]}
   categories={[]}
   draft={false}
   lang={lang}
+  preloadImage={lcpImage && { src: lcpImage.src, srcset: lcpImage.srcSet.attribute }}
 >
   <section>
-    {isValidLang ? (
       <div class="mx-auto">
         <!-- Hero Section -->
         <div class="text-center mb-16">
@@ -106,53 +102,5 @@ const pageDescription = isValidLang
           </div>
         </div>
       </div>
-    ) : (
-      <div class="min-h-[60vh] flex items-center justify-center">
-        <div class="text-center">
-          <div class="mb-8">
-            <h1 class="text-8xl font-bold text-muted-foreground mb-4">404</h1>
-            <h2 class="text-2xl font-semibold text-foreground mb-4">
-              {t(lang, "error.404.title")}
-            </h2>
-            <p class="text-muted-foreground mb-8 max-w-md mx-auto">
-              {t(lang, "error.404.description")}
-            </p>
-          </div>
-
-          <div class="space-y-4">
-            <a
-              href={`/${lang}/`}
-              class="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-            >
-              {t(lang, "error.404.goHome")}
-            </a>
-
-            <div class="text-sm text-muted-foreground">
-              <p>{t(lang, "error.404.orTry")}</p>
-              <div class="mt-2 space-x-4">
-                <a
-                  href={`/${lang}/blog/`}
-                  class="hover:text-foreground transition-colors"
-                >
-                  {t(lang, "menu.blog")}
-                </a>
-                <a
-                  href={`/${lang}/about/`}
-                  class="hover:text-foreground transition-colors"
-                >
-                  {t(lang, "menu.about")}
-                </a>
-                <a
-                  href={`/${lang}/search/`}
-                  class="hover:text-foreground transition-colors"
-                >
-                  {t(lang, "search.title")}
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )}
   </section>
 </Layout>
