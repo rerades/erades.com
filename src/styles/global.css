@@ -10,6 +10,20 @@
 
    Se sirve en woff2, no en el TTF variable original: 305 KB -> 125 KB.
 
+   Y recortada a latín (más flechas y símbolos matemáticos), igual que las
+   Inter: 125 -> 55 KB Raleway, 111 -> 23 KB Inter-Medium. Las dos van
+   precargadas y el LCP de casi todas las páginas es un párrafo de texto que
+   espera a que lleguen, así que su peso es LCP en móvil. Se ha recortado
+   desde los woff2 anteriores (en git) con:
+
+     python3 -m fontTools.subset <fuente>.woff2 --flavor=woff2 \
+       --unicodes="U+0000-017F,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2190-22FF,U+FEFF,U+FFFD"
+
+   Sin `--layout-features='*'`: el sitio no usa features opcionales
+   (tabular-nums, alternates…) y dejarlas todas duplicaba el peso de Inter.
+   Lo que caiga fuera del rango (emoji, dibujos de caja en bloques de código)
+   lo pinta la fuente de respaldo, como ya ocurría.
+
    `font-display: optional` y no `swap`: con `swap`, cuando Raleway entraba
    reflujaba la página entera y /es/tags marcaba CLS 0,23 medido en la imagen
    de CI (0,008 en macOS, donde `sans-serif` resuelve a algo casi idéntico a
