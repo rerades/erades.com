@@ -59,6 +59,11 @@ jobs:
         with:
           name: lighthouse-reports
           path: .lighthouseci/lhr-*.json
+          # .lighthouseci es un directorio oculto: upload-artifact lo ignora por
+          # defecto y sólo deja un warning, así que el paso salía verde sin
+          # subir nada.
+          include-hidden-files: true
+          if-no-files-found: error
           retention-days: 14
 
       - name: Añadir fila al registro

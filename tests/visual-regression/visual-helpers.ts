@@ -19,9 +19,45 @@ import type { Page } from "@playwright/test";
  * 2. Aun resolviendo bien esa promesa, `ready` solo cubre las caras que el
  *    navegador YA ha pedido. Con `font-display: swap`, Inter 400 aparecía como
  *    `unloaded` justo antes de la captura. `FontFace.load()` fuerza la descarga.
+ * 3. Con `font-display: optional` (el de producción desde #183) cargarla no
+ *    basta: si no llega en ~100 ms, Chrome pinta con la del sistema durante
+ *    toda la vida de la página aunque luego termine de bajar. Desde que la
+ *    home precarga también su portada (#197), la carrera se perdía a veces y
+ *    fallaba una captura distinta en cada intento. Por eso se vuelven a
+ *    registrar las mismas caras de la hoja (leídas de su CSS, para no mantener
+ *    aquí una copia de la lista) como `FontFace` cargadas ANTES de añadirlas a
+ *    `document.fonts`: así se aplican siempre, y nunca existe una cara a medio
+ *    cargar. Hacerlo con un <style> y `font-display: block` no vale: el
+ *    navegador crea esas caras tarde, fuera de la espera, y la captura podía
+ *    salir en pleno periodo de bloqueo con el texto invisible.
  */
 const waitForFontsLoaded = async (page: Page): Promise<void> => {
   await page.evaluate(async () => {
+    const rules = Array.from(document.styleSheets).flatMap((sheet) => {
+      try {
+        return Array.from(sheet.cssRules).filter(
+          (rule): rule is CSSFontFaceRule => rule instanceof CSSFontFaceRule
+        );
+      } catch {
+        return [];
+      }
+    });
+    const faces = await Promise.all(
+      rules.map((rule) => {
+        const s = rule.style;
+        const face = new FontFace(
+          s.getPropertyValue("font-family").replace(/["']/g, ""),
+          s.getPropertyValue("src"),
+          {
+            style: s.getPropertyValue("font-style") || "normal",
+            weight: s.getPropertyValue("font-weight") || "normal",
+          }
+        );
+        return face.load().catch(() => null);
+      })
+    );
+    for (const face of faces) if (face) document.fonts.add(face);
+
     await Promise.all(
       Array.from(document.fonts).map((face) => face.load().catch(() => face))
     );
