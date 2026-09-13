@@ -4,8 +4,10 @@ import matter from "gray-matter";
 import sharp from "sharp";
 
 // Uso: pnpm hero src/content/blog/es/<carpeta>/<post>.mdx ["indicaciones extra"]
-// Genera public/hero-<slug>.webp a partir de title y description, y apunta
-// `heroImage` a ella en el post y en su espejo del otro idioma.
+// Genera src/assets/heroes/hero-<slug>.webp a partir de title y description, y
+// apunta `heroImage` a ella en el post y en su espejo del otro idioma. Va en
+// src/assets y no en public/ para que Astro la redimensione en las tarjetas
+// (ver src/utils/hero-image.ts).
 const [, , postPath, extra = ""] = process.argv;
 
 const MODEL = "black-forest-labs/flux.2-pro";
@@ -75,8 +77,8 @@ async function main(): Promise<void> {
   const fileName = `hero-${slug}.webp`;
   await sharp(Buffer.from(b64, "base64"))
     .webp({ quality: 82 })
-    .toFile(path.join("public", fileName));
-  process.stdout.write(`Imagen → public/${fileName}\n`);
+    .toFile(path.join("src", "assets", "heroes", fileName));
+  process.stdout.write(`Imagen → src/assets/heroes/${fileName}\n`);
 
   setHeroImage(postPath, `/${fileName}`);
   const mirror = findTranslation(postPath, data.translationKey);

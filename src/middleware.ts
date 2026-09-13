@@ -11,6 +11,10 @@ const isBlogRoute = (pathname: string): boolean =>
   pathname.startsWith("/blog/");
 const isAssetRoute = (pathname: string): boolean =>
   pathname.startsWith("/assets/") ||
+  // Imágenes redimensionadas por Astro al vuelo. La query lleva el hash del
+  // original y los parámetros, así que el contenido de una URL no cambia nunca;
+  // sin esto, cada visita volvía a pasar la imagen por sharp.
+  pathname === "/_image" ||
   pathname.includes(".css") ||
   pathname.includes(".js");
 const isFontRoute = (pathname: string): boolean =>
