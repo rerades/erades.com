@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import type { ComponentProps } from "astro/types";
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
@@ -11,15 +12,24 @@ import "../styles/global.css";
 type Props = Omit<CollectionEntry<"blog">["data"], "pubDate"> & {
   pubDate?: Date;
   lang: string;
+  alternates?: ComponentProps<typeof BaseHead>["alternates"];
 };
 
-const { title, description, pubDate, updatedDate, tags, categories, lang } =
-  Astro.props;
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  tags,
+  categories,
+  lang,
+  alternates,
+} = Astro.props;
 ---
 
 <html lang={lang}>
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead title={title} description={description} alternates={alternates} />
   </head>
 
   <body class="bg-background text-foreground min-h-screen flex flex-col">

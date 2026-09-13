@@ -128,10 +128,15 @@ if (typeof window !== "undefined") {
               const next = btn.dataset.langSwitch;
               document.cookie =
                 "lang=" + next + "; path=/; max-age=" + 60 * 60 * 24 * 365;
-              window.location.pathname = window.location.pathname.replace(
-                /^\/(en|es)/,
-                "/" + next
+              // Un post traduce también su slug: si la página declara su
+              // versión en el otro idioma (hreflang), se salta a esa. Solo el
+              // pathname, para no acabar en erades.com al probar en local.
+              const alt = document.querySelector(
+                'link[rel="alternate"][hreflang="' + next + '"]'
               );
+              window.location.pathname = alt
+                ? new URL(alt.href).pathname
+                : window.location.pathname.replace(/^\/(en|es)/, "/" + next);
             });
           </script>
           <SocialProfileMenu

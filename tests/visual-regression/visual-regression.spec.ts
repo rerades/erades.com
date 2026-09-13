@@ -77,7 +77,7 @@ test.describe("Páginas completas - desktop", () => {
   });
 
   test("Detalle de post", async ({ page }) => {
-    await page.goto("/es/blog/functional/functional-programming");
+    await page.goto("/es/blog/funcional/programacion-funcional");
     await ready(page, "h1");
     await expect(page).toHaveScreenshot("blog-post.png", { fullPage: true });
   });

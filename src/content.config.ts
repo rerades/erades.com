@@ -15,6 +15,10 @@ const blog = defineCollection({
     tags: z.array(z.string()),
     categories: z.array(z.string()),
     draft: z.boolean().default(false),
+    // Mismo valor en las dos versiones de un post: es lo que las empareja,
+    // porque cada idioma tiene su propio slug. Sin él, el post no tiene
+    // traducción (ni hreflang, ni salto directo desde el selector de idioma).
+    translationKey: z.string().optional(),
   }),
 });
 

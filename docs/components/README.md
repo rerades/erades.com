@@ -23,7 +23,7 @@ su coste medido, en [`../bejamas-ui-presupuesto.md`](../bejamas-ui-presupuesto.m
 
 | Componente | Descripción | Props |
 | --- | --- | --- |
-| [Base Head](./base-head.md) | Todo lo que va en el <head> de cualquier página: metadatos globales, canónica, Open Graph, Twitter Card, los tres feeds RSS y Google Analytics. | 3 |
+| [Base Head](./base-head.md) | Todo lo que va en el <head> de cualquier página: metadatos globales, canónica, Open Graph, Twitter Card, los tres feeds RSS y Google Analytics. | 4 |
 | [Blog Card](./blog-card.md) | Despacha a la tarjeta de rejilla o a la de lista según `variant`. Existe para que quien pinta un listado no tenga que saber cuál de las dos toca. | 4 |
 | [Blog Card (rejilla)](./blog-card-grid.md) | La tarjeta de un post en modo rejilla: imagen destacada, título, fecha y descripción. `index` decide la carga de la imagen: las primeras van eager. | 3 |
 | [Blog Card (lista)](./blog-card-list.md) | La tarjeta de un post en modo lista: la misma información que en rejilla pero en horizontal, con la imagen a un lado. | 3 |

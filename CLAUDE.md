@@ -93,7 +93,9 @@ rather than alias prefixes. Keep that in mind when adding a rule.
 
 ### Content collections
 
-- Blog posts are Markdown/MDX under `src/content/blog/{en,es}/...` (subfolders like `functional/`, `patterns/`, `ai-take-aways/` group related posts but aren't a routing concept — the flat locale prefix is what matters).
+- Blog posts are Markdown/MDX under `src/content/blog/{en,es}/...`. The file path **is** the URL (`es/funcional/funtores.mdx` → `/es/blog/funcional/funtores/`), and every consumer derives it from there: the post route, the cards, the three RSS feeds and the search index.
+- **Each locale names its own path**, subfolder included (`en/functional/functors` ↔ `es/funcional/funtores`), so the two versions of a post are paired by the `translationKey` frontmatter field, never by filename. Give both files the same value when adding a translation. The post route uses it to emit `hreflang` links, and the ES/EN switch in `Header.astro` jumps to that link; without a pair it falls back to swapping the `/es`↔`/en` prefix, which 404s on a post.
+- **Renaming a published post needs a 301** in `redirects` in `astro.config.mjs`: the old URL is indexed and linked from outside.
 - Schema is defined once in `src/content.config.ts` (zod): `title`, `description`, `pubDate`, `updatedDate?`, `heroImage?`, `tags[]`, `categories[]`, `draft`. When adding frontmatter fields, update this schema first — it's the single source of truth for content typing.
 - `pnpm translate:*` scripts (`scripts/translate-posts.ts`) mirror posts between `en/` and `es/` via the OpenAI API — used to keep both locale trees in sync, not run automatically in CI.
 
