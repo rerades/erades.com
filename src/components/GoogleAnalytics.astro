@@ -2,7 +2,7 @@
 /**
  * @component GoogleAnalytics
  * @title Google Analytics
- * @description Carga GA4 solo si `PUBLIC_GA_MEASUREMENT_ID` está configurada: sin variable no emite ni una etiqueta. Va con `async` y `fetchpriority="low"` para no competir con el render, y con la IP anonimizada y las señales publicitarias desactivadas.
+ * @description Carga GA4 solo si `PUBLIC_GA_MEASUREMENT_ID` está configurada: sin variable no emite ni una etiqueta. `gtag.js` se pide después del evento `load`, para no competir con el render ni con la imagen del LCP, y va con la IP anonimizada y las señales publicitarias desactivadas.
  *
  *
  * El condicional es un `ShowWhen` y no una expresión JSX envolvente por un motivo que está comentado en el fichero: dentro de una expresión, Astro emite el cuerpo del script literal en vez de evaluarlo.
@@ -17,9 +17,6 @@
  * <GoogleAnalytics />
  * ```
  */
-// Google Analytics 4 - Non-blocking, performance-optimized implementation
-// Only loads if PUBLIC_GA_MEASUREMENT_ID environment variable is configured
-// Uses async loading with low priority to avoid blocking page rendering
 import ShowWhen from "./ShowWhen.astro";
 
 const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
@@ -29,12 +26,12 @@ const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
     de una expresion, el cuerpo del <script> se parsea como JSX y Astro >= 5.17.2
     lo emite literal en vez de evaluarlo. Como slot, es texto plano de script. */}
 <ShowWhen when={gaMeasurementId}>
-  {/* Script loads asynchronously with low priority to not compete with critical resources */}
-  <script
-    async
-    src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
-    fetchpriority="low"></script>
-  {/* Inline configuration script - executes immediately but doesn't block rendering */}
+  {/* gtag.js pesa ~170 KB. Con `async` no bloqueaba el pintado, pero se
+      descargaba a la vez que las fuentes y la portada del LCP y en móvil se
+      quedaba con casi todo el ancho de banda. Tras `load` la página ya está
+      pintada. La cola de dataLayer se crea ya, así que el page_view no se
+      pierde: gtag.js la procesa al llegar. Lo que se pierde es la visita de
+      quien se va antes de `load`, y se ha aceptado. */}
   <script is:inline define:vars={{ measurementId: gaMeasurementId }}>
     window.dataLayer = window.dataLayer || [];
     function gtag() {
@@ -47,5 +44,14 @@ const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
       allow_google_signals: false,
       allow_ad_personalization_signals: false,
     });
+
+    const loadGtag = () => {
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = "https://www.googletagmanager.com/gtag/js?id=" + measurementId;
+      document.head.appendChild(script);
+    };
+    if (document.readyState === "complete") loadGtag();
+    else window.addEventListener("load", loadGtag, { once: true });
   </script>
 </ShowWhen>
