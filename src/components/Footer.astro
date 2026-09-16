@@ -48,57 +48,62 @@ const links = [
         Area 73
       </a>
 
-      <nav aria-label={t(lang, "footer.navTitle")}>
-        <h2 class="sr-only">{t(lang, "footer.navTitle")}</h2>
-        <ul
-          class="decoration-none flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium"
+      <div
+        class="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8"
+      >
+        <nav aria-label={t(lang, "footer.navTitle")}>
+          <h2 class="sr-only">{t(lang, "footer.navTitle")}</h2>
+          <ul
+            class="decoration-none flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium"
+          >
+            {
+              links.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    class="hover:text-foreground transition-colors"
+                  >
+                    {t(lang, link.key)}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+
+        <div
+          class="flex items-center gap-2 sm:border-l sm:border-header-border sm:pl-8"
         >
-          {
-            links.map((link) => (
-              <li>
-                <a
-                  href={link.href}
-                  class="hover:text-foreground transition-colors"
-                >
-                  {t(lang, link.key)}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
+          <h2 class="sr-only">{t(lang, "footer.followTitle")}</h2>
+          <a
+            href="https://www.linkedin.com/in/siete3/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t(lang, "social.linkedin")}
+            title={t(lang, "social.linkedin")}
+            class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-header-border hover:text-foreground hover:border-foreground/30 transition-colors"
+          >
+            <Linkedin class="h-4 w-4" />
+          </a>
+          <a
+            href="https://x.com/area_73"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t(lang, "social.x")}
+            title={t(lang, "social.x")}
+            class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-header-border hover:text-foreground hover:border-foreground/30 transition-colors"
+          >
+            <X class="h-4 w-4" />
+          </a>
+        </div>
+      </div>
     </div>
 
-    <div
-      class="flex flex-col-reverse gap-4 border-t border-header-border pt-6 sm:flex-row sm:items-center sm:justify-between"
-    >
+    <div class="border-t border-header-border pt-6">
       <p class="text-xs" data-testid="footer-copyright">
         &copy; {year} Rodrigo Erades. {t(lang, "footer.rights")}
       </p>
 
-      <div class="flex items-center gap-2">
-        <h2 class="sr-only">{t(lang, "footer.followTitle")}</h2>
-        <a
-          href="https://www.linkedin.com/in/siete3/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={t(lang, "social.linkedin")}
-          title={t(lang, "social.linkedin")}
-          class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-header-border hover:text-foreground hover:border-foreground/30 transition-colors"
-        >
-          <Linkedin class="h-4 w-4" />
-        </a>
-        <a
-          href="https://x.com/area_73"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={t(lang, "social.x")}
-          title={t(lang, "social.x")}
-          class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-header-border hover:text-foreground hover:border-foreground/30 transition-colors"
-        >
-          <X class="h-4 w-4" />
-        </a>
-      </div>
     </div>
   </div>
 </footer>
