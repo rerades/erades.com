@@ -100,7 +100,7 @@ jobs:
     #
     # Servidor y tests comparten contenedor, de ahi que BASE_URL sea 127.0.0.1.
     container:
-      image: mcr.microsoft.com/playwright:v1.62.1-jammy
+      image: mcr.microsoft.com/playwright:v1.63.0-jammy
       options: --shm-size=1g
     env:
       PORT: 4321
