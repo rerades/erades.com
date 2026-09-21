@@ -29,6 +29,22 @@ describe("buildSearchDoc", () => {
     expect(doc.path).toBe("/en/blog/functional/hindley-milner-notation");
   });
 
+  it("drops a leftover .astro from *.astro.mdx filenames", () => {
+    const doc = buildSearchDoc({
+      data: {
+        title: "Explicit Conditional Rendering",
+        draft: false,
+        tags: ["Astro"],
+        categories: ["design patterns"],
+      },
+      content: "ShowWhen",
+      relativePath: "en/patterns/conditional-rendering-with-show.astro.mdx",
+    });
+
+    expect(doc.id).toBe("en/patterns/conditional-rendering-with-show");
+    expect(doc.path).toBe("/en/blog/patterns/conditional-rendering-with-show");
+  });
+
   it("defaults missing tags, categories and heroImage", () => {
     const doc = buildSearchDoc({
       data: { title: "A post" },

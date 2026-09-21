@@ -33,7 +33,13 @@ export function isPublishedPost(data: object): boolean {
  * and BlogCard builds the href from this id.
  */
 export function buildSearchDoc(input: BuildSearchDocInput): SearchIndexDoc {
-  const slugNoExt = input.relativePath.replace(/\.mdx?$/, "").toLowerCase();
+  // Strip `.md`/`.mdx`, then a leftover `.astro` from names like
+  // `ShowWhen.astro.mdx`. That extra extension survived in the search id
+  // while `[...slug]` dropped the dot (`showastro`), so search cards 404ed.
+  const slugNoExt = input.relativePath
+    .replace(/\.mdx?$/, "")
+    .replace(/\.astro$/, "")
+    .toLowerCase();
   const [locale, ...segments] = slugNoExt.split("/");
   const normalizedLocale = locale === "en" ? "en" : "es";
   const blogPath = `/${normalizedLocale}/blog/${segments.join("/")}`;
