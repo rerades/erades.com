@@ -12,10 +12,7 @@ const BLOG_DIR = join(process.cwd(), "src/content/blog");
 const LOCALES = ["es", "en"] as const;
 
 // Publicados en un solo idioma a sabiendas. Cada entrada, con su motivo.
-const UNPAIRED_ALLOWED: ReadonlySet<string> = new Set([
-  // La versión es (es/funcional/monadas.mdx) sigue en draft.
-  "functional/monads",
-]);
+const UNPAIRED_ALLOWED: ReadonlySet<string> = new Set<string>([]);
 
 interface Post {
   readonly path: string;
