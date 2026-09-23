@@ -82,6 +82,10 @@ export default defineConfig({
     "/es/blog/statement-branching-vs-micro-branching": "/es/blog/ramificacion-por-sentencias-vs-micro-ramificacion",
     "/en/blog/ai-take-aways/aspecct-metodologia-prompting": "/en/blog/ai-take-aways/aspecct-prompting-methodology",
     "/en/blog/ai-take-aways/por-que-fallan-las-fabricas-de-software": "/en/blog/ai-take-aways/why-software-factories-fail",
+    // El fichero era `*.astro.mdx`. Astro recortaba el punto (`showastro`) y el
+    // índice de búsqueda conservaba el `.astro`; las dos URLs 404ean tras el rename.
+    "/en/blog/patterns/conditional-rendering-with-show.astro": "/en/blog/patterns/conditional-rendering-with-show",
+    "/en/blog/patterns/conditional-rendering-with-showastro": "/en/blog/patterns/conditional-rendering-with-show",
   },
   output: "server",
   adapter: node({
