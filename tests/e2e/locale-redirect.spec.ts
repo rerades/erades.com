@@ -28,7 +28,9 @@ test.describe("Redirección de idioma en la raíz", () => {
     const altLang = currentLang === "es" ? "en" : "es";
     // Busca el botón del idioma alternativo (que NO tiene aria-current="page")
     const altBtn = page
-      .locator(`button[data-lang-switch="${altLang}"]:not([aria-current="page"])`)
+      .locator(
+        `button[data-lang-switch="${altLang}"]:not([aria-current="page"])`,
+      )
       .first();
     await expect(altBtn).toBeVisible();
     await altBtn.click();
@@ -51,5 +53,34 @@ test.describe("Redirección de idioma en la raíz", () => {
 
     await overlay.locator('button[data-lang-switch="en"]').click();
     await expect(page).toHaveURL(/\/en(\/|$)/);
+  });
+});
+
+// Un post sin traducción no declara hreflang. Hoy todos la tienen (lo exige
+// src/content/translation-pairs.test.ts), así que se simula quitando el link.
+test.describe("Selector de idioma en un post", () => {
+  test("salta a la traducción declarada por hreflang", async ({ page }) => {
+    await page.goto("/en/blog/functional/monads/");
+    await page.locator('button[data-lang-switch="es"]').first().click();
+    await expect(page).toHaveURL(/\/es\/blog\/funcional\/monadas\/$/);
+  });
+
+  test("sin traducción cae al listado del blog, no a un 404", async ({
+    page,
+  }) => {
+    await page.goto("/en/blog/functional/monads/");
+    await page.evaluate(() =>
+      document
+        .querySelectorAll('link[rel="alternate"][hreflang]')
+        .forEach((l) => l.remove()),
+    );
+    await page.locator('button[data-lang-switch="es"]').first().click();
+    await expect(page).toHaveURL(/\/es\/blog\/$/);
+  });
+
+  test("la paginación del blog conserva la ruta", async ({ page }) => {
+    await page.goto("/es/blog/page/2/");
+    await page.locator('button[data-lang-switch="en"]').first().click();
+    await expect(page).toHaveURL(/\/en\/blog\/page\/2\/?$/);
   });
 });

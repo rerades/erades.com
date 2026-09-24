@@ -141,9 +141,16 @@ if (typeof window !== "undefined") {
               const alt = document.querySelector(
                 'link[rel="alternate"][hreflang="' + next + '"]'
               );
+              const path = window.location.pathname;
+              // Un post sin traducción no tiene URL en el otro idioma: cambiar
+              // el prefijo daría 404, así que se cae al listado del blog. El
+              // resto de rutas (tags, paginación…) existen en los dos.
+              const isPost = /^\/(en|es)\/blog\/(?!page\/)./.test(path);
               window.location.pathname = alt
                 ? new URL(alt.href).pathname
-                : window.location.pathname.replace(/^\/(en|es)/, "/" + next);
+                : isPost
+                  ? "/" + next + "/blog/"
+                  : path.replace(/^\/(en|es)/, "/" + next);
             });
           </script>
           <SocialProfileMenu
