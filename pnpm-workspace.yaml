@@ -27,26 +27,17 @@ overrides:
   # exportando CJS, así que su `require("uuid").v4` sigue funcionando:
   # comprobado corriendo `lhci collect` de principio a fin.
   uuid: ^11.1.1
+  # Cierra GHSA-jmr9-qjv8-65gv y GHSA-7pqw-9j4j-h8q3: extract-zip no tiene
+  # versión parcheada, pero @puppeteer/browsers 3 ya no depende de él.
+  # puppeteer-core@24 (vía lighthouse 12.6.1 de @lhci/cli) pide ^2; los
+  # exports que usa siguen en la 3: comprobado corriendo `pnpm lh:collect`
+  # de principio a fin contra producción.
+  '@puppeteer/browsers': 3.2.2
   ws@7: ^7.5.11
   ws@8: ^8.21.0
-
-auditConfig:
-  # Llega solo por @lhci/cli (devDependency: tooling de Lighthouse que corre
-  # en la CI y en local, nunca en el servidor ni en el bundle).
-  #
-  # extract-zip no tiene arreglo: la última publicada es 2.0.1 y es la
-  # vulnerable. Además la ruta afectada es `unpackArchive()` de
-  # @puppeteer/browsers, que solo corre al *instalar* un navegador. Aquí no
-  # corre nunca: lighthouse trae puppeteer-core (que no descarga nada) y lanza
-  # un Chrome ya instalado, y la CI saca el suyo de la imagen de Playwright.
-  # Revisar cuando @lhci/cli publique una versión nueva (a 2026-09-13, 0.15.1
-  # sigue siendo la última). GHSA-7pqw es un segundo aviso sobre el mismo
-  # fallo de symlinks, con el mismo "parcheado en >=2.0.2" que no existe en npm.
-  ignoreGhsas:
-    - GHSA-jmr9-qjv8-65gv # extract-zip: symlink path traversal
-    - GHSA-7pqw-9j4j-h8q3 # extract-zip: escritura arbitraria vía symlinks
 
 allowBuilds:
   '@tailwindcss/oxide': true
   esbuild: false
   sharp: false
+
