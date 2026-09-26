@@ -17,7 +17,7 @@ import { sortPosts, SORT_BY_OPTIONS } from "../../../utils/sort-utils";
 // }
 
 const { lang: langParam } = Astro.params;
-const lang = langParam ?? "es";
+const lang = langParam === "en" ? "en" : "es";
 const allPosts = (await getCollection("blog")).filter(
   (p) => !p.data.draft && p.id.startsWith(`${lang}/`)
 );

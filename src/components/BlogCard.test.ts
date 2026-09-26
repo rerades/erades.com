@@ -14,7 +14,7 @@ describe("BlogCard", () => {
     author: "Test Author",
     categories: ["Test Category"],
     tags: ["test", "blog"],
-    heroImage: "/test-image.jpg",
+    heroImage: "/hero-software-factories.jpg",
   };
 
   test("renders grid variant by default", async () => {
@@ -143,7 +143,7 @@ describe("BlogCard", () => {
       },
     });
 
-    const image = result.querySelector('img[src="/test-image.jpg"]');
+    const image = result.querySelector('img[src*="hero-software-factories"]');
     expect(image).not.toBeNull();
     expect(image?.getAttribute("alt")).toBe("Test Post Title");
   });

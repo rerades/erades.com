@@ -33,10 +33,9 @@ const featured = posts.slice(0, 3);
 // navegador reutilice la descarga en vez de pedirla dos veces.
 const lcpHero = featured[0]?.data.heroImage;
 const lcpSrc = lcpHero ? resolveHeroImage(lcpHero) : undefined;
-const lcpImage =
-  lcpSrc && typeof lcpSrc !== "string"
-    ? await getImage({ src: lcpSrc, width: 400, height: 225, densities: [1, 2] })
-    : undefined;
+const lcpImage = lcpSrc
+  ? await getImage({ src: lcpSrc, width: 400, height: 225, densities: [1, 2] })
+  : undefined;
 ---
 
 <Layout

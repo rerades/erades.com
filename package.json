@@ -18,7 +18,7 @@
     "coverage": "vitest run --coverage",
     "lint": "eslint src --max-warnings=0",
     "lint:fix": "eslint src --max-warnings=0 --fix",
-    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "typecheck": "astro check",
     "translate:es-en": "dotenv -e .env -- tsx scripts/translate-posts.ts es en",
     "translate:en-es": "dotenv -e .env -- tsx scripts/translate-posts.ts en es",
     "hero": "dotenv -e .env -- tsx scripts/generate-hero-image.ts",
