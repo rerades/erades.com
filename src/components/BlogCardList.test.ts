@@ -84,7 +84,7 @@ describe("BlogCardList.astro", () => {
       const mockPost = {
         id: "test-post",
         title: "Test Post",
-        heroImage: "/test-image.jpg",
+        heroImage: "/hero-software-factories.jpg",
       };
 
       // Act
@@ -94,7 +94,7 @@ describe("BlogCardList.astro", () => {
 
       // Assert
       const img = result.querySelector("img");
-      expect(img?.getAttribute("src")).toBe("/test-image.jpg");
+      expect(img?.getAttribute("src")).toContain("hero-software-factories");
       expect(img?.getAttribute("alt")).toBe("Test Post");
     });
 
@@ -162,7 +162,7 @@ describe("BlogCardList.astro", () => {
           excerpt: "Nested excerpt",
           pubDate: new Date("2023-01-01"),
           author: "Nested Author",
-          heroImage: "/nested-image.jpg",
+          heroImage: "/hero-software-factories.jpg",
           categories: ["Nested Category"],
           tags: ["nested-tag"],
         },
@@ -247,7 +247,7 @@ describe("BlogCardList.astro", () => {
 
       // Act
       const result = await renderAstroComponent(BlogCardList, {
-        props: { post: mockPost, lang: "es" },
+        props: { post: mockPost, lang: "es", index: 0 },
       });
 
       // Assert
@@ -312,7 +312,7 @@ describe("BlogCardList.astro", () => {
 
       // Act
       const result = await renderAstroComponent(BlogCardList, {
-        props: { post: mockPost, lang: "es" },
+        props: { post: mockPost, lang: "es", index: 0 },
       });
 
       // Assert
@@ -329,7 +329,7 @@ describe("BlogCardList.astro", () => {
 
       // Act
       const result = await renderAstroComponent(BlogCardList, {
-        props: { post: mockPost, lang: "es" },
+        props: { post: mockPost, lang: "es", index: 0 },
       });
 
       // Assert

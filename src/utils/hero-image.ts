@@ -9,12 +9,12 @@ const HEROES = import.meta.glob<{ default: ImageMetadata }>(
   { eager: true }
 );
 
-// Acepta `undefined` porque las tarjetas evalúan el `src` aunque `ShowWhen`
-// no llegue a pintar la imagen.
+// Sin fallback a la ruta en crudo: sería servir el JPG entero otra vez. Que
+// toda portada del contenido exista aquí lo garantiza hero-image.test.ts.
 export function resolveHeroImage(
   src: string | undefined
-): ImageMetadata | string | undefined {
-  if (!src) return src;
+): ImageMetadata | undefined {
+  if (!src) return undefined;
   const name = src.split("/").pop() ?? "";
-  return HEROES[`../assets/heroes/${name}`]?.default ?? src;
+  return HEROES[`../assets/heroes/${name}`]?.default;
 }

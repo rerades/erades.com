@@ -18,7 +18,7 @@ pnpm start                  # Run the built server (dist/server/entry.mjs)
 
 pnpm lint                   # ESLint on src, --max-warnings=0
 pnpm lint:fix
-pnpm typecheck               # tsc --noEmit
+pnpm typecheck               # astro check (.astro + .ts; plain tsc skips .astro files)
 
 pnpm test:unit               # Vitest, single run, verbose
 pnpm test:unit:watch         # Vitest watch mode

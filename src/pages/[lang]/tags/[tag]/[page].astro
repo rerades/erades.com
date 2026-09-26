@@ -6,7 +6,7 @@ import { filterPostsByTag } from "../tag-utils";
 import { sortPosts, SORT_BY_OPTIONS } from "../../../../utils/sort-utils";
 
 const { lang: langParam, tag: tagParam, page: pageParam } = Astro.params;
-const lang = langParam ?? "es";
+const lang = langParam === "en" ? "en" : "es";
 const tag = tagParam ?? "";
 const currentPage = Number(pageParam);
 

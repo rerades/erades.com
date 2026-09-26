@@ -70,7 +70,7 @@ describe("BlogCardGrid.astro", () => {
       const mockPost = {
         id: "test-post",
         title: "Test Post",
-        heroImage: "/test-image.jpg",
+        heroImage: "/hero-software-factories.jpg",
       };
 
       // Act
@@ -80,7 +80,7 @@ describe("BlogCardGrid.astro", () => {
 
       // Assert
       const img = result.querySelector("img");
-      expect(img?.getAttribute("src")).toBe("/test-image.jpg");
+      expect(img?.getAttribute("src")).toContain("hero-software-factories");
       expect(img?.getAttribute("alt")).toBe("Test Post");
     });
 
@@ -166,7 +166,7 @@ describe("BlogCardGrid.astro", () => {
           excerpt: "Nested excerpt",
           pubDate: new Date("2023-01-01"),
           author: "Nested Author",
-          heroImage: "/nested-image.jpg",
+          heroImage: "/hero-software-factories.jpg",
           categories: ["Nested Category"],
           tags: ["nested-tag"],
         },
