@@ -136,6 +136,23 @@
     margin-top: var(--spacing-md);
   }
 
+  /* Sin plugin de tipografía, `.prose` no estiliza nada y el blockquote de
+     markdown salía como un párrafo más. */
+  blockquote {
+    margin-top: var(--spacing-md);
+    padding: 0.25rem 0 0.25rem 1rem;
+    border-left: 4px solid var(--color-primary);
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 600;
+  }
+  blockquote > p {
+    font-size: inherit;
+  }
+  blockquote > p:first-child {
+    margin-top: 0;
+  }
+
   ul,
   ol {
     margin: var(--spacing-md) 0;
