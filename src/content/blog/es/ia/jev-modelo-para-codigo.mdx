@@ -1,0 +1,268 @@
+---
+title: "Jev: cuando quien consume el modelo es el código"
+description: "Notas sobre la entrevista de Latent Space a Diogo Almeida (TypeSafe AI): un modelo pensado como dependencia de software, con robustez en vez de determinismo, primitivas tipadas y problemas troceados en decisiones pequeñas y medibles."
+pubDate: 2026-09-26
+heroImage: /hero-jev-modelo-para-codigo.webp
+tags:
+  - ai-coding
+  - artificial-intelligence
+  - best-practices
+categories:
+  - AI
+  - Crafting
+translationKey: "ai-take-aways/jev-model-for-code"
+draft: false
+---
+
+import { Compass, Plug, Shuffle, Braces, Network, Boxes, Scale } from "@lucide/astro";
+
+## La idea en una frase
+
+> Un modelo cuyo consumidor no es una persona, sino el código.
+
+Es la tesis de **Jev**, que **Diogo Almeida**, CEO de TypeSafe AI, explica a swyx en [_Jev: System One models for Prod, not God_](https://www.latent.space/p/jev) (Latent Space, 22 de septiembre de 2026). Los modelos actuales están hechos para autocompletar internet (preentrenamiento) o para contestar a personas (RLHF). Jev, un modelo **«System 1»** o *large programmable model*, está diseñado para que lo llame software directamente; de ahí el nombre de la empresa, TypeSafe.
+
+El nombre viene de la **paradoja de Jevons**: si la inteligencia se abarata, se consume mucha más. Por eso el objetivo declarado no es la frontera de inteligencia absoluta, sino la de **inteligencia por dólar**.
+
+## <Compass size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Tres estrellas polares
+
+Según Diogo, el entrenamiento de LLMs ha perseguido tres objetivos, y dos están mal elegidos:
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 250" role="img" aria-labelledby="ep-title" class="w-full h-auto text-current">
+    <title id="ep-title">Tres objetivos de entrenamiento: RLHF optimiza complacer a quien evalúa y produce sicofancia y alucinaciones; RLVR optimiza benchmarks y produce inteligencia dentada; RLCD, sin publicar, optimiza probabilidades honestas</title>
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="15" y="20" width="190" height="215" rx="10" />
+      <rect x="225" y="20" width="190" height="215" rx="10" />
+      <rect x="435" y="20" width="190" height="215" rx="10" stroke-dasharray="6 4" fill="currentColor" fill-opacity="0.08" />
+      <path d="M15 75 H205 M225 75 H415 M435 75 H625" opacity="0.5" />
+    </g>
+    <g fill="currentColor" font-family="inherit" text-anchor="middle">
+      <text x="110" y="47" font-size="17" font-weight="700">RLHF</text>
+      <text x="320" y="47" font-size="17" font-weight="700">RLVR</text>
+      <text x="530" y="47" font-size="17" font-weight="700">RLCD</text>
+      <g font-size="12" opacity="0.7">
+        <text x="110" y="65">feedback humano</text>
+        <text x="320" y="65">rewards verificables</text>
+        <text x="530" y="65">decisiones calibradas</text>
+      </g>
+      <g font-size="11" opacity="0.6">
+        <text x="110" y="100">OPTIMIZA</text>
+        <text x="320" y="100">OPTIMIZA</text>
+        <text x="530" y="100">OPTIMIZA</text>
+        <text x="110" y="170">ROMPE</text>
+        <text x="320" y="170">ROMPE</text>
+        <text x="530" y="170">ESTADO</text>
+      </g>
+      <g font-size="15">
+        <text x="110" y="122">complacer</text>
+        <text x="110" y="141">a quien evalúa</text>
+        <text x="320" y="122">benchmarks</text>
+        <text x="320" y="141">(System 2)</text>
+        <text x="530" y="122">probabilidades</text>
+        <text x="530" y="141">honestas</text>
+        <text x="110" y="192">sicofancia,</text>
+        <text x="110" y="211">alucinaciones</text>
+        <text x="320" y="192">inteligencia</text>
+        <text x="320" y="211">«dentada»</text>
+        <text x="530" y="192">sin publicar</text>
+      </g>
+    </g>
+  </svg>
+</figure>
+
+- **RLHF** (*feedback* humano): el modelo aprende a complacer. Resultado: alucinaciones, sicofancia y **dependencia permanente de humanos**. Lo vuelve menos fiable, no más.
+- **RLVR** (*rewards* verificables por programa): optimiza benchmarks. Resuelve Navier-Stokes, pero agrava la **inteligencia dentada**: brillante en unas cosas y torpe en otras. Y se integra mal con otro software.
+- **RLCD** (*Reinforcement Learning for Calibrated Decisions*): la apuesta de TypeSafe. Busca respuestas con **probabilidades epistémicamente honestas** en tareas de System 1. **No está publicada**: ni paper ni detalles.
+
+El argumento de fondo no va de algoritmos. Cita la *bitterest lesson*: **lo más importante del machine learning es elegir la tarea y los datos**. Por eso se definen como un laboratorio de datos, no de modelos.
+
+## <Plug size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Si quien consume es código, cambian las reglas
+
+**Sin refusals.** En un chat, una negativa es una molestia que se puede sortear. Dentro de una dependencia que corre en segundo plano, **el software se rompe de forma estocástica** porque un usuario escribió algo raro.
+
+> En un producto, el *safety alignment* tiene sentido. En una API es un error de tipo.
+
+- La API debe hacer lo que se le pide: cuanto más predecible, menos tiene que probarla quien la integra.
+- La comparación que usa: **a una base de datos no le toca decidir para qué se usa**.
+- Tampoco identidad: quien construye un chatbot sobre la API no quiere que diga que es otro. Jev no lleva «soy Jev de TypeSafe» dentro.
+
+El mecanismo que une todo esto: **cada sobreajuste fractura la inteligencia**. Optimizar para chat produce sicofancia, exceso de confianza, alucinaciones y el estilo LM Arena (negritas, emojis, respuestas largas y una pregunta de seguimiento al final).
+
+## <Shuffle size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Robustez, no determinismo
+
+La distinción más aprovechable de la entrevista:
+
+- **Determinismo**: mismos inputs, mismos outputs. Según Diogo, es el objetivo equivocado; como mucho, útil para tests unitarios.
+- **Robustez**: inputs parecidos, outputs parecidos. Es lo que de verdad se necesita.
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 250" role="img" aria-labelledby="rb-title" class="w-full h-auto text-current">
+    <title id="rb-title">Determinismo: el mismo prompt da la misma salida. Robustez: el mismo prompt con un UUID distinto debe dar una salida equivalente</title>
+    <defs>
+      <marker id="rb-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="currentColor" />
+      </marker>
+    </defs>
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="170" y="30" width="200" height="34" rx="6" />
+      <rect x="170" y="74" width="200" height="34" rx="6" />
+      <rect x="450" y="30" width="110" height="34" rx="6" />
+      <rect x="450" y="74" width="110" height="34" rx="6" />
+      <rect x="170" y="150" width="200" height="34" rx="6" fill="currentColor" fill-opacity="0.08" />
+      <rect x="170" y="194" width="200" height="34" rx="6" fill="currentColor" fill-opacity="0.08" />
+      <rect x="450" y="150" width="110" height="34" rx="6" fill="currentColor" fill-opacity="0.08" />
+      <rect x="450" y="194" width="110" height="34" rx="6" fill="currentColor" fill-opacity="0.08" />
+      <path d="M0 129 H640" stroke-dasharray="4 4" opacity="0.4" />
+    </g>
+    <g stroke="currentColor" stroke-width="1.5" fill="none" marker-end="url(#rb-arr)">
+      <path d="M372 47 H447" />
+      <path d="M372 91 H447" />
+      <path d="M372 167 H447" />
+      <path d="M372 211 H447" />
+    </g>
+    <g fill="currentColor" font-family="inherit">
+      <text x="10" y="64" font-size="15" font-weight="700">Determinismo</text>
+      <text x="10" y="84" font-size="12" opacity="0.7">mismos inputs</text>
+      <text x="10" y="184" font-size="15" font-weight="700">Robustez</text>
+      <text x="10" y="204" font-size="12" opacity="0.7">inputs parecidos</text>
+      <text x="595" y="80" font-size="26" font-weight="700" text-anchor="middle">=</text>
+      <text x="595" y="200" font-size="26" font-weight="700" text-anchor="middle">≈</text>
+    </g>
+    <g fill="currentColor" font-family="ui-monospace, monospace" font-size="13" text-anchor="middle">
+      <text x="270" y="52">prompt · id=7f3a…</text>
+      <text x="270" y="96">prompt · id=7f3a…</text>
+      <text x="270" y="172">prompt · id=7f3a…</text>
+      <text x="270" y="216">prompt · id=c91e…</text>
+      <text x="505" y="52">X</text>
+      <text x="505" y="96">X</text>
+      <text x="505" y="172">X</text>
+      <text x="505" y="216">X′</text>
+    </g>
+  </svg>
+</figure>
+
+**Concepto:** un cambio irrelevante en la entrada no debería cambiar la decisión. Los LLMs son, según él, **sorprendentemente malos** en esto.
+
+**Acciones:**
+
+- Para medirlo, repite cada caso de tus evals con **UUIDs distintos** (u otro ruido irrelevante: orden de campos, espacios, nombres) y comprueba que las respuestas son equivalentes.
+- No pidas determinismo al proveedor si lo que quieres es estabilidad: TypeSafe no descarta ofrecerlo, pero avisa de que **cuesta inteligencia por dólar**.
+
+## <Braces size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Tipos nuevos: Choice, Score y Noulli
+
+La API de Jev expone tres primitivas que no existen en los lenguajes, pero que se traducen directamente a control de flujo:
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 230" role="img" aria-labelledby="pr-title" class="w-full h-auto text-current">
+    <title id="pr-title">Las primitivas de Jev y el código al que se traducen: Choice a un switch sobre un enum, Score a ordenar o aplicar un umbral, Noulli (una probabilidad) a un if</title>
+    <defs>
+      <marker id="pr-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="currentColor" />
+      </marker>
+    </defs>
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="15" y="15" width="220" height="56" rx="10" fill="currentColor" fill-opacity="0.08" />
+      <rect x="15" y="87" width="220" height="56" rx="10" fill="currentColor" fill-opacity="0.08" />
+      <rect x="15" y="159" width="220" height="56" rx="10" fill="currentColor" fill-opacity="0.08" />
+      <rect x="315" y="15" width="310" height="56" rx="10" />
+      <rect x="315" y="87" width="310" height="56" rx="10" />
+      <rect x="315" y="159" width="310" height="56" rx="10" />
+    </g>
+    <g stroke="currentColor" stroke-width="1.5" fill="none" marker-end="url(#pr-arr)">
+      <path d="M238 43 H312" />
+      <path d="M238 115 H312" />
+      <path d="M238 187 H312" />
+    </g>
+    <g fill="currentColor" font-family="inherit" text-anchor="middle">
+      <text x="125" y="40" font-size="16" font-weight="700">Choice</text>
+      <text x="125" y="59" font-size="12" opacity="0.7">una opción de un enum</text>
+      <text x="125" y="112" font-size="16" font-weight="700">Score</text>
+      <text x="125" y="131" font-size="12" opacity="0.7">un número comparable</text>
+      <text x="125" y="184" font-size="16" font-weight="700">Noulli</text>
+      <text x="125" y="203" font-size="12" opacity="0.7">P(esto es cierto)</text>
+    </g>
+    <g fill="currentColor" font-family="ui-monospace, monospace" font-size="14" text-anchor="middle">
+      <text x="470" y="48">switch (choice) &#123; … &#125;</text>
+      <text x="470" y="113">items.sort(byScore)</text>
+      <text x="470" y="131">score &gt; umbral</text>
+      <text x="470" y="192">if (p &gt; 0.9) &#123; … &#125;</text>
+    </g>
+  </svg>
+</figure>
+
+- **Noulli** viene de Bernoulli: un booleano continuo, la **probabilidad de que algo sea cierto**. El umbral lo pones tú.
+- Las entradas (estado, instrucciones, criterios) pueden ser **objetos JSON estructurados**. Si lo conviertes todo a texto y lo metes en un *system message*, estás pensando a la antigua.
+
+> Los *system messages* son variables globales: lo metes todo de golpe y esperas que el modelo acierte con cada instrucción.
+
+## <Network size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Construir descomponiendo
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 270" role="img" aria-labelledby="dc-title" class="w-full h-auto text-current">
+    <title id="dc-title">A la izquierda, un system message con todas las reglas y todo el estado del que se espera que acierte con todo; a la derecha, la tarea troceada en tres preguntas pequeñas, cada una con su test</title>
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="15" y="45" width="250" height="190" rx="10" />
+      <path d="M40 90 H240 M40 115 H225 M40 140 H235 M40 165 H210 M40 190 H230" opacity="0.35" />
+      <rect x="400" y="40" width="120" height="38" rx="8" />
+      <rect x="300" y="125" width="100" height="44" rx="8" fill="currentColor" fill-opacity="0.08" />
+      <rect x="410" y="125" width="100" height="44" rx="8" fill="currentColor" fill-opacity="0.08" />
+      <rect x="520" y="125" width="100" height="44" rx="8" fill="currentColor" fill-opacity="0.08" />
+      <rect x="310" y="200" width="80" height="30" rx="6" stroke-dasharray="4 3" />
+      <rect x="420" y="200" width="80" height="30" rx="6" stroke-dasharray="4 3" />
+      <rect x="530" y="200" width="80" height="30" rx="6" stroke-dasharray="4 3" />
+      <path d="M460 78 L350 125 M460 78 L460 125 M460 78 L570 125 M350 169 V200 M460 169 V200 M570 169 V200" />
+    </g>
+    <g fill="currentColor" font-family="inherit" text-anchor="middle">
+      <text x="140" y="28" font-size="15" font-weight="700">Una pregunta grande</text>
+      <text x="460" y="28" font-size="15" font-weight="700">Muchas pequeñas</text>
+      <text x="140" y="68" font-size="13" font-family="ui-monospace, monospace">system message</text>
+      <text x="140" y="222" font-size="13" opacity="0.8">¿acierta con todo?</text>
+      <text x="460" y="64" font-size="14" font-weight="700">tarea</text>
+      <text x="350" y="145" font-size="14" font-weight="700">¿A?</text>
+      <text x="350" y="161" font-size="11" opacity="0.7">Noulli</text>
+      <text x="460" y="145" font-size="14" font-weight="700">¿B?</text>
+      <text x="460" y="161" font-size="11" opacity="0.7">Choice</text>
+      <text x="570" y="145" font-size="14" font-weight="700">¿C?</text>
+      <text x="570" y="161" font-size="11" opacity="0.7">Score</text>
+      <text x="350" y="220" font-size="12">✓ test</text>
+      <text x="460" y="220" font-size="12">✓ test</text>
+      <text x="570" y="220" font-size="12">✓ test</text>
+      <text x="460" y="258" font-size="13" opacity="0.8">cada decisión, medible por separado</text>
+    </g>
+  </svg>
+</figure>
+
+**Concepto:** trocear el problema en las **unidades semánticas más pequeñas posibles** y hacer muchas preguntas independientes en vez de una grande. Cada decisión pequeña es medible y verificable por separado: *machine learning sin el machine learning*.
+
+**Acciones:**
+
+- En vez de preguntar «¿debería negarme aquí?», pregunta **por separado por cada situación concreta** que justificaría la negativa.
+- Si el modelo falla porque no especificaste algo, es buena noticia: añades la pregunta o el umbral, lo conviertes en **caso de test** y queda resuelto para siempre. No se olvida por *context rot*.
+- Pasa estado y criterios como datos estructurados, no como prosa en el prompt.
+
+## <Boxes size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Casos de uso
+
+1. **Dark data**: montañas de datos que las empresas nunca analizaron porque era caro. Según él, el mayor generador de ingresos.
+2. **Agentes de código**: el mayor volumen hoy.
+3. **Tiempo real**: todo producto que mejora quitando 10 ms, *computer use* incluido.
+4. **Verificarlo todo**: observabilidad sobre llamadas a LLMs.
+5. **Software componible**: hasta lenguajes de programación construidos sobre Jev.
+6. **Videojuegos y NPCs**, su favorito personal.
+
+## <Scale size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Mi opinión
+
+Me quedo con cuatro cosas:
+
+1. **Las tres estrellas polares.** Es la forma más limpia que he visto de explicar por qué un modelo resuelve problemas dificilísimos y falla en cosas básicas.
+2. **Robustez antes que determinismo.** No necesito que el modelo responda siempre exactamente igual; necesito que un detalle irrelevante no le haga cambiar de opinión. Y eso se puede probar ya: repetir cada caso de test cambiando solo el ruido y comprobar que la respuesta no cambia.
+3. **Una negativa en una API es un fallo, no una protección.** En un chat, las normas del producto tienen sentido. En una pieza de infraestructura, una negativa inesperada rompe el programa que la llama. Esas normas tienen que vivir en el producto, no en el modelo que está debajo.
+4. **Muchas preguntas pequeñas mejor que una grande.** Cada decisión por separado se puede medir, tiene su umbral y su test, y cuando falla sabes exactamente dónde. Sirve con cualquier modelo, no solo con Jev.
+
+<div class="bibliography">
+Bibliografía:
+
+<ul>
+<li><a href="https://www.latent.space/p/jev">Jev: System One models for Prod, not God — with Diogo Almeida, CEO, TypeSafe AI</a>. Latent Space (swyx)</li>
+</ul>
+</div>
