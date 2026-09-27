@@ -34,13 +34,20 @@ const uiLang = lang === "en" ? "en" : "es";
 const langPrefix = `${lang}/`;
 const postId = post && typeof post.id === "string" ? post.id : "";
 const href = `/${lang}/blog/${postId.startsWith(langPrefix) ? postId.slice(langPrefix.length) : postId}/`;
+// El marcado no se lee: sin quitarlo, un diagrama SVG cuenta como cientos de
+// palabras.
 const getReadTime = (content: string): number => {
-  if (!content) return 1;
-  const words = content.split(/\s+/).length;
+  const text = content
+    .replace(/<svg[\s\S]*?<\/svg>/g, " ")
+    .replace(/<[^>]+>/g, " ")
+    .trim();
+  if (!text) return 1;
+  const words = text.split(/\s+/).length;
   return Math.max(1, Math.round(words / 250));
 };
-// Permitir content en post o post.data
-const content = post.content || (post.data && post.data.content) || "";
+// Las entradas de la colección traen el markdown en `body`; leer `content`
+// (que no existe) dejaba todas las tarjetas en 1 min.
+const content = post.body || "";
 const readTime = getReadTime(content);
 // `ShowWhen` no estrecha tipos: dentro, `heroImage` ya no es undefined.
 const heroImage = resolveHeroImage(

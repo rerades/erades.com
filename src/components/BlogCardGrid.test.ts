@@ -14,7 +14,7 @@ describe("BlogCardGrid.astro", () => {
         excerpt: "This is a test excerpt",
         pubDate: new Date("2023-01-01"),
         author: "Test Author",
-        content:
+        body:
           "This is the content of the post with enough words to calculate read time",
       };
 
@@ -51,7 +51,25 @@ describe("BlogCardGrid.astro", () => {
       const mockPost = {
         id: "test-post",
         title: "Test Post",
-        content: "word ".repeat(500), // 500 palabras = 2 minutos
+        body: "word ".repeat(500), // 500 palabras = 2 minutos
+      };
+
+      // Act
+      const result = await renderAstroComponent(BlogCardGrid, {
+        props: { post: mockPost, lang: "es", index: 0 },
+      });
+
+      // Assert
+      expect(result.innerHTML).toContain("2 min de lectura");
+    });
+
+    test("no debería contar el marcado de los diagramas como palabras", async () => {
+      // Arrange
+      const svg = `<svg viewBox="0 0 10 10">${'<text x="1">a</text> '.repeat(500)}</svg>`;
+      const mockPost = {
+        id: "test-post",
+        title: "Test Post",
+        body: `${"word ".repeat(500)}\n${svg}`,
       };
 
       // Act
@@ -194,7 +212,7 @@ describe("BlogCardGrid.astro", () => {
         title: "",
         excerpt: "",
         author: "",
-        content: "",
+        body: "",
       };
 
       // Act
