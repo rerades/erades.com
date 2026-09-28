@@ -46,8 +46,8 @@ importers:
         specifier: 3.7.4
         version: 3.7.4
       '@data-slot/dialog':
-        specifier: ^0.2.167
-        version: 0.2.167
+        specifier: ^1.0.0
+        version: 1.0.0
       '@data-slot/dropdown-menu':
         specifier: ^0.2.167
         version: 0.2.167
@@ -442,8 +442,11 @@ packages:
   '@data-slot/core@0.2.167':
     resolution: {integrity: sha512-0fIVlDyvguTejMbY9DybRELFye0VNtfhETOlf6KFraqnGCc23cKyiElWdwwtY9HkutuVlFTGTBOxP0bXXZ0H5w==}
 
-  '@data-slot/dialog@0.2.167':
-    resolution: {integrity: sha512-Yw84iI38OcMdCCbenJ+2iVo+CUmnhxRcEQhp9GdGwwVwzRPn+BOMiHL1y8xVcPIUP7NtyV7D/g//2TMOyUz5Gw==}
+  '@data-slot/core@1.0.0':
+    resolution: {integrity: sha512-UlmlJtCpq4k0qoxAMUEPQ5cgwqmFBToV7z3M4NJ/JQNBqMbaVeY/3gz1UYW17YE/E6kmFkRXtRPtM+HUby+pkw==}
+
+  '@data-slot/dialog@1.0.0':
+    resolution: {integrity: sha512-pT/00DgNHih061xUC6bnWa8M8LYAowtND6DwBbNrq5/PsWh3VDbpUpqlE5uAMV1FnTTgJ2VRwPaUVG+NudubfA==}
 
   '@data-slot/dropdown-menu@0.2.167':
     resolution: {integrity: sha512-XlcYxKDe8Dn5pVX/maO+d7JyAwaHdgdk0GlQyPltIwWGNYV0S/4ZwGpln54mwpCsybfYlVn7ElKKqxiBVBpdcg==}
@@ -5089,9 +5092,11 @@ snapshots:
 
   '@data-slot/core@0.2.167': {}
 
-  '@data-slot/dialog@0.2.167':
+  '@data-slot/core@1.0.0': {}
+
+  '@data-slot/dialog@1.0.0':
     dependencies:
-      '@data-slot/core': 0.2.167
+      '@data-slot/core': 1.0.0
 
   '@data-slot/dropdown-menu@0.2.167':
     dependencies:
