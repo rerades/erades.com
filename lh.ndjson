@@ -249,3 +249,15 @@
 {"ts":"2026-09-28","commit":"54e8361","url":"/es/search?q=func","ff":"mobile","perf":99,"a11y":100,"bp":100,"seo":100,"fcp":1289,"lcp":1477,"tbt":86,"cls":0,"si":2101,"js":191775,"css":0,"img":229903,"bytes":526415}
 {"ts":"2026-09-28","commit":"54e8361","url":"/es/tags","ff":"desktop","perf":100,"a11y":100,"bp":100,"seo":100,"fcp":395,"lcp":475,"tbt":0,"cls":0,"si":399,"js":191818,"css":0,"img":4704,"bytes":301155}
 {"ts":"2026-09-28","commit":"54e8361","url":"/es/tags","ff":"mobile","perf":87,"a11y":100,"bp":100,"seo":100,"fcp":1134,"lcp":3871,"tbt":144,"cls":0,"si":2257,"js":191818,"css":0,"img":4552,"bytes":301011}
+{"ts":"2026-10-05","commit":"da41814","url":"/es","ff":"desktop","perf":100,"a11y":100,"bp":100,"seo":100,"fcp":442,"lcp":495,"tbt":0,"cls":0,"si":473,"js":193600,"css":0,"img":34981,"bytes":331521}
+{"ts":"2026-10-05","commit":"da41814","url":"/es","ff":"mobile","perf":92,"a11y":100,"bp":100,"seo":100,"fcp":1318,"lcp":2281,"tbt":140,"cls":0,"si":2406,"js":193624,"css":0,"img":94475,"bytes":391096}
+{"ts":"2026-10-05","commit":"da41814","url":"/es/about","ff":"desktop","perf":100,"a11y":100,"bp":100,"seo":100,"fcp":435,"lcp":443,"tbt":0,"cls":0,"si":473,"js":193655,"css":0,"img":4552,"bytes":300759}
+{"ts":"2026-10-05","commit":"da41814","url":"/es/about","ff":"mobile","perf":98,"a11y":100,"bp":100,"seo":100,"fcp":1152,"lcp":1156,"tbt":145,"cls":0,"si":1156,"js":193630,"css":0,"img":4551,"bytes":300734}
+{"ts":"2026-10-05","commit":"da41814","url":"/es/blog","ff":"desktop","perf":100,"a11y":100,"bp":100,"seo":100,"fcp":578,"lcp":658,"tbt":0,"cls":0,"si":695,"js":193636,"css":0,"img":66505,"bytes":365110}
+{"ts":"2026-10-05","commit":"da41814","url":"/es/blog","ff":"mobile","perf":89,"a11y":100,"bp":100,"seo":100,"fcp":1336,"lcp":3674,"tbt":77,"cls":0,"si":2438,"js":193674,"css":0,"img":142290,"bytes":440907}
+{"ts":"2026-10-05","commit":"da41814","url":"/es/blog/ia/i18n/","ff":"desktop","perf":100,"a11y":100,"bp":100,"seo":100,"fcp":442,"lcp":442,"tbt":0,"cls":0,"si":473,"js":194842,"css":4061,"img":4566,"bytes":308462}
+{"ts":"2026-10-05","commit":"da41814","url":"/es/blog/ia/i18n/","ff":"mobile","perf":98,"a11y":100,"bp":100,"seo":100,"fcp":1152,"lcp":1152,"tbt":153,"cls":0,"si":1828,"js":194826,"css":4061,"img":4589,"bytes":308455}
+{"ts":"2026-10-05","commit":"da41814","url":"/es/search?q=func","ff":"desktop","perf":99,"a11y":100,"bp":100,"seo":100,"fcp":632,"lcp":726,"tbt":0,"cls":0,"si":1247,"js":193635,"css":0,"img":120139,"bytes":418503}
+{"ts":"2026-10-05","commit":"da41814","url":"/es/search?q=func","ff":"mobile","perf":99,"a11y":100,"bp":100,"seo":100,"fcp":1519,"lcp":1519,"tbt":81,"cls":0,"si":2761,"js":193969,"css":0,"img":230363,"bytes":529084}
+{"ts":"2026-10-05","commit":"da41814","url":"/es/tags","ff":"desktop","perf":100,"a11y":100,"bp":100,"seo":100,"fcp":443,"lcp":490,"tbt":0,"cls":0,"si":502,"js":193635,"css":0,"img":4739,"bytes":302987}
+{"ts":"2026-10-05","commit":"da41814","url":"/es/tags","ff":"mobile","perf":86,"a11y":100,"bp":100,"seo":100,"fcp":1139,"lcp":3966,"tbt":129,"cls":0,"si":2406,"js":193991,"css":0,"img":4825,"bytes":303444}
