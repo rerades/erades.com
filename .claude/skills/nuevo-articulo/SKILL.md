@@ -27,6 +27,15 @@ Tres modos, cada uno con su tratamiento:
   parece: el usuario quitó todo lo periférico (cifras de tracción, «el resto
   de la conversación», secciones que no se entienden sin la fuente). Ante la
   duda, fuera.
+- **Resumen de un agente que llega por mail** (p. ej. Hermes) (#232): el
+  enlace de Gmail no sirve como id; buscar el hilo con `search_threads` del
+  MCP de Gmail y leerlo con `get_thread`. **Contrastar cada afirmación con la
+  fuente primaria** (clonar el repo en el scratchpad y hacer grep en sus docs)
+  y decirle al usuario qué cuadra, qué no y qué no se puede verificar.
+  LinkedIn no se lee sin sesión: lo que solo esté allí (reacciones,
+  comentarios) se queda fuera, igual que el contexto personal del agente («tu
+  vault»). Después, como un resumen del usuario: índice y diagramas antes de
+  escribir.
 - **Tema libre**: proponer índice antes de escribir.
 
 Primera persona solo en la sección de opinión del cierre. Empezar directamente
@@ -93,6 +102,8 @@ Modelo a copiar: `src/content/blog/es/ia/sdlc-nativo-ia.mdx`.
 - **Iconos**: `@lucide/astro`, importados al principio del MDX
   (`import { Lightbulb, Rocket } from "@lucide/astro";`) y puestos delante del
   título de sección.
+  Comprobar que existen antes de usarlos:
+  `node_modules/@lucide/astro/src/icons/<kebab-case>.ts`.
 - **Diagramas**: SVG inline (en los posts no se renderiza mermaid):
   - `<figure class="not-prose my-8">` + `<svg viewBox="…" role="img" aria-labelledby="<id>-title" class="w-full h-auto text-current">`
     con `<title id="<id>-title">` descriptivo.
@@ -101,6 +112,10 @@ Modelo a copiar: `src/content/blog/es/ia/sdlc-nativo-ia.mdx`.
   - Texto de los SVG legible en móvil: revisarlo a 375 px.
   - Llaves en el texto de un SVG (`switch (x) { … }`) rompen el build: MDX las
     lee como expresión JSX. Escribirlas como `&#123;` y `&#125;`.
+  - `font-family="inherit"` dentro de un `<g>` con fuente monoespaciada hereda
+    la monoespaciada: el texto normal va fuera de ese grupo.
+  - Chrome no baja de 500 px de ancho: medir los SVG con
+    `getBoundingClientRect()` y hacer zoom a la captura.
   - Nada de gráficas «cualitativas» sin datos detrás: el usuario las quita.
 
 ## 5. Bibliografía
@@ -200,3 +215,4 @@ Antes del merge, en el **mismo PR** del artículo:
 | 2026-09-13 | `ia/el-asteroide-del-frontend` | #188 | Texto propio | `pnpm hero` no encontraba la traducción (buscaba por nombre y no por `translationKey`); baselines en dos pasadas (faltaron `blog-card-hover`/`-focus`); portadas en `public/` sin optimizar (#190). |
 | 2026-09-23 | `ia/sdlc-nativo-ia` | #219 | Resumen de enlace | Índice de búsqueda commiteado sin portada; bibliografía olvidada (#221) y en formato equivocado, unificada en #223. |
 | 2026-09-26 | `ia/jev-modelo-para-codigo` | #226 | Resumen del usuario (transcripción) | Sin párrafo de intro; recortadas tres secciones periféricas y un diagrama sin datos; `blockquote` sin estilo en todo el blog (arreglado en `global.css`); llaves en SVG rompían el build. |
+| 2026-10-07 | `ia/testing-e2e-con-agentes` | #232 | Resumen de un agente (mail) contrastado con el repo | Fuera lo que solo estaba en LinkedIn y la cifra de estrellas (desfasada); subtítulo de un SVG salía en monoespaciada por `font-family="inherit"`. |

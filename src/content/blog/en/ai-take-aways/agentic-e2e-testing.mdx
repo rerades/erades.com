@@ -1,0 +1,300 @@
+---
+title: "e2e: end-to-end tests where you decide how much AI goes in"
+description: "Notes on e2e, by TesterArmy: a testing framework for web and mobile that mixes agent steps, model-judged assertions and deterministic locators in the same test, and replays what it already verified without calling the model again."
+pubDate: 2026-10-07
+heroImage: /hero-testing-e2e-con-agentes.webp
+tags:
+  - testing
+  - ai-coding
+  - artificial-intelligence
+  - best-practices
+categories:
+  - AI
+  - Crafting
+translationKey: "ai-take-aways/agentic-e2e-testing"
+draft: false
+---
+
+import { SlidersHorizontal, Repeat, CircleQuestionMark, Split, Bug, Bot, TriangleAlert, Footprints, Scale } from "@lucide/astro";
+
+## The idea in one sentence
+
+> You don't have to choose between deterministic tests and AI tests: you choose how much AI each step carries, and you pay for the model once.
+
+That is the pitch of [**e2e**](https://github.com/tester-army/e2e), by TesterArmy: an end-to-end testing framework for web and mobile (TypeScript, Apache-2.0) where **you describe a goal in natural language and an agent drives the app to reach it**, then check the result with locators and assertions in the same test. Everything below comes from its README and [its documentation](https://e2e.tester.army/docs); I haven't tried it.
+
+## <SlidersHorizontal size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Three kinds of step, one test
+
+An e2e test combines three kinds of step, and only two of them call the model:
+
+| Step | API | Calls the model? |
+| --- | --- | --- |
+| **Goal** | `agent.act` | Yes, unless the cache replays it |
+| **Assertion** | `agent.assert`, `agent.waitFor`, `agent.extract` | Yes |
+| **Locator** | `screen`, `expect` | No |
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 200" role="img" aria-labelledby="tp-title" class="w-full h-auto text-current">
+    <title id="tp-title">The three kinds of step in e2e, from most agentic to most deterministic: goal with agent.act, which calls the model unless replayed; assertion with agent.assert, which calls the model; and locator with screen and expect, which does not</title>
+    <defs>
+      <marker id="tp-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="currentColor" />
+      </marker>
+    </defs>
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="15" y="60" width="190" height="100" rx="10" fill="currentColor" fill-opacity="0.16" />
+      <rect x="225" y="60" width="190" height="100" rx="10" fill="currentColor" fill-opacity="0.08" />
+      <rect x="435" y="60" width="190" height="100" rx="10" />
+      <path d="M25 30 H615" marker-start="url(#tp-arr)" marker-end="url(#tp-arr)" />
+    </g>
+    <g fill="currentColor" font-family="inherit" text-anchor="middle">
+      <text x="15" y="20" font-size="12" text-anchor="start" opacity="0.7">more agentic</text>
+      <text x="625" y="20" font-size="12" text-anchor="end" opacity="0.7">more deterministic</text>
+      <text x="110" y="88" font-size="17" font-weight="700">Goal</text>
+      <text x="320" y="88" font-size="17" font-weight="700">Assertion</text>
+      <text x="530" y="88" font-size="17" font-weight="700">Locator</text>
+      <g font-size="13" opacity="0.8">
+        <text x="110" y="140">model, unless replayed</text>
+        <text x="320" y="140">model</text>
+        <text x="530" y="140">no model</text>
+      </g>
+      <text x="320" y="190" font-size="12" opacity="0.7">all three fit in the same test</text>
+    </g>
+    <g fill="currentColor" font-family="ui-monospace, monospace" font-size="13" text-anchor="middle">
+      <text x="110" y="113">agent.act</text>
+      <text x="320" y="113">agent.assert</text>
+      <text x="530" y="113">screen · expect</text>
+    </g>
+  </svg>
+</figure>
+
+The example from its README:
+
+```ts
+test('a member upgrades to Pro', async ({ app, agent, screen }) => {
+  await app.open('/settings/billing');
+
+  await agent.act('upgrade the workspace to the Pro plan');
+  await agent.assert('the invoice preview shows a prorated amount');
+
+  await expect(screen.getByRole('status')).toContainText('Pro');
+});
+```
+
+**Concept:** the first line is an agent; the last one is plain old testing, **deterministic and free**. AI only goes where you put it.
+
+**Actions:**
+
+- Use `agent.act` for **flows** (what has to be achieved) and a locator for the **exact result** (what must be on screen).
+- Locators in this order of preference: **role and name**, then label, and test id last.
+- For values that change on every run (an email with a timestamp), use `unique()`, so the step can be replayed.
+
+## <Repeat size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />The replay cache: pay for the model once
+
+This is what solves the economics of AI testing. **An agent step that a later check verifies gets recorded**, and the next run replays it without calling the model until the app changes. Each run's summary reports it:
+
+```text
+AI     4.1k tokens · 2 model calls · anthropic/claude-sonnet-4.5
+Cache  4 replayed · 1 handed off · 1 missed
+```
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 260" role="img" aria-labelledby="rc-title" class="w-full h-auto text-current">
+    <title id="rc-title">The replay cache cycle: on the first run agent.act calls the model, a later check passes and the actions and their effect are recorded. On later runs the actions are repeated and the effect is checked; if it shows, there are no model calls; if not, the agent carries on from the current screen</title>
+    <defs>
+      <marker id="rc-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="currentColor" />
+      </marker>
+    </defs>
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="15" y="35" width="180" height="50" rx="8" fill="currentColor" fill-opacity="0.16" />
+      <rect x="230" y="35" width="180" height="50" rx="8" />
+      <rect x="445" y="35" width="180" height="50" rx="8" />
+      <rect x="445" y="155" width="180" height="50" rx="8" />
+      <rect x="230" y="150" width="180" height="60" rx="8" />
+      <rect x="15" y="125" width="180" height="44" rx="8" />
+      <rect x="15" y="196" width="180" height="44" rx="8" fill="currentColor" fill-opacity="0.16" />
+      <path d="M0 110 H640" stroke-dasharray="4 4" opacity="0.4" />
+    </g>
+    <g stroke="currentColor" stroke-width="1.5" fill="none" marker-end="url(#rc-arr)">
+      <path d="M197 60 H227" />
+      <path d="M412 60 H442" />
+      <path d="M535 87 V152" />
+      <path d="M443 180 H413" />
+      <path d="M228 170 L198 150" />
+      <path d="M228 190 L198 216" />
+    </g>
+    <g fill="currentColor" font-family="inherit" text-anchor="middle">
+      <text x="15" y="22" font-size="12" text-anchor="start" opacity="0.7">first run</text>
+      <text x="625" y="130" font-size="12" text-anchor="end" opacity="0.7">later runs</text>
+      <text x="320" y="56" font-size="14" font-weight="700">a check passes</text>
+      <text x="320" y="74" font-size="12" opacity="0.7">expect · assert · waitFor</text>
+      <text x="535" y="56" font-size="14" font-weight="700">recorded</text>
+      <text x="535" y="74" font-size="12" opacity="0.7">actions + effect</text>
+      <text x="535" y="176" font-size="14" font-weight="700">replay</text>
+      <text x="535" y="194" font-size="12" opacity="0.7">repeats the actions</text>
+      <text x="320" y="174" font-size="14" font-weight="700">does the effect show?</text>
+      <text x="320" y="194" font-size="12" opacity="0.7">route + controls</text>
+      <text x="105" y="152" font-size="13">yes: 0 calls</text>
+      <text x="105" y="216" font-size="13" font-weight="700">no: the agent</text>
+      <text x="105" y="232" font-size="12" opacity="0.8">carries on from there</text>
+    </g>
+    <g fill="currentColor" font-family="ui-monospace, monospace" text-anchor="middle">
+      <text x="105" y="56" font-size="14">agent.act</text>
+    </g>
+    <text x="105" y="74" font-size="12" opacity="0.7" fill="currentColor" font-family="inherit" text-anchor="middle">calls the model</text>
+  </svg>
+</figure>
+
+**It is not "record and pray".** On replay, the runner:
+
+- Finds each recorded control by **role, name, test id and context**, and stops if the match is ambiguous.
+- Checks the **final route** and what the step changed: which controls **appeared** (with their state: checked, expanded…) and which **went away**.
+- Requires at least one change to happen **during** the replay: an outcome already on screen before the actions that should produce it **proves nothing**.
+- If something doesn't add up, **it doesn't fail: it degrades**. The agent carries on from the current screen with a record of what ran and why replay stopped (the `handed off` in the summary).
+
+Details that show they've thought it through:
+
+- Ids, tokens and timestamps in the URL are read as a **placeholder**: `/orders/42?t=1727780000` and `/orders/7?t=1727780999` are the same route. `?mode=safe` and `?mode=unsafe` are not.
+- Text that changes on every run (dates, durations, ids) is **not used** for comparison.
+- A recording is only saved if a **later verification** passes: a locator matcher, `agent.assert` or `agent.waitFor`. An `expect(value).toBe()` on a plain value or an `agent.extract` don't count.
+
+**Action:** always put a check of the outcome **right after** each `agent.act`. Without one the step is never recorded, and you pay for the model on every CI run.
+
+## <CircleQuestionMark size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Failing is not the same as not knowing
+
+`agent.assert` separates two outcomes that almost no tool tells apart:
+
+- **`ASSERTION_FAILED`**: the statement is **false**.
+- **`ASSERTION_INCONCLUSIVE`**: there is **not enough evidence** on screen (the value is on another page, still loading, or only in the pixels).
+
+> A test that can't see the outcome shouldn't claim the app is broken.
+
+The other two assertions:
+
+- **`agent.waitFor`** waits for a condition and only calls the model **when the screen changes**.
+- **`agent.extract`** reads data from the screen into a type (Zod, or any Standard Schema), which you then check with a regular `expect`.
+
+With `vision: true` the judgment includes a masked screenshot. They warn that images add tokens, and **after a secret is filled no more screenshots are sent** for that step.
+
+## <Split size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Decision models instead of a chat
+
+The `@e2e-dev/decision` package runs `agent.act` and `agent.assert` through a **decision model** instead of an LLM. For each action it answers a single question: **which operation, and on which element**, choosing among the options built from the screen's semantic tree. **It never generates free text.**
+
+- When the operation is typing, a small text model writes the value. **Model output never becomes a selector, a URL or a key**, and password fields never reach it.
+- Any provider that answers choice questions **with probability distributions** works; their example uses `typeSafeAi.decisionModel('jev-latest')`.
+- Two optional thresholds, `minProbability` and `minConfidence`, block doubtful actions and turn weak assertions into inconclusive ones. They point out that a threshold is your policy choice: **measure it on your own tests before changing it**.
+
+It is the idea behind [Jev](/en/blog/ai-take-aways/jev-model-for-code/) applied to a concrete case: many small, typed decisions with a probability attached, instead of a model that converses.
+
+## <Bug size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Bug bashes: only bugs with a failing test
+
+The most ambitious part. A bug bash runs **several exploration sessions at once**, each on one area of the app, and **only reports as a bug what a repro test confirms**.
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 300" role="img" aria-labelledby="bb-title" class="w-full h-auto text-current">
+    <title id="bb-title">Bug bash pipeline: the agent reads the routes and the diff, writes 5 to 10 charters, runs four explore sessions at once, rejects findings with a known cause and writes a repro test for the rest. If the test fails, it is a confirmed bug; if not, it is dropped</title>
+    <defs>
+      <marker id="bb-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="currentColor" />
+      </marker>
+    </defs>
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="15" y="20" width="180" height="56" rx="8" />
+      <rect x="230" y="20" width="180" height="56" rx="8" />
+      <rect x="445" y="20" width="180" height="56" rx="8" />
+      <rect x="445" y="120" width="180" height="56" rx="8" />
+      <rect x="230" y="120" width="180" height="56" rx="8" />
+      <rect x="15" y="120" width="180" height="56" rx="8" />
+      <rect x="15" y="224" width="180" height="56" rx="8" fill="currentColor" fill-opacity="0.16" />
+      <rect x="230" y="224" width="180" height="56" rx="8" stroke-dasharray="5 4" />
+    </g>
+    <g stroke="currentColor" stroke-width="1.5" fill="none" marker-end="url(#bb-arr)">
+      <path d="M197 48 H227" />
+      <path d="M412 48 H442" />
+      <path d="M535 78 V117" />
+      <path d="M443 148 H413" />
+      <path d="M228 148 H198" />
+      <path d="M105 178 V221" />
+      <path d="M150 178 L250 221" />
+    </g>
+    <g fill="currentColor" font-family="inherit" text-anchor="middle">
+      <text x="105" y="44" font-size="14" font-weight="700">routes + diff</text>
+      <text x="105" y="62" font-size="12" opacity="0.7">of the branch</text>
+      <text x="320" y="44" font-size="14" font-weight="700">5–10 charters</text>
+      <text x="320" y="62" font-size="12" opacity="0.7">one area, one posture</text>
+      <text x="535" y="44" font-size="14" font-weight="700">explore ×4</text>
+      <text x="535" y="62" font-size="12" opacity="0.7">each with its persona</text>
+      <text x="535" y="144" font-size="14" font-weight="700">reject</text>
+      <text x="535" y="162" font-size="12" opacity="0.7">known cause</text>
+      <text x="320" y="144" font-size="14" font-weight="700">repro test</text>
+      <text x="320" y="162" font-size="12" opacity="0.7">asserts the expected</text>
+      <text x="105" y="144" font-size="14" font-weight="700">does it fail?</text>
+      <text x="105" y="162" font-size="12" opacity="0.7">ASSERTION_FAILED</text>
+      <text x="80" y="204" font-size="12" opacity="0.7">yes</text>
+      <text x="228" y="200" font-size="12" opacity="0.7">no</text>
+      <text x="105" y="248" font-size="14" font-weight="700">confirmed bug</text>
+      <text x="105" y="266" font-size="12" opacity="0.8">with test and steps</text>
+      <text x="320" y="248" font-size="14" font-weight="700">dropped</text>
+      <text x="320" y="266" font-size="12" opacity="0.8">not reported</text>
+    </g>
+  </svg>
+</figure>
+
+**Concept:**
+
+1. The agent reads the **app's routes** and, on a branch, **the diff**.
+2. It writes **5 to 10 charters**: a one-sentence goal for one area, with one posture (first-time user, numbers and copy, edge input, state after reload, error paths). Each runs with its own persona, four at a time.
+3. It **rejects findings with a known cause**: the local environment, the intended design, the seed data, or the explorer's own limits (a link that opens a new tab, for example).
+4. It writes a **repro test** per finding, asserting the expected behaviour. The finding is a bug **only if that test fails**.
+
+**Actions:**
+
+- Repro tests are tagged `bugbash`: **keep them out of the run that gates merges** with `e2e run --exclude-tag bugbash`.
+- Once the bug is fixed the test passes: remove the tag and **keep it as a regression test**.
+- The explorer's video **is not masked**: if it typed a password, check the video before sharing it.
+
+## <Bot size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Built for coding agents
+
+- An **MCP server** with live sessions, several at once, so an agent can check locators against the app.
+- **A skill** (`npx skills add tester-army/e2e`) with topics such as `bug-bash`.
+- **The whole documentation ships inside the npm package**, in `node_modules/e2e/docs`, so agents can read it offline.
+
+## <TriangleAlert size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Caveats
+
+- **Very young** (created in July 2026) and on the way to 1.0: the authors warn that **APIs and config can still change between minor releases**.
+- **It does not sandbox test code**: it runs with your permissions. Untrusted PRs need an **external sandbox without secrets or write tokens**.
+- **It sends anonymous telemetry** by default (commands, engines, where runs fail; no content or credentials). Turn it off with `E2E_TELEMETRY_DISABLED=1`.
+- Platforms: web through Playwright (Chromium, Firefox, WebKit) and mobile through agent-device (iOS simulators and Android emulators), with the same API. Platform-agnostic, not language-agnostic: it's TypeScript.
+
+## <Footprints size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />Where to start
+
+There are migration guides from **Playwright, Cypress, Selenium, Detox and Maestro**, all incremental:
+
+- The Playwright one suggests **running e2e alongside Playwright and migrating one file at a time**.
+- The Cypress one **keeps your `data-cy` attributes** (`web({ testIdAttribute: 'data-cy' })`).
+
+The sensible move: pick **a flow that is fragile today** (lots of selectors, changes often), rewrite it with an `agent.act` followed by a deterministic check, and watch in the CI summary how many steps replay for free and how many end up with the agent.
+
+## <Scale size={24} class="inline-block align-[-0.15em] mr-2" aria-hidden="true" />My take
+
+Three things stay with me:
+
+1. **How much AI is decided step by step.** That's the right way to frame it: the agent to get there, the locator to check. There's no need to bet the whole test on a model.
+2. **The replay cache is what makes it viable in CI.** Paying for the model only when the app changes, and falling back to the agent instead of failing, turns the cost of every run into the cost of every change. And the rule that an effect already on screen proves nothing is exactly the kind of detail that separates a serious tool from a demo.
+3. **`INCONCLUSIVE` and bugs with a repro are honesty in practice.** Neither the test nor the bug bash reports what it can't prove. It's what I'd most like to see in any tool that uses a model to judge.
+
+I'd try it on one fragile flow, keeping an eye on telemetry and isolation, but I wouldn't yet make it the base of a product's whole suite: 1.0 hasn't arrived.
+
+<div class="bibliography">
+Bibliography:
+
+<ul>
+<li><a href="https://github.com/tester-army/e2e">tester-army/e2e: Next generation e2e testing framework for web and mobile apps</a>. TesterArmy</li>
+<li><a href="https://e2e.tester.army/docs/core-concepts">Core concepts</a>. e2e documentation</li>
+<li><a href="https://e2e.tester.army/docs/cache">Caching</a>. e2e documentation</li>
+<li><a href="https://e2e.tester.army/docs/decision-models">Decision models</a>. e2e documentation</li>
+<li><a href="https://e2e.tester.army/docs/bug-bash">Bug bashes</a>. e2e documentation</li>
+<li><a href="https://e2e.tester.army/docs/security">Security</a>. e2e documentation</li>
+</ul>
+</div>
