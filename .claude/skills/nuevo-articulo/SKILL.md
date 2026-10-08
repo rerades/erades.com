@@ -208,6 +208,13 @@ Antes del merge, en el **mismo PR** del artículo:
    historia.
 4. Decirle al usuario en una línea qué ha cambiado aquí.
 
+## 11. Opcional: LinkedIn
+
+Cuando el merge ya está hecho y Render sirve el post, preguntar «¿Post en
+LinkedIn?». Si la respuesta es sí, seguir la skill `linkedin-post`: un post por
+idioma, uno publicado ya y el otro diferido. Nunca se publica sin un «sí»
+explícito al texto exacto.
+
 ## Registro
 
 | Fecha | Post (es) | PR | Entrada | Qué se corrigió después |
