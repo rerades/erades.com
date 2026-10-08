@@ -15,6 +15,7 @@ infraestructura vive en el Mac del usuario, no en el repo:
 | Cola de diferidos | `~/.claude/linkedin/pending/<slug>-<lang>.json` |
 | Publicador (cada hora, sin modelo) | `~/.claude/linkedin/publish-due.mjs` + LaunchAgent `com.erades.linkedin-publish` |
 | Log | `~/.claude/linkedin/publish.log` |
+| Negrita Unicode (`**…**` → 𝗻𝗲𝗴𝗿𝗶𝘁𝗮) | `~/.claude/linkedin/bold.mjs` |
 
 No hay herramienta de comentarios, de edición ni de programación nativa.
 
@@ -57,7 +58,25 @@ Estilo de la casa (los dos posts reales están abajo):
    primer comentario», que tiene que pegar el usuario a mano.
 6. Entre 3 y 5 hashtags, los mismos en los dos idiomas.
 
-Máximo 3000 caracteres: comprobar con `wc -m`.
+**Formato**: LinkedIn no tiene formato real y Markdown sale literal. Lo que sí
+funciona:
+
+- **Ritmo con saltos de línea**: párrafos cortos, una línea en blanco entre
+  bloques. El gancho tiene que caber en las 2-3 líneas que se ven antes del
+  «…ver más».
+- **Negrita Unicode solo en las cabeceras numeradas**. Se escribe `**…**` en el
+  borrador y se convierte con
+  `node ~/.claude/linkedin/bold.mjs < borrador.txt > post.txt`.
+  - Las letras con tilde o eñe no tienen versión en negrita y quedan mezcladas:
+    en español, elegir una cabecera sin tildes si se puede, o aceptar la mezcla.
+  - Los lectores de pantalla y el buscador de LinkedIn no la leen como texto
+    normal: nada de negrita en frases enteras ni en el gancho.
+- Lo que se enseña para el «sí» es el texto **ya convertido**, y eso es lo que
+  se publica.
+
+Máximo 3000 caracteres, contados como `text.length` en JS (que es lo que
+valida el servidor). Cada letra en negrita cuenta como 2, así que `wc -m` se
+queda corto.
 
 **Imagen** (obligatoria, ver **Regla dura**): por defecto, la portada del artículo (`heroImage` →
 `src/assets/heroes/hero-<slug>.webp`). Se convierte una vez a JPEG en
