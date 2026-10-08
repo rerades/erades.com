@@ -25,6 +25,10 @@ publica (el silencio no es consentimiento). Se publica **byte a byte** lo
 enseñado: ni hashtags, ni emojis, ni CTA añadidos después. Para desviarse, no
 publicar y preguntar en una línea.
 
+**Todo post lleva imagen**, también los diferidos y los que no anuncian un
+artículo. Si no hay portada que usar, preguntar qué imagen poner (o proponer
+generarla con `pnpm hero`) antes de pedir el «sí». Nunca publicar solo texto.
+
 ## 1. Antes de redactar
 
 - `whoami`: si el token ha caducado o caduca antes del diferido, avisar ya
@@ -55,7 +59,7 @@ Estilo de la casa (los dos posts reales están abajo):
 
 Máximo 3000 caracteres: comprobar con `wc -m`.
 
-**Imagen**: por defecto, la portada del artículo (`heroImage` →
+**Imagen** (obligatoria, ver **Regla dura**): por defecto, la portada del artículo (`heroImage` →
 `src/assets/heroes/hero-<slug>.webp`). Se convierte una vez a JPEG en
 `~/.claude/linkedin/images/<slug>.jpg`
 (`sips -s format jpeg -s formatOptions 90 <webp> --out <jpg>`), porque la API
