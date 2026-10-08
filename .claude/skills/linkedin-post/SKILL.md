@@ -55,6 +55,16 @@ Estilo de la casa (los dos posts reales están abajo):
 
 Máximo 3000 caracteres: comprobar con `wc -m`.
 
+**Imagen**: por defecto, la portada del artículo (`heroImage` →
+`src/assets/heroes/hero-<slug>.webp`). Se convierte una vez a JPEG en
+`~/.claude/linkedin/images/<slug>.jpg`
+(`sips -s format jpeg -s formatOptions 90 <webp> --out <jpg>`), porque la API
+solo admite JPG, PNG y GIF. Ese mismo fichero lo usan los dos idiomas y vive
+fuera del repo, así que el diferido no depende de la rama que haya en el
+checkout. Hay que escribir un `image_alt` por idioma, de menos de 120
+caracteres. Un post con imagen **no lleva tarjeta de enlace**: la URL sigue
+siendo texto en el cuerpo.
+
 <details><summary>Ejemplo real (EN, artículo ai-native-sdlc)</summary>
 
 ```
@@ -81,17 +91,30 @@ https://erades.com/en/blog/ai-take-aways/ai-native-sdlc/
 
 ## 3. Confirmación
 
-Enseñar los **dos** posts completos en bloques de código y decir cuál sale ya y
-cuándo sale el otro. Esperar el «sí».
+Enseñar los **dos** posts completos en bloques de código, la imagen (leer el
+JPEG para que se vea) y los dos `image_alt`, y decir cuál sale ya y cuándo sale
+el otro. Esperar el «sí».
 
 ## 4. Inmediato
 
-`create_post(text, visibility="PUBLIC")` → informar del `post_urn` y la `url`.
-Solo el resultado de la herramienta demuestra que el post existe.
+`create_post(text, visibility="PUBLIC", image_path, image_alt)` → informar del
+`post_urn` y la `url`. Solo el resultado de la herramienta demuestra que el
+post existe. La subida de la imagen (initializeUpload → PUT → esperar a
+`AVAILABLE`) va dentro de `create_post` y tarda unos segundos.
 
-Correcciones: `delete_post(urn)` + `create_post` con el texto corregido, y
-decir qué URN se ha borrado y cuál es la nueva. Aplicar solo la corrección que
-se ha pedido.
+Si el MCP se registró a mitad de sesión, sus herramientas no aparecen hasta la
+siguiente. Se llama al mismo servidor por stdio, construyendo el JSON con
+`node` a partir del fichero del texto aprobado, para no escapar nada a mano:
+`… | node ~/.hermes/linkedin-api/server.mjs mcp`.
+
+Correcciones (incluida añadir la imagen a un post ya publicado):
+1. Publicar primero el post corregido con `create_post`.
+2. Cuando haya salido bien, `delete_post` del antiguo. Así un fallo de subida
+   no deja el post sin publicar.
+3. Decir qué URN se ha borrado y cuál es la nueva.
+
+Aplicar solo la corrección que se ha pedido. Se pierden las reacciones que
+tuviera el post antiguo.
 
 ## 5. Diferido
 
@@ -104,6 +127,8 @@ no tener que escapar el texto a mano en la shell:
   "post": "<slug>-<lang>",
   "publish_after": "2026-10-13T10:00:00+02:00",
   "text": "<texto aprobado>",
+  "image": "/Users/<usuario>/.claude/linkedin/images/<slug>.jpg",
+  "image_alt": "<alt aprobado>",
   "published": false,
   "post_urn": null,
   "attempts": 0,
