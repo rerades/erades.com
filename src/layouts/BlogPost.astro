@@ -26,6 +26,7 @@ const {
   lang,
   alternates,
   preloadImage,
+  heroImage,
 } = Astro.props;
 ---
 
@@ -34,6 +35,7 @@ const {
     <BaseHead
       title={title}
       description={description}
+      image={heroImage}
       alternates={alternates}
       preloadImage={preloadImage}
     />
