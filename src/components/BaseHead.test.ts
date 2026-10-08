@@ -23,7 +23,7 @@ describe("BaseHead Component Logic", () => {
   });
 
   test("should use default image when none provided", () => {
-    const defaultImage = "/blog-placeholder-1.jpg";
+    const defaultImage = "/area73-small.png";
     const image = undefined;
     const resolvedImage = image || defaultImage;
 
@@ -31,7 +31,7 @@ describe("BaseHead Component Logic", () => {
   });
 
   test("should use custom image when provided", () => {
-    const defaultImage = "/blog-placeholder-1.jpg";
+    const defaultImage = "/area73-small.png";
     const customImage = "/custom-image.jpg";
     const resolvedImage = customImage || defaultImage;
 

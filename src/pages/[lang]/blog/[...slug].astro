@@ -3,6 +3,8 @@ import { type CollectionEntry, getCollection } from "astro:content";
 import BlogPost from "../../../layouts/BlogPost.astro";
 import Footer from "../../../components/Footer.astro";
 import { render } from "astro:content";
+import { getImage } from "astro:assets";
+import { resolveHeroImage } from "../../../utils/hero-image";
 
 export const prerender = true;
 
@@ -50,6 +52,15 @@ const alternates = translation
       { lang: translation.id.split("/")[0] ?? "", href: postPath(translation) },
     ]
   : [];
+
+// La portada como og:image. El frontmatter dice `/hero-x.webp`, pero esa ruta no
+// existe en public/ (las portadas viven en src/assets/heroes), así que hay que
+// resolverla y procesarla. 1200x630 en JPG: el tamaño que piden LinkedIn y X, y
+// un formato que leen todos los scrapers, cosa que con WebP no está garantizada.
+const heroSrc = resolveHeroImage(post?.data?.heroImage);
+const ogImage = heroSrc
+  ? await getImage({ src: heroSrc, width: 1200, height: 630, format: "jpg" })
+  : undefined;
 
 let Content, pubDate, updatedDate, dataWithDates;
 if (post && post.data) {
@@ -110,6 +121,7 @@ if (post && post.data) {
       draft={!!dataWithDates?.draft}
       updatedDate={dataWithDates?.updatedDate}
       alternates={alternates}
+      heroImage={ogImage?.src}
     >
       {Content ? <Content /> : null}
     </BlogPost>
