@@ -28,6 +28,23 @@ const {
   preloadImage,
   heroImage,
 } = Astro.props;
+
+// Datos estructurados para Google (#211). Las URL contra `Astro.site`, como
+// en BaseHead: detrás del proxy de Render `Astro.url` llega como http://.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: title,
+  description,
+  datePublished: pubDate?.toISOString(),
+  dateModified: (updatedDate ?? pubDate)?.toISOString(),
+  author: { "@type": "Person", name: "Rodrigo Erades", url: Astro.site?.href },
+  image: new URL(heroImage ?? "/area73-small.png", Astro.site).href,
+  inLanguage: lang,
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
+};
+// `<` escapado para que un título con `</script>` no cierre la etiqueta.
+const jsonLdHtml = JSON.stringify(jsonLd).replaceAll("<", "\\u003c");
 ---
 
 <html lang={lang}>
@@ -39,6 +56,7 @@ const {
       alternates={alternates}
       preloadImage={preloadImage}
     />
+    <script is:inline type="application/ld+json" set:html={jsonLdHtml} />
   </head>
 
   <body class="bg-background text-foreground min-h-screen flex flex-col">
