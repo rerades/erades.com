@@ -1,0 +1,65 @@
+---
+/**
+ * @component TableOfContents
+ * @title Table of Contents
+ * @description El índice de un post, a partir de los `headings` que devuelve `render()`. Solo aparece con tres o más `h2`: con menos no ahorra nada. En móvil va plegado en un `<details>` nativo y en escritorio abierto, sin JS en ningún caso.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import { render } from "astro:content";
+ * import TableOfContents from "./TableOfContents.astro";
+ * const { headings } = await render(post);
+ * ---
+ *
+ * <TableOfContents headings={headings} lang="es" />
+ * ```
+ */
+import type { MarkdownHeading } from "astro";
+import ShowWhen from "./ShowWhen.astro";
+import { t } from "../i18n";
+
+interface Props {
+  headings: readonly MarkdownHeading[];
+  lang: string;
+}
+
+const MIN_H2 = 3;
+
+const { headings, lang } = Astro.props;
+const uiLang = lang === "en" ? "en" : "es";
+const title = t(uiLang, "post.toc");
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const h2Count = headings.filter((h) => h.depth === 2).length;
+---
+
+<ShowWhen when={h2Count >= MIN_H2}>
+  <!-- Dos copias de la lista: sin JS no hay forma de que un mismo <details>
+       esté plegado en móvil y abierto en escritorio. -->
+  <details class="not-prose md:hidden mb-8 border rounded-md p-4" data-testid="toc-mobile">
+    <summary class="cursor-pointer font-semibold">{title}</summary>
+    <ul class="mt-2 space-y-1 text-sm">
+      {
+        items.map((h) => (
+          <li class:list={{ "ml-4": h.depth === 3 }}>
+            <a href={`#${h.slug}`} class="hover:underline">{h.text}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </details>
+  <nav aria-label={title} class="not-prose hidden md:block mb-8 border rounded-md p-4" data-testid="toc-desktop">
+    <p class="font-semibold">{title}</p>
+    <ul class="mt-2 space-y-1 text-sm">
+      {
+        items.map((h) => (
+          <li class:list={{ "ml-4": h.depth === 3 }}>
+            <a href={`#${h.slug}`} class="hover:underline">{h.text}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</ShowWhen>

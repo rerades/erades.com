@@ -1,0 +1,32 @@
+---
+/**
+ * @component ReadingTime
+ * @title Reading Time
+ * @description Los minutos de lectura de un post, traducidos. Los minutos se calculan en el build con `readingTime()` de `utils/reading-time`, la misma función que usan las tarjetas, para que tarjeta y post digan lo mismo.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import ReadingTime from "./ReadingTime.astro";
+ * import { readingTime } from "../utils/reading-time";
+ * ---
+ *
+ * <ReadingTime minutes={readingTime(post.body ?? "")} lang="es" />
+ * ```
+ */
+import { tWithInterpolation } from "../i18n";
+
+interface Props {
+  minutes: number;
+  lang: string;
+}
+
+const { minutes, lang } = Astro.props;
+const uiLang = lang === "en" ? "en" : "es";
+---
+
+<span data-testid="reading-time">
+  {tWithInterpolation(uiLang, "post.readTime", { minutes: String(minutes) })}
+</span>

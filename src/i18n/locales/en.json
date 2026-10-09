@@ -70,6 +70,7 @@
   },
   "post": {
     "readTime": "{minutes} min read",
+    "toc": "On this page",
     "viewCategory": "View posts in category {category}",
     "noCategory": "Uncategorized"
   },
