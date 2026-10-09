@@ -82,10 +82,23 @@ const jsonLdHtml = JSON.stringify(jsonLd).replaceAll("<", "\\u003c");
               <hr />
               <div class="flex items-center justify-between my-2">
                 <div>
-                  <FormattedDate date={pubDate!} lang={lang} />
-                  <ShowWhen when={readingTime}>
-                    · <ReadingTime minutes={readingTime!} lang={lang} />
-                  </ShowWhen>
+                  <!-- El «·» vive en el padding izquierdo del tiempo de
+                       lectura: si salta de línea, ese padding cae en el -ml-4
+                       y overflow-hidden lo recorta. Sin JS ni media queries. -->
+                  <div class="overflow-hidden">
+                    <div class="flex flex-wrap -ml-4">
+                      <span class="pl-4">
+                        <FormattedDate date={pubDate!} lang={lang} />
+                      </span>
+                      <ShowWhen when={readingTime}>
+                        <span
+                          class="relative pl-4 before:absolute before:left-1.5 before:content-['·']"
+                        >
+                          <ReadingTime minutes={readingTime!} lang={lang} />
+                        </span>
+                      </ShowWhen>
+                    </div>
+                  </div>
                   <ShowWhen when={updatedDate}>
                     <div class="italic text-xs">
                       Last updated on <FormattedDate
