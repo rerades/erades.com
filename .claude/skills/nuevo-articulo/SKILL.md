@@ -36,6 +36,10 @@ Tres modos, cada uno con su tratamiento:
   comentarios) se queda fuera, igual que el contexto personal del agente («tu
   vault»). Después, como un resumen del usuario: índice y diagramas antes de
   escribir.
+- **Borrador antiguo del usuario** (`draft: true` en el repo) (#215): conservar
+  su texto (solo erratas) y terminarlo con lo que pasó después, sacado del
+  propio repo (`docs/`, PRs, `lh.ndjson`), no de lo que el borrador planeaba.
+  Quitar los enlaces rotos. Proponer índice antes de escribir.
 - **Tema libre**: proponer índice antes de escribir.
 
 Primera persona solo en la sección de opinión del cierre. Empezar directamente
@@ -57,7 +61,7 @@ cosa.
   | `funcional/` | `functional/` |
   | `patrones/` | `patterns/` |
   | `experimentos/` | `experiments/` |
-  | `wpo/` | — |
+  | `wpo/` | `web-performance/` |
 
 - Slugs traducidos, en minúsculas, sin tildes, eñes ni puntos (lo comprueba
   `src/content/translation-pairs.test.ts`).
@@ -179,6 +183,9 @@ Bibliography:
 
 - Rama `content/<slug-es>`; PR **draft** desde el primer commit; push por
   commit. Título: `content: post "<título es>" (es/en)`.
+- `tests/e2e/unpublished-posts.spec.ts` usa un draft real como referencia.
+  Si el post publicado es ese draft, apuntar el test a otro (y cambiar la
+  consulta de búsqueda a una palabra de ese otro).
 - Un draft (`draft: true`) no se sirve: para revisarlo en local, cambiarlo a
   `false` sin commitear y avisar.
 - **Visual-Regression fallará** siempre que el post cambie el listado (home,
@@ -223,3 +230,4 @@ explícito al texto exacto.
 | 2026-09-23 | `ia/sdlc-nativo-ia` | #219 | Resumen de enlace | Índice de búsqueda commiteado sin portada; bibliografía olvidada (#221) y en formato equivocado, unificada en #223. |
 | 2026-09-26 | `ia/jev-modelo-para-codigo` | #226 | Resumen del usuario (transcripción) | Sin párrafo de intro; recortadas tres secciones periféricas y un diagrama sin datos; `blockquote` sin estilo en todo el blog (arreglado en `global.css`); llaves en SVG rompían el build. |
 | 2026-10-07 | `ia/testing-e2e-con-agentes` | #232 | Resumen de un agente (mail) contrastado con el repo | Fuera lo que solo estaba en LinkedIn y la cifra de estrellas (desfasada); subtítulo de un SVG salía en monoespaciada por `font-family="inherit"`. |
+| 2026-10-09 | `wpo/wpo` | #241 | Borrador propio de 2025 terminado con datos del repo | El test e2e de drafts apuntaba a este post (pasa a `precedencia-css`). |

@@ -1,81 +1,126 @@
 ---
-title: "WPO: Web Performance Optimization"
-description: "Expolorando la mejora de la optimización web con AI con los core web vitals"
-pubDate: 2025-08-26
+title: "WPO: un año midiendo el rendimiento de esta web"
+description: "Lo que salió de medir los Core Web Vitals de erades.com con Lighthouse durante un año: el montaje que se abandonó, las trampas de medir y cómo la home pasó de 2,7 MB a 390 KB."
+pubDate: 2026-10-09
+heroImage: /hero-wpo.webp
 tags:
-  - javascript
   - wpo
+  - performance
   - google-core-web-vitals
-categories:
-  - javascript
   - best-practices
-  - core-web-vitals
+categories:
   - wpo
-draft: true
-heroImage: /blog-placeholder-14.jpg
+  - best-practices
+translationKey: "web-performance/wpo"
+draft: false
 ---
 
-## Exploración inicial
+import { Lightbulb, Flag, Server, TriangleAlert, GitBranch, Gauge, MessageCircle } from "@lucide/astro";
 
-Después de crear esta web app [erades.com](https://erades.com) , me voy a centrar el los core web vitals de google.
+## <Lightbulb class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> La idea en una frase
 
-Para esta tarea me voy a centrar en lighthouse.
+> Medir el rendimiento solo sirve si la medida es barata de mantener.
 
-Los primeros resultados son estos:
+Esto empezó en agosto de 2025 como un borrador sobre los [Core Web Vitals](https://web.dev/articles/vitals) de Google y [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview). Se quedó a medias en el «plan de ataque». Un año después, este es el final: qué se montó, qué se tiró y qué números quedan.
 
-### 2025-08-12
+## <Flag class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> Punto de partida
 
-#### Desktop
+Después de crear esta web app, [erades.com](https://erades.com), me voy a centrar en los Core Web Vitals de Google. Para esta tarea me voy a centrar en Lighthouse.
 
-- [Home](../../../../assets/lighthouse/2025-08-12-HOME.html)
-- [Post](../../../../assets/lighthouse/2025-08-12-POST.html)
-- [Search](../../../../assets/lighthouse/2025-08-12-SEARCH.html)
-- [Tags](../../../../assets/lighthouse/2025-08-12-TAGS.html)
-- [Blog](../../../../assets/lighthouse/2025-08-12-BLOG.html)
-
-#### mobile
-
-- [Home](../../../../assets/lighthouse/2025-08-12-HOME-mobile.html)
-- [Post](../../../../assets/lighthouse/2025-08-12-POST-mobile.html)
-- [Search](../../../../assets/lighthouse/2025-08-12-SEARCH-mobile.html)
-- [Tags](../../../../assets/lighthouse/2025-08-12-TAGS-mobile.html)
-- [Blog](../../../../assets/lighthouse/2025-08-12-BLOG-mobile.html)
+Las primeras mediciones (agosto de 2025, móvil) daban **94 en «Sobre mí»**, **93 en un post** y **69 en la búsqueda**, con un LCP de 6,8 s.
 
 ## Primeros pensamientos
 
-Los datos arrojan buenos resultados en parte se debe al stack tecnológico utilizado (Server side rendering y static site generation) y el meta-framework seleccionado Astro.
+Los datos arrojan buenos resultados; en parte se debe al stack tecnológico utilizado (server side rendering y static site generation) y al meta-framework seleccionado, Astro.
 
 Pero para conseguir unos datos aceptables el desarrollador tiene que ser experto y haber peleado mucho en batallas de front para entender las mejores prácticas.
 
-Aun así siempre se escapan cosas y se debería de tener una forma de controlar los core web vitals desde el principio para poder ir mejorando los números.
+Aun así siempre se escapan cosas, y se debería tener una forma de **controlar los Core Web Vitals desde el principio** para poder ir mejorando los números. Por otro lado, para conseguir esto habría que incluir estas comprobaciones de forma programática.
 
-Por otro lado para conseguir esto habría que incluir estas comprobaciones de forma programática.
+Hoy en día los test unitarios y los e2e o funcionales forman parte ya del ADN de los desarrolladores. Sin embargo, veo que **los test automáticos de regresión visual y los de rendimiento no acaban de calar**, en parte creo que por el aumento del tiempo para ejecutar las pipelines.
 
-Hoy en día los test unitarios y los e2e o funcionales forman parte ya del ADN de los desarrolladores, sin embargo veo que los test automáticos de regresión visual y los test de performance no acaban de calar en los desarrolladores , en parte creo que es por el aumento del tiempo al para ejecutar las pipelines.
+Considero que los test automáticos de regresión visual son esenciales: si tuviera que elegir entre test unitarios o de componentes y test de regresión visual, optaría por los de regresión.
 
-Sin embargo considero que de los test automáticos de regresión visual son esenciales, de hecho si tuviera que elegir entre test unitarios o de componentes y test de regresión visual optaría por los de regresión.
+En el caso de los test de WPO, creo que los desarrolladores no se dan cuenta del valor que suponen para negocio, y piensan más en el trabajo que les supone hacerlos que en el beneficio.
 
-En el caso de los test para WPO los desarrolladores creo que no se dan cuenta el valor que suponen estos test para negocio y piensan más en el trabajo que les supone realizar esos test que en el beneficio
+## <Server class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> Lo que se montó: LHCI con servidor
 
-## Planteamiento del trabajo
+El plan era el de manual: [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci) en local y en la CI, con **presupuestos que rompen el build** y un servidor LHCI guardando el histórico.
 
-- Para poder sacar estadísticas de forma programática voy a buscar la forma de implementar lighthouse o herramientas parecidas
+Se montó: servidor LHCI en Docker, con su base SQLite versionada en Git LFS. **Se usó diez días y se abandonó.** Cuando se retomó un año después, hizo falta instalar `git-lfs`, bajar 124 MB y sacar un token de dentro del propio SQLite antes de poder medir nada.
 
-### Plan de ataque (síntesis)
+- **~20 MB de LFS por ejecución** para guardar unas 40 cifras.
+- Las mismas cifras en texto plano ocupan **~1,8 KB**.
 
-1. Métricas de laboratorio automatizadas (synthetic): Lighthouse CI en local y en CI, con presupuestos de rendimiento y aserciones que rompen el build cuando te pasas. Reportes HTML/JSON almacenados como artefactos y/o en un servidor LHCI. ￼ ￼
-2. Métricas de campo (RUM): web-vitals en producción para LCP/INP/CLS reales, enviados a tu backend/GA4. Esto te evita optimizar a ciegas. ￼ ￼
-3. Benchmarks públicos: PSI/CrUX en CI para ver cómo te mide Google (Lighthouse + datos reales agregados). ￼ ￼
-4. Opcional power-up: sitespeed.io para rastrear múltiples URLs, grabar vídeos/filmstrips y presupuestos más finos; sube resultados a S3/GCS. ￼
+## <TriangleAlert class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> Las trampas de medir
 
-### Lighthouse
+Peor que el coste era que **parte de lo medido no significaba nada**:
 
-Instalado lighthouse
+- **Local y producción mezclados.** La suite medía URLs de `localhost` junto a las de producción. La mitad de las medidas «mejoraban» al desplegar, no al cambiar código, y los LCP de 15-22 s en local eran el portátil, no la web.
+- **Un «desktop» que no lo era.** La config de escritorio solo cambiaba la pantalla y **heredaba el throttling de móvil**: viewport de escritorio sobre 4G lento con la CPU a 1/4. Arreglado eso, la home pasó de **perf 74 a 93 sin tocar una línea del sitio**.
+- **El ruido del runner.** En GitHub Actions, dos ejecuciones idénticas varían ±5 puntos de `perf`. Un presupuesto de tiempos que rompe el build con ese ruido falla al azar.
 
-Alternativa rápida ejecutar:
+## <GitBranch class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> Lo que quedó: un fichero de texto en una rama
 
-```bash
-npx unlighthouse --site https://erades.com
-```
+El servidor se sustituyó por **un NDJSON**: una línea por URL y form factor, con la mediana de 3 ejecuciones contra **producción**. Vive en una rama huérfana `metrics` (si estuviera en `master`, cada commit semanal del bot dispararía un despliegue), y **Git es la base de datos**: `git log -p` es la gráfica.
 
-Esto te da las métricas de todo el site.
+La lección que más rinde: **los bytes son deterministas, los tiempos no**. Una subida en el peso de JS es siempre una regresión real; una bajada de 3 puntos de `perf` no dice nada. Los tiempos se leen como tendencia a semanas.
+
+## <Gauge class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> Resultados
+
+Con una medida fiable, las mejoras salieron solas, una por PR: portadas redimensionadas por Astro, avatar y logo a su tamaño real, fuentes recortadas a latín (237 → 80 KB precargados), CSS inline para quitar el único recurso bloqueante, `gtag.js` después de `load` y la home prerenderizada precargando la imagen del LCP.
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 230" role="img" aria-labelledby="res-title" class="w-full h-auto text-current">
+    <title id="res-title">Home en móvil: el peso total baja de 2,74 MB a 0,39 MB y el de imágenes de 2,38 MB a 0,09 MB entre agosto y octubre de 2026</title>
+    <g fill="currentColor" font-family="inherit" font-size="13">
+      <text x="10" y="58" font-weight="700">Total</text>
+      <text x="10" y="148" font-weight="700">Imágenes</text>
+      <text x="150" y="20" font-size="11" opacity="0.7">home /es, móvil, bytes transferidos</text>
+    </g>
+    <g fill="currentColor">
+      <rect x="150" y="36" width="440" height="22" fill-opacity="0.35" />
+      <rect x="150" y="62" width="63" height="22" />
+      <rect x="150" y="126" width="383" height="22" fill-opacity="0.35" />
+      <rect x="150" y="152" width="15" height="22" />
+    </g>
+    <g fill="currentColor" font-family="inherit" font-size="12">
+      <text x="596" y="52">2,74 MB</text>
+      <text x="219" y="78">0,39 MB</text>
+      <text x="539" y="142">2,38 MB</text>
+      <text x="171" y="168">0,09 MB</text>
+    </g>
+    <g fill="currentColor" font-family="inherit" font-size="11">
+      <rect x="150" y="200" width="14" height="10" fill-opacity="0.35" />
+      <text x="170" y="209">21-08-2026</text>
+      <rect x="260" y="200" width="14" height="10" />
+      <text x="280" y="209">05-10-2026</text>
+    </g>
+  </svg>
+</figure>
+
+| Home `/es` | Agosto 2026 | Octubre 2026 |
+| --- | --- | --- |
+| Peso total (móvil) | 2,74 MB | 0,39 MB |
+| LCP móvil | 12,1 s | 2,3 s |
+| Perf desktop | 93 | 100 |
+| Perf móvil | 75 | 92 |
+
+Lo que **no** se arregló: en el runner, algunas cargas móviles se quedan en blanco ~1 s más sin causa reproducible en local, y esa fila marca LCP de ~4 s. Se aceptó en vez de perseguirlo.
+
+## <MessageCircle class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> Opinión
+
+Mantengo lo que escribí hace un año: el rendimiento hay que medirlo desde el principio y de forma automática. Lo que cambio es **cómo**. El plan de manual (servidor, presupuestos, cuadros de mando) murió por su propio peso; lo que ha durado es un fichero de texto que cualquiera lee con `jq`.
+
+Y los presupuestos que rompen el build no los echo de menos: con ±5 puntos de ruido, un test de rendimiento basado en tiempos es un test flaky. Si algún día vuelven, serán sobre bytes.
+
+<div class="bibliography">
+Bibliografía:
+
+<ul>
+<li><a href="https://web.dev/articles/vitals">Web Vitals</a>. web.dev, Google</li>
+<li><a href="https://developer.chrome.com/docs/lighthouse/overview">Introduction to Lighthouse</a>. Chrome for Developers</li>
+<li><a href="https://github.com/GoogleChrome/lighthouse-ci">Lighthouse CI</a>. GoogleChrome</li>
+<li><a href="https://github.com/GoogleChrome/lighthouse/blob/main/docs/variability.md">Lighthouse Variability</a>. GoogleChrome</li>
+</ul>
+</div>
