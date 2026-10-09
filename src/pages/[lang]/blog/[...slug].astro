@@ -5,6 +5,7 @@ import Footer from "../../../components/Footer.astro";
 import { render } from "astro:content";
 import { getImage } from "astro:assets";
 import { resolveHeroImage } from "../../../utils/hero-image";
+import { readingTime } from "../../../utils/reading-time";
 
 export const prerender = true;
 
@@ -62,9 +63,9 @@ const ogImage = heroSrc
   ? await getImage({ src: heroSrc, width: 1200, height: 630, format: "jpg" })
   : undefined;
 
-let Content, pubDate, updatedDate, dataWithDates;
+let Content, headings, pubDate, updatedDate, dataWithDates;
 if (post && post.data) {
-  ({ Content } = await render(post));
+  ({ Content, headings } = await render(post));
   pubDate = post.data.pubDate ? new Date(post.data.pubDate) : undefined;
   updatedDate = post.data.updatedDate
     ? new Date(post.data.updatedDate)
@@ -122,6 +123,8 @@ if (post && post.data) {
       updatedDate={dataWithDates?.updatedDate}
       alternates={alternates}
       heroImage={ogImage?.src}
+      readingTime={readingTime(post.body ?? "")}
+      headings={headings}
     >
       {Content ? <Content /> : null}
     </BlogPost>

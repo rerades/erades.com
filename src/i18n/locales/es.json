@@ -70,6 +70,7 @@
   },
   "post": {
     "readTime": "{minutes} min de lectura",
+    "toc": "En este artículo",
     "viewCategory": "Ver posts en la categoría {category}",
     "noCategory": "Sin categoría"
   },

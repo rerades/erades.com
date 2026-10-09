@@ -1,0 +1,17 @@
+---
+import TableOfContents from "../../TableOfContents.astro";
+
+const headings = [
+  { depth: 2, slug: "funtores", text: "Funtores" },
+  { depth: 3, slug: "leyes", text: "Leyes" },
+  { depth: 2, slug: "monadas", text: "Mónadas" },
+  { depth: 2, slug: "bibliografia", text: "Bibliografía" },
+];
+---
+
+<div class="space-y-3 text-sm">
+  <p class="text-muted-foreground">
+    Estrecha la ventana por debajo de md para ver el &lt;details&gt; plegado.
+  </p>
+  <TableOfContents headings={headings} lang="es" />
+</div>
