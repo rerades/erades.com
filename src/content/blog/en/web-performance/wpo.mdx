@@ -1,0 +1,126 @@
+---
+title: "WPO: a year measuring this site's performance"
+description: "What came out of measuring erades.com's Core Web Vitals with Lighthouse for a year: the setup that was dropped, the measuring traps and how the home page went from 2.7 MB to 390 KB."
+pubDate: 2026-10-09
+heroImage: /hero-wpo.webp
+tags:
+  - wpo
+  - performance
+  - google-core-web-vitals
+  - best-practices
+categories:
+  - wpo
+  - best-practices
+translationKey: "web-performance/wpo"
+draft: false
+---
+
+import { Lightbulb, Flag, Server, TriangleAlert, GitBranch, Gauge, MessageCircle } from "@lucide/astro";
+
+## <Lightbulb class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> The idea in one sentence
+
+> Measuring performance only pays off if the measurement is cheap to maintain.
+
+This started in August 2025 as a draft about Google's [Core Web Vitals](https://web.dev/articles/vitals) and [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview). It stalled at the "plan of attack". A year later, this is the ending: what was built, what was thrown away and which numbers are left.
+
+## <Flag class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> Starting point
+
+After building this web app, [erades.com](https://erades.com), I am going to focus on Google's Core Web Vitals. For this task I am going to focus on Lighthouse.
+
+The first measurements (August 2025, mobile) scored **94 on "About"**, **93 on a post** and **69 on search**, with a 6.8 s LCP.
+
+## First thoughts
+
+The data shows good results; partly thanks to the tech stack (server side rendering and static site generation) and the chosen meta-framework, Astro.
+
+But to get acceptable numbers the developer has to be an expert and to have fought plenty of front-end battles to understand the best practices.
+
+Even so, things always slip through, and there should be a way to **keep the Core Web Vitals under control from day one** so the numbers can keep improving. On the other hand, achieving that means running these checks programmatically.
+
+Nowadays unit tests and e2e or functional tests are already part of developers' DNA. However, I see that **automated visual regression and performance tests have not caught on**, partly, I think, because they make pipelines take longer.
+
+I consider automated visual regression tests essential: if I had to choose between unit or component tests and visual regression tests, I would go for the regression ones.
+
+As for WPO tests, I think developers do not realise how much value they bring to the business, and think more about the work they take than about the benefit.
+
+## <Server class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> What was built: LHCI with a server
+
+The plan was the textbook one: [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci) locally and in CI, with **budgets that break the build** and an LHCI server keeping the history.
+
+It got built: an LHCI server in Docker, with its SQLite database versioned in Git LFS. **It was used for ten days and abandoned.** When it was picked up again a year later, it took installing `git-lfs`, downloading 124 MB and digging a token out of the SQLite file itself before anything could be measured.
+
+- **~20 MB of LFS per run** to store about 40 numbers.
+- The same numbers as plain text take **~1.8 KB**.
+
+## <TriangleAlert class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> The measuring traps
+
+Worse than the cost was that **part of what was measured meant nothing**:
+
+- **Local and production mixed up.** The suite measured `localhost` URLs next to production ones. Half the measurements "improved" on deploy, not on code changes, and the 15-22 s local LCPs were the laptop, not the site.
+- **A "desktop" that wasn't.** The desktop config only changed the screen and **inherited mobile throttling**: a desktop viewport over slow 4G with the CPU at 1/4. Once fixed, the home page went from **perf 74 to 93 without touching a line of the site**.
+- **Runner noise.** On GitHub Actions, two identical runs vary by ±5 `perf` points. A timing budget that breaks the build with that noise fails at random.
+
+## <GitBranch class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> What stayed: a text file on a branch
+
+The server was replaced with **an NDJSON file**: one line per URL and form factor, with the median of 3 runs against **production**. It lives on an orphan `metrics` branch (on `master`, every weekly bot commit would trigger a deploy), and **Git is the database**: `git log -p` is the chart.
+
+The lesson that pays off most: **bytes are deterministic, timings are not**. A rise in JS weight is always a real regression; a 3-point drop in `perf` says nothing. Timings are read as trends over weeks.
+
+## <Gauge class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> Results
+
+With a reliable measurement, the improvements came on their own, one per PR: hero images resized by Astro, avatar and logo at their real size, fonts subset to Latin (237 → 80 KB preloaded), inline CSS to remove the only render-blocking resource, `gtag.js` after `load` and a prerendered home page preloading the LCP image.
+
+<figure class="not-prose my-8">
+  <svg viewBox="0 0 640 230" role="img" aria-labelledby="res-title" class="w-full h-auto text-current">
+    <title id="res-title">Home page on mobile: total weight drops from 2.74 MB to 0.39 MB and image weight from 2.38 MB to 0.09 MB between August and October 2026</title>
+    <g fill="currentColor" font-family="inherit" font-size="13">
+      <text x="10" y="58" font-weight="700">Total</text>
+      <text x="10" y="148" font-weight="700">Images</text>
+      <text x="150" y="20" font-size="11" opacity="0.7">/es home, mobile, transferred bytes</text>
+    </g>
+    <g fill="currentColor">
+      <rect x="150" y="36" width="440" height="22" fill-opacity="0.35" />
+      <rect x="150" y="62" width="63" height="22" />
+      <rect x="150" y="126" width="383" height="22" fill-opacity="0.35" />
+      <rect x="150" y="152" width="15" height="22" />
+    </g>
+    <g fill="currentColor" font-family="inherit" font-size="12">
+      <text x="596" y="52">2.74 MB</text>
+      <text x="219" y="78">0.39 MB</text>
+      <text x="539" y="142">2.38 MB</text>
+      <text x="171" y="168">0.09 MB</text>
+    </g>
+    <g fill="currentColor" font-family="inherit" font-size="11">
+      <rect x="150" y="200" width="14" height="10" fill-opacity="0.35" />
+      <text x="170" y="209">2026-08-21</text>
+      <rect x="260" y="200" width="14" height="10" />
+      <text x="280" y="209">2026-10-05</text>
+    </g>
+  </svg>
+</figure>
+
+| `/es` home | August 2026 | October 2026 |
+| --- | --- | --- |
+| Total weight (mobile) | 2.74 MB | 0.39 MB |
+| Mobile LCP | 12.1 s | 2.3 s |
+| Desktop perf | 93 | 100 |
+| Mobile perf | 75 | 92 |
+
+What was **not** fixed: on the runner, some mobile loads stay blank for ~1 s longer with no cause reproducible locally, and that row reports a ~4 s LCP. It was accepted rather than chased.
+
+## <MessageCircle class="inline-block mr-2 align-[-0.15em]" size={24} aria-hidden="true" /> Opinion
+
+I stand by what I wrote a year ago: performance has to be measured from the start and automatically. What I change is **how**. The textbook plan (server, budgets, dashboards) died under its own weight; what has lasted is a text file anyone can read with `jq`.
+
+And I don't miss the budgets that break the build: with ±5 points of noise, a timing-based performance test is a flaky test. If they ever come back, they will be about bytes.
+
+<div class="bibliography">
+Bibliography:
+
+<ul>
+<li><a href="https://web.dev/articles/vitals">Web Vitals</a>. web.dev, Google</li>
+<li><a href="https://developer.chrome.com/docs/lighthouse/overview">Introduction to Lighthouse</a>. Chrome for Developers</li>
+<li><a href="https://github.com/GoogleChrome/lighthouse-ci">Lighthouse CI</a>. GoogleChrome</li>
+<li><a href="https://github.com/GoogleChrome/lighthouse/blob/main/docs/variability.md">Lighthouse Variability</a>. GoogleChrome</li>
+</ul>
+</div>
