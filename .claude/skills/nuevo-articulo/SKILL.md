@@ -230,4 +230,4 @@ explícito al texto exacto.
 | 2026-09-23 | `ia/sdlc-nativo-ia` | #219 | Resumen de enlace | Índice de búsqueda commiteado sin portada; bibliografía olvidada (#221) y en formato equivocado, unificada en #223. |
 | 2026-09-26 | `ia/jev-modelo-para-codigo` | #226 | Resumen del usuario (transcripción) | Sin párrafo de intro; recortadas tres secciones periféricas y un diagrama sin datos; `blockquote` sin estilo en todo el blog (arreglado en `global.css`); llaves en SVG rompían el build. |
 | 2026-10-07 | `ia/testing-e2e-con-agentes` | #232 | Resumen de un agente (mail) contrastado con el repo | Fuera lo que solo estaba en LinkedIn y la cifra de estrellas (desfasada); subtítulo de un SVG salía en monoespaciada por `font-family="inherit"`. |
-| 2026-10-09 | `wpo/wpo` | #215 | Borrador propio de 2025 terminado con datos del repo | El test e2e de drafts apuntaba a este post (pasa a `precedencia-css`). |
+| 2026-10-09 | `wpo/wpo` | #241 | Borrador propio de 2025 terminado con datos del repo | El test e2e de drafts apuntaba a este post (pasa a `precedencia-css`). |
