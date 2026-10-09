@@ -187,4 +187,16 @@ describe("ResultsInfo", () => {
     expect(shownSpan).not.toBeNull();
     expect(totalSpan).not.toBeNull();
   });
+
+  // #243: el texto salía pegado, «resultadosparaprog».
+  test.each([
+    ["es", "Mostrando 9 de 9 resultados para prog"],
+    ["en", "Showing 9 of 9 results for prog"],
+  ] as const)("separa las palabras en %s", async (lang, expected) => {
+    const result = await renderAstroComponent(ResultsInfo, {
+      props: { shown: 9, total: 9, query: "prog", lang },
+    });
+    const text = result.querySelector("p")?.textContent?.replace(/\s+/g, " ").trim();
+    expect(text).toBe(expected);
+  });
 });

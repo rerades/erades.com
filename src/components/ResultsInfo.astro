@@ -34,10 +34,9 @@ const [before, middle, after] = t(lang, "results.showing").split(
   {before}<span class="text-primary">{shown}</span>{middle}<span
     class="text-primary">{total}</span
   >{after}
+  <!-- Espacios explícitos: Astro descarta el blanco entre una expresión y la
+       etiqueta siguiente, y salía «resultadosparaprog» (#243). -->
   <ShowWhen when={query}>
-    <span>
-      {t(lang, "results.for")}
-      <span class="text-primary">{query}</span></span
-    >
+    {" "}{t(lang, "results.for")}{" "}<span class="text-primary">{query}</span>
   </ShowWhen>
 </p>
