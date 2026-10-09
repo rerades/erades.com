@@ -27,6 +27,6 @@ const { minutes, lang } = Astro.props;
 const uiLang = lang === "en" ? "en" : "es";
 ---
 
-<span class="whitespace-nowrap font-medium text-primary" data-testid="reading-time">
+<span class="whitespace-nowrap text-primary" data-testid="reading-time">
   {tWithInterpolation(uiLang, "post.readTime", { minutes: String(minutes) })}
 </span>
