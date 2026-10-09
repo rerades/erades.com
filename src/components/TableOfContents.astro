@@ -38,25 +38,35 @@ const h2Count = headings.filter((h) => h.depth === 2).length;
 <ShowWhen when={h2Count >= MIN_H2}>
   <!-- Dos copias de la lista: sin JS no hay forma de que un mismo <details>
        esté plegado en móvil y abierto en escritorio. -->
-  <details class="not-prose md:hidden mb-8 border rounded-md p-4" data-testid="toc-mobile">
-    <summary class="cursor-pointer font-semibold">{title}</summary>
-    <ul class="mt-2 space-y-1 text-sm">
+  <details class="not-prose md:hidden mb-8 border-l-2 border-primary pl-4 py-1" data-testid="toc-mobile">
+    <summary class="cursor-pointer text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</summary>
+    <ul class="mt-2 space-y-0.5 leading-snug md:columns-2 md:gap-8">
       {
         items.map((h) => (
-          <li class:list={{ "ml-4": h.depth === 3 }}>
-            <a href={`#${h.slug}`} class="hover:underline">{h.text}</a>
+          <li
+            class:list={[
+              "break-inside-avoid",
+              h.depth === 3 ? "pl-3 text-xs text-muted-foreground" : "text-sm",
+            ]}
+          >
+            <a href={`#${h.slug}`} class="hover:text-primary hover:underline">{h.text}</a>
           </li>
         ))
       }
     </ul>
   </details>
-  <nav aria-label={title} class="not-prose hidden md:block mb-8 border rounded-md p-4" data-testid="toc-desktop">
-    <p class="font-semibold">{title}</p>
-    <ul class="mt-2 space-y-1 text-sm">
+  <nav aria-label={title} class="not-prose hidden md:block mb-8 border-l-2 border-primary pl-4 py-1" data-testid="toc-desktop">
+    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</p>
+    <ul class="mt-2 space-y-0.5 leading-snug md:columns-2 md:gap-8">
       {
         items.map((h) => (
-          <li class:list={{ "ml-4": h.depth === 3 }}>
-            <a href={`#${h.slug}`} class="hover:underline">{h.text}</a>
+          <li
+            class:list={[
+              "break-inside-avoid",
+              h.depth === 3 ? "pl-3 text-xs text-muted-foreground" : "text-sm",
+            ]}
+          >
+            <a href={`#${h.slug}`} class="hover:text-primary hover:underline">{h.text}</a>
           </li>
         ))
       }
