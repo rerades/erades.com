@@ -31,9 +31,9 @@ module.exports = {
           deviceScaleFactor: 1,
           disabled: false,
         },
-        // "Chrome-Lighthouse" lo llevan los UA por defecto de Lighthouse y
-        // GoogleAnalytics.astro lo usa para no contar la visita: al
-        // sobrescribir el UA hay que conservarlo.
+        // Lighthouse v10+ quitó "Chrome-Lighthouse" de los UA por defecto.
+        // GoogleAnalytics.astro lo necesita para no contar la visita: hay que
+        // añadirlo explícitamente al sobrescribir el UA.
         emulatedUserAgent:
           "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Chrome-Lighthouse",
       },

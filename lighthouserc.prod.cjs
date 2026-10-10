@@ -19,7 +19,14 @@ module.exports = {
     collect: {
       url: URLS,
       numberOfRuns: 3,
-      settings: { formFactor: "mobile" },
+      settings: {
+        formFactor: "mobile",
+        // Lighthouse v10+ quitó "Chrome-Lighthouse" del UA móvil por defecto.
+        // GoogleAnalytics.astro lo necesita para no contar la visita: hay que
+        // añadirlo explícitamente.
+        emulatedUserAgent:
+          "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Mobile Safari/537.36 Chrome-Lighthouse",
+      },
     },
   },
 };
