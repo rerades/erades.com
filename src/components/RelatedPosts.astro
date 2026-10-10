@@ -1,0 +1,49 @@
+---
+/**
+ * @component RelatedPosts
+ * @title Related Posts
+ * @description Las tarjetas de «sigue leyendo» al final de un post. La selección la hace `relatedPosts()` de `utils/related-posts` en el build (tags en común, después fecha); este componente solo las pinta con `BlogCard`. Sin posts no pinta nada.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import { getCollection } from "astro:content";
+ * import RelatedPosts from "./RelatedPosts.astro";
+ * import { relatedPosts } from "../utils/related-posts";
+ * const related = relatedPosts(post, await getCollection("blog"));
+ * ---
+ *
+ * <RelatedPosts posts={related} lang="es" />
+ * ```
+ */
+import type { CollectionEntry } from "astro:content";
+import BlogCard from "./BlogCard.astro";
+import ShowWhen from "./ShowWhen.astro";
+import { EAGER_LOAD_IMAGES_COUNT } from "../consts";
+import { t } from "../i18n";
+
+interface Props {
+  posts: readonly CollectionEntry<"blog">[];
+  lang: string;
+}
+
+const { posts, lang } = Astro.props;
+const uiLang = lang === "en" ? "en" : "es";
+const title = t(uiLang, "post.related");
+---
+
+<ShowWhen when={posts.length > 0}>
+  <section aria-label={title} class="px-4 pt-8 border-t" data-testid="related-posts">
+    <h2 class="font-serif text-2xl font-bold mb-6">{title}</h2>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        // Al pie de la página: ninguna tarjeta debe cargar su imagen en eager.
+        posts.map((post) => (
+          <BlogCard post={post} lang={lang} index={EAGER_LOAD_IMAGES_COUNT} />
+        ))
+      }
+    </div>
+  </section>
+</ShowWhen>

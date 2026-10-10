@@ -71,6 +71,7 @@
   "post": {
     "readTime": "{minutes} min de lectura",
     "toc": "En este artículo",
+    "related": "Sigue leyendo",
     "viewCategory": "Ver posts en la categoría {category}",
     "noCategory": "Sin categoría"
   },

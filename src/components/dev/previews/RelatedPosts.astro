@@ -1,0 +1,11 @@
+---
+import { getCollection } from "astro:content";
+import RelatedPosts from "../../RelatedPosts.astro";
+import { relatedPosts } from "../../../utils/related-posts";
+
+const posts = (await getCollection("blog")).filter((post) => !post.data.draft);
+const current = posts.find((post) => post.id.startsWith("es/"));
+const related = current ? relatedPosts(current, posts) : [];
+---
+
+<RelatedPosts posts={related} lang="es" />

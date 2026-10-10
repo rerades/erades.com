@@ -9,6 +9,7 @@ import ShowWhen from "../components/ShowWhen.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import type { MarkdownHeading } from "astro";
 import ReadingTime from "../components/ReadingTime.astro";
+import RelatedPosts from "../components/RelatedPosts.astro";
 import { Image } from "astro:assets";
 import "../styles/global.css";
 
@@ -19,6 +20,7 @@ type Props = Omit<CollectionEntry<"blog">["data"], "pubDate"> & {
   preloadImage?: ComponentProps<typeof BaseHead>["preloadImage"];
   readingTime?: number;
   headings?: readonly MarkdownHeading[];
+  related?: ComponentProps<typeof RelatedPosts>["posts"];
 };
 
 const {
@@ -34,6 +36,7 @@ const {
   heroImage,
   readingTime,
   headings = [],
+  related = [],
 } = Astro.props;
 
 // Datos estructurados para Google (#211). Las URL contra `Astro.site`, como
@@ -124,6 +127,7 @@ const jsonLdHtml = JSON.stringify(jsonLd).replaceAll("<", "\\u003c");
           </div>
         </div>
       </article>
+      <RelatedPosts posts={related} lang={lang} />
     </main>
     <Footer lang={lang as "es" | "en"} />
   </body>

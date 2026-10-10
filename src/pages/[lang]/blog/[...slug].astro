@@ -6,6 +6,7 @@ import { render } from "astro:content";
 import { getImage } from "astro:assets";
 import { resolveHeroImage } from "../../../utils/hero-image";
 import { readingTime } from "../../../utils/reading-time";
+import { relatedPosts } from "../../../utils/related-posts";
 
 export const prerender = true;
 
@@ -39,8 +40,9 @@ const postPath = (p: CollectionEntry<"blog">): string => {
   return `/${postLang}/blog/${rest.join("/")}/`;
 };
 const translationKey = post?.data?.translationKey;
+const allPosts = await getCollection("blog");
 const translation = translationKey
-  ? (await getCollection("blog")).find(
+  ? allPosts.find(
       (p) =>
         !p.data.draft &&
         p.data.translationKey === translationKey &&
@@ -125,6 +127,7 @@ if (post && post.data) {
       heroImage={ogImage?.src}
       readingTime={readingTime(post.body ?? "")}
       headings={headings}
+      related={relatedPosts(post, allPosts)}
     >
       {Content ? <Content /> : null}
     </BlogPost>
