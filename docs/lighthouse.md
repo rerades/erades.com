@@ -54,19 +54,30 @@ Cada fila:
 {"ts":"2026-08-21","commit":"local","url":"/es","ff":"mobile",
  "perf":75,"a11y":94,"bp":100,"seo":100,
  "fcp":963,"lcp":12062,"tbt":10,"cls":0.0238,"si":963,
- "js":182799,"css":9760,"img":2376406,"bytes":2741623}
+ "js":182799,"jsOwn":null,"css":9760,"img":2376406,"bytes":2741623}
 ```
 
-Scores 0-100, tiempos en ms, tamaños en bytes de transferencia. Mediana de las
+Scores 0-100, tiempos en ms, tamaños en bytes de transferencia salvo `jsOwn`,
+que va en bytes descomprimidos (ver abajo). Mediana de las
 3 runs **por métrica** — igual que hacían las columnas `_median` del servidor
 LHCI, y no "la run mediana": una run entera puede ser mala por un solo
 percentil y arrastrar métricas que estaban bien.
 
 ### Cómo leerlo
 
-Los campos de **bytes son deterministas**: no dependen del ruido del runner, así
-que una subida en `js` o `bytes` es siempre una regresión real. Los de **tiempo
-no lo son**: los runners de GitHub varían ±5 puntos de `perf` entre ejecuciones
+**`jsOwn` es el único campo de bytes determinista**: el JS servido desde
+`erades.com`, sumado en tamaño descomprimido. Una subida ahí es siempre una
+regresión nuestra, y es el que hay que mirar antes y después de un cambio.
+
+`js` y `bytes` no dependen del ruido del runner pero **tampoco son nuestros**:
+incluyen `gtag.js`, unos 185 de los ~195 KB de `js`, y Google lo cambia sin
+avisar. Entre agosto y octubre de 2026 `js` subió ~2 KB por semana sin que
+ningún commit tocara el JS del sitio, y el 13-09 ocho commits distintos lo
+dejaron dentro de ±300 B. Léelos como tendencia, no por commit. `jsOwn` usa
+`resourceSize` y no `transferSize` porque este incluye las cabeceras HTTP y
+varía ~200 B por fichero entre runs idénticas.
+
+Los de **tiempo no son deterministas**: los runners de GitHub varían ±5 puntos de `perf` entre ejecuciones
 idénticas. Léelos como tendencia a semanas, nunca como "este commit me bajó 3
 puntos".
 
@@ -76,7 +87,7 @@ Consultas típicas:
 # evolución del peso de JS en la home mobile
 git show origin/metrics:lh.ndjson \
   | grep '"url":"/es","ff":"mobile"' \
-  | jq -r '[.ts,.commit,.js,.perf] | @tsv'
+  | jq -r '[.ts,.commit,.jsOwn,.js,.perf] | @tsv'
 
 # el diff de la última medición
 git log -1 -p origin/metrics -- lh.ndjson
@@ -100,7 +111,8 @@ el portátil, no la web.
 El histórico de aquellos 7 builds está migrado a `lh.ndjson` (sólo las
 URLs de producción, que son las comparables). Las filas anteriores a
 2026-08-21 llevan `js`/`css`/`img`/`bytes` a `null`: el servidor no guardaba
-pesos de recursos.
+pesos de recursos. `jsOwn` existe desde 2026-10-10 y es `null` en las filas
+anteriores.
 
 ### Ojo con las filas `desktop` viejas
 
