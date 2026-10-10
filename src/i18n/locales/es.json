@@ -76,7 +76,17 @@
     "noCategory": "Sin categoría",
     "seriesPart": "Parte {part} de {total}",
     "seriesPrev": "Anterior",
-    "seriesNext": "Siguiente"
+    "seriesNext": "Siguiente",
+    "seriesIndex": "Ver la serie completa: {name}"
+  },
+  "seriesPage": {
+    "eyebrow": "Serie · {total} partes",
+    "part": "Parte {part}"
+  },
+  "seriesDescription": {
+    "functional": "De los fundamentos a los funtores, las mónadas y los transductores: programación funcional en JavaScript, paso a paso.",
+    "patterns": "Patrones para organizar el código JavaScript: IIFE, mixins, herencia de prototipos y renderizado condicional.",
+    "ai": "Qué cambia en el desarrollo de software cuando la IA escribe parte del código: metodología, proceso y testing."
   },
   "series": {
     "functional": "Programación funcional",

@@ -76,7 +76,17 @@
     "noCategory": "Uncategorized",
     "seriesPart": "Part {part} of {total}",
     "seriesPrev": "Previous",
-    "seriesNext": "Next"
+    "seriesNext": "Next",
+    "seriesIndex": "See the whole series: {name}"
+  },
+  "seriesPage": {
+    "eyebrow": "Series · {total} parts",
+    "part": "Part {part}"
+  },
+  "seriesDescription": {
+    "functional": "From the fundamentals to functors, monads and transducers: functional programming in JavaScript, step by step.",
+    "patterns": "Patterns for organising JavaScript code: IIFE, mixins, prototype inheritance and conditional rendering.",
+    "ai": "What changes in software development when AI writes part of the code: methodology, process and testing."
   },
   "series": {
     "functional": "Functional programming",

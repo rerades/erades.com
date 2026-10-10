@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { seriesNav } from "./series";
+import { seriesIds, seriesNav, seriesPosts } from "./series";
 
 const post = (id: string, series?: [string, number], draft = false) => ({
   id,
@@ -37,5 +37,18 @@ describe("seriesNav", () => {
 
   it("un post sin serie no tiene navegación", () => {
     expect(seriesNav(post("es/suelto"), posts)).toBeUndefined();
+  });
+
+  it("seriesPosts lista la serie en orden, sin borradores ni otro idioma", () => {
+    expect(seriesPosts("fp", "es", posts).map((p) => p.id)).toEqual([
+      "es/a",
+      "es/c",
+      "es/e",
+    ]);
+  });
+
+  it("seriesIds da las series con algún post publicado en el idioma", () => {
+    expect(seriesIds("es", posts)).toEqual(["fp", "oop"]);
+    expect(seriesIds("en", posts)).toEqual(["fp"]);
   });
 });

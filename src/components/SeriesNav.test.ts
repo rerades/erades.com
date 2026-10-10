@@ -35,6 +35,7 @@ describe("SeriesNav", () => {
     expect(result.querySelector("p")?.textContent).toContain("Functional programming · Part 2 of 3");
     expect(result.querySelector('a[rel="prev"]')?.getAttribute("href")).toBe("/en/blog/functional/a/");
     expect(result.querySelector('a[rel="next"]')?.textContent).toContain("C");
+    expect(result.querySelector("p a")?.getAttribute("href")).toBe("/en/series/functional/");
   });
 
   test("el primero de la serie no enlaza a un anterior", async () => {

@@ -2,7 +2,7 @@
 /**
  * @component SeriesNav
  * @title Series Nav
- * @description El bloque «Parte N de M» al final de un post que pertenece a una serie (`series` en el frontmatter), con enlaces al anterior y al siguiente. La posición la calcula `seriesNav()` de `utils/series` en el build; el nombre de la serie sale de `series.<id>` en i18n. Sin serie no pinta nada.
+ * @description El bloque «Parte N de M» al final de un post que pertenece a una serie (`series` en el frontmatter), con enlaces al anterior y al siguiente. La posición la calcula `seriesNav()` de `utils/series` en el build; el nombre de la serie sale de `series.<id>` en i18n. El nombre de la serie enlaza a su índice (`/[lang]/series/[id]/`). Sin serie no pinta nada.
  *
  *
  * @usage
@@ -48,7 +48,7 @@ const next = series?.next;
 <ShowWhen when={series}>
   <nav aria-label={name} class="not-prose mt-12 border-l-2 border-primary pl-4 py-1" data-testid="series-nav">
     <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-      {name} · {part}
+      <a href={`/${uiLang}/series/${series?.id}/`} title={tWithInterpolation(uiLang, "post.seriesIndex", { name })} class="hover:text-primary hover:underline">{name}</a> · {part}
     </p>
     <div class="mt-3 grid gap-4 sm:grid-cols-2">
       <ShowWhen when={prev}>

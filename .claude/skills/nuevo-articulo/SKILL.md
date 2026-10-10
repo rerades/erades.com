@@ -100,8 +100,10 @@ draft: true                 # hasta que esté todo; ver §9
     id: ai
     order: 8
   ```
-  Al final del post sale «Parte N de M» con anterior/siguiente. Una serie
-  nueva necesita su nombre en `series.<id>` de `src/i18n/locales/{es,en}.json`.
+  Al final del post sale «Parte N de M» con anterior/siguiente, y el post
+  aparece en el índice `/[lang]/series/<id>/` (#251). Una serie nueva necesita
+  su nombre en `series.<id>` y su descripción en `seriesDescription.<id>` de
+  `src/i18n/locales/{es,en}.json`.
   Ojo: el post deja de ser el último, así que cambia también el bloque del
   anterior (y su baseline visual si es `funcional/programacion-funcional`).
 
