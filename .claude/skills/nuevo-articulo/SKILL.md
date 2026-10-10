@@ -93,6 +93,17 @@ draft: true                 # hasta que esté todo; ver §9
   Posts de IA: tags `ai-coding`, `artificial-intelligence`, `best-practices`…;
   categorías `AI`, `Crafting`.
 - Las categorías se escriben igual en los dos idiomas.
+- **Series** (#214): si el post continúa una serie (`functional`, `patterns`,
+  `ai`), añade el mismo bloque en los dos idiomas, con el siguiente `order`:
+  ```yaml
+  series:
+    id: ai
+    order: 8
+  ```
+  Al final del post sale «Parte N de M» con anterior/siguiente. Una serie
+  nueva necesita su nombre en `series.<id>` de `src/i18n/locales/{es,en}.json`.
+  Ojo: el post deja de ser el último, así que cambia también el bloque del
+  anterior (y su baseline visual si es `funcional/programacion-funcional`).
 
 ## 4. Formato
 

@@ -1,0 +1,14 @@
+---
+import { getCollection } from "astro:content";
+import SeriesNav from "../../SeriesNav.astro";
+import { seriesNav } from "../../../utils/series";
+
+// Un post del medio de una serie, para que se vean los dos enlaces.
+const posts = (await getCollection("blog")).filter((post) => !post.data.draft);
+const current = posts.find(
+  (post) => post.id.startsWith("es/") && (post.data.series?.order ?? 0) > 1
+);
+const series = current ? seriesNav(current, posts) : undefined;
+---
+
+<SeriesNav series={series} lang="es" />

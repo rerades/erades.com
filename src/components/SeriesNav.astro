@@ -1,0 +1,68 @@
+---
+/**
+ * @component SeriesNav
+ * @title Series Nav
+ * @description El bloque «Parte N de M» al final de un post que pertenece a una serie (`series` en el frontmatter), con enlaces al anterior y al siguiente. La posición la calcula `seriesNav()` de `utils/series` en el build; el nombre de la serie sale de `series.<id>` en i18n. Sin serie no pinta nada.
+ *
+ *
+ * @usage
+ *
+ * ```astro
+ * ---
+ * import { getCollection } from "astro:content";
+ * import SeriesNav from "./SeriesNav.astro";
+ * import { seriesNav } from "../utils/series";
+ * const series = seriesNav(post, await getCollection("blog"));
+ * ---
+ *
+ * <SeriesNav series={series} lang="es" />
+ * ```
+ */
+import type { CollectionEntry } from "astro:content";
+import type { SeriesNav as SeriesNavData } from "../utils/series";
+import ShowWhen from "./ShowWhen.astro";
+import { t, tWithInterpolation } from "../i18n";
+
+interface Props {
+  series?: SeriesNavData<CollectionEntry<"blog">>;
+  lang: string;
+}
+
+const { series, lang } = Astro.props;
+const uiLang = lang === "en" ? "en" : "es";
+const name = series ? t(uiLang, `series.${series.id}`) : "";
+const part = series
+  ? tWithInterpolation(uiLang, "post.seriesPart", {
+      part: String(series.part),
+      total: String(series.total),
+    })
+  : "";
+const href = (post: CollectionEntry<"blog">): string => {
+  const [postLang = "", ...rest] = post.id.split("/");
+  return `/${postLang}/blog/${rest.join("/")}/`;
+};
+const prev = series?.prev;
+const next = series?.next;
+---
+
+<ShowWhen when={series}>
+  <nav aria-label={name} class="not-prose mt-12 border-l-2 border-primary pl-4 py-1" data-testid="series-nav">
+    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      {name} · {part}
+    </p>
+    <div class="mt-3 grid gap-4 sm:grid-cols-2">
+      <ShowWhen when={prev}>
+        <a href={prev && href(prev)} rel="prev" class="group block">
+          <span class="text-sm text-muted-foreground">← {t(uiLang, "post.seriesPrev")}</span>
+          <span class="block font-medium group-hover:text-primary group-hover:underline">{prev?.data.title}</span>
+        </a>
+      </ShowWhen>
+      <ShowWhen when={next}>
+        <a href={next && href(next)} rel="next" class="group block sm:col-start-2 sm:text-right">
+          <span class="text-sm text-muted-foreground">{t(uiLang, "post.seriesNext")} →</span>
+          <span class="block font-medium group-hover:text-primary group-hover:underline">{next?.data.title}</span>
+        </a>
+      </ShowWhen>
+    </div>
+  </nav>
+</ShowWhen>

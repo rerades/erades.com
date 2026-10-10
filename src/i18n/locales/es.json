@@ -73,7 +73,15 @@
     "toc": "En este artículo",
     "related": "Sigue leyendo",
     "viewCategory": "Ver posts en la categoría {category}",
-    "noCategory": "Sin categoría"
+    "noCategory": "Sin categoría",
+    "seriesPart": "Parte {part} de {total}",
+    "seriesPrev": "Anterior",
+    "seriesNext": "Siguiente"
+  },
+  "series": {
+    "functional": "Programación funcional",
+    "patterns": "Patrones de diseño",
+    "ai": "Desarrollo con IA"
   },
   "about": {
     "title": "Sobre mí",

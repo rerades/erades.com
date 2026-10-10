@@ -7,6 +7,7 @@ import { getImage } from "astro:assets";
 import { resolveHeroImage } from "../../../utils/hero-image";
 import { readingTime } from "../../../utils/reading-time";
 import { relatedPosts } from "../../../utils/related-posts";
+import { seriesNav } from "../../../utils/series";
 
 export const prerender = true;
 
@@ -128,6 +129,7 @@ if (post && post.data) {
       readingTime={readingTime(post.body ?? "")}
       headings={headings}
       related={relatedPosts(post, allPosts)}
+      series={seriesNav(post, allPosts)}
     >
       {Content ? <Content /> : null}
     </BlogPost>

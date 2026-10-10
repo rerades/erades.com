@@ -73,7 +73,15 @@
     "toc": "On this page",
     "related": "Keep reading",
     "viewCategory": "View posts in category {category}",
-    "noCategory": "Uncategorized"
+    "noCategory": "Uncategorized",
+    "seriesPart": "Part {part} of {total}",
+    "seriesPrev": "Previous",
+    "seriesNext": "Next"
+  },
+  "series": {
+    "functional": "Functional programming",
+    "patterns": "Design patterns",
+    "ai": "AI-driven development"
   },
   "about": {
     "title": "About me",
