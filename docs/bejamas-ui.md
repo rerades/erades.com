@@ -179,7 +179,8 @@ tercera migración sea mucho más barata que la primera — pero también que la
 primera saliera 5× por encima de lo estimado.
 
 Nada bloquea hoy una subida de bytes: no hay presupuestos en las configs de
-Lighthouse. Lo que sí hay es el campo `js` de `lh.ndjson`, que es
-**determinista** — una subida ahí es siempre real. Ver
+Lighthouse. Lo que sí hay es el campo `jsOwn` de `lh.ndjson`, que es
+**determinista** — una subida ahí es siempre real. (`js` no: incluye gtag.js,
+que cambia solo.) Ver
 [lighthouse.md](./lighthouse.md). Antes y después de migrar algo grande,
 mira ese campo.

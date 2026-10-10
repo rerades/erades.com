@@ -42,8 +42,9 @@ Como referencia de dónde estaba el sitio frente a aquellos límites: 36 KB de
 script y 62 KB de CSS. El CSS iba más justo (78 % del presupuesto) y eso venía
 de antes de esta migración.
 
-Lo que vigila hoy los bytes es el campo `js` de `lh.ndjson`, que es
-determinista: una subida ahí es siempre real. Ver [lighthouse.md](./lighthouse.md).
+Lo que vigila hoy los bytes es el campo `jsOwn` de `lh.ndjson`, que es
+determinista: una subida ahí es siempre real. Las cifras de `js` de este
+documento incluyen gtag.js; compáralas entre sí, no con `jsOwn`. Ver [lighthouse.md](./lighthouse.md).
 
 ## Métricas
 

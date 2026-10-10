@@ -149,7 +149,7 @@ Investigado el 2026-08-22 sobre los repos públicos de cada proyecto.
 - **Suite visual (Playwright/Docker)**: cualquier sustitución de componente
   interactivo mueve baselines igual con cualquiera de las cuatro — no es un
   criterio que decante la elección.
-- **Sin budgets de Lighthouse, pero con `js` determinista en `lh.ndjson`**:
+- **Sin budgets de Lighthouse, pero con `jsOwn` determinista en `lh.ndjson`**:
   el dato real es que bejamas/ui y full.dev UI comparten el mismo coste ya
   medido (`docs/bejamas-ui-presupuesto.md`); Basecoat es la única opción con
   indicios de un coste de JS menor por diseño (sin runtime compartido
@@ -207,7 +207,7 @@ recomienda:
 
 **Riesgo a registrar, no a ignorar**: antes de copiar el primer componente de
 full.dev UI conviene repetir la medición de `docs/bejamas-ui-presupuesto.md`
-(campo `js` de `lh.ndjson` antes/después) para confirmar que, al compartir
+(campo `jsOwn` de `lh.ndjson` antes/después) para confirmar que, al compartir
 runtime, el coste marginal es efectivamente bajo y no hay una versión
 distinta de `@data-slot/core` que duplique el paquete ya instalado.
 
