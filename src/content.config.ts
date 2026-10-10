@@ -19,6 +19,11 @@ const blog = defineCollection({
     // porque cada idioma tiene su propio slug. Sin él, el post no tiene
     // traducción (ni hreflang, ni salto directo desde el selector de idioma).
     translationKey: z.string().optional(),
+    // Posts que se leen en orden. `id` es el mismo en los dos idiomas y su
+    // nombre visible sale de `series.<id>` en i18n; `order` empieza en 1.
+    series: z
+      .object({ id: z.string(), order: z.number().int().positive() })
+      .optional(),
   }),
 });
 

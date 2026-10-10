@@ -10,10 +10,13 @@ import TableOfContents from "../components/TableOfContents.astro";
 import type { MarkdownHeading } from "astro";
 import ReadingTime from "../components/ReadingTime.astro";
 import RelatedPosts from "../components/RelatedPosts.astro";
+import SeriesNav from "../components/SeriesNav.astro";
 import { Image } from "astro:assets";
 import "../styles/global.css";
 
-type Props = Omit<CollectionEntry<"blog">["data"], "pubDate"> & {
+// `series` del frontmatter ({ id, order }) se sustituye por la navegación ya
+// resuelta que calcula la ruta.
+type Props = Omit<CollectionEntry<"blog">["data"], "pubDate" | "series"> & {
   pubDate?: Date;
   lang: string;
   alternates?: ComponentProps<typeof BaseHead>["alternates"];
@@ -21,6 +24,7 @@ type Props = Omit<CollectionEntry<"blog">["data"], "pubDate"> & {
   readingTime?: number;
   headings?: readonly MarkdownHeading[];
   related?: ComponentProps<typeof RelatedPosts>["posts"];
+  series?: ComponentProps<typeof SeriesNav>["series"];
 };
 
 const {
@@ -37,6 +41,7 @@ const {
   readingTime,
   headings = [],
   related = [],
+  series,
 } = Astro.props;
 
 // Datos estructurados para Google (#211). Las URL contra `Astro.site`, como
@@ -125,6 +130,7 @@ const jsonLdHtml = JSON.stringify(jsonLd).replaceAll("<", "\\u003c");
           <div class="prose max-w-none">
             <slot />
           </div>
+          <SeriesNav series={series} lang={lang} />
         </div>
       </article>
       <RelatedPosts posts={related} lang={lang} />
