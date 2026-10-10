@@ -889,7 +889,7 @@
   },
   {
     "title": "programación funcional",
-    "description": "Una introducción a los conceptos de programación funcional incluyendo programación declarativa, funciones puras, inmutabilidad y currificaci 3n.",
+    "description": "Una introducción a los conceptos de programación funcional incluyendo programación declarativa, funciones puras, inmutabilidad y currificación.",
     "pubDate": "2018-01-12",
     "tags": [
       "declarative",
