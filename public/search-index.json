@@ -12,8 +12,7 @@
       "development"
     ],
     "categories": [
-      "AI",
-      "Tools"
+      "ai"
     ],
     "translationKey": "ai-rules-cli",
     "draft": false,
@@ -32,11 +31,11 @@
       "taxonomy",
       "rules",
       "development",
-      "best-practices"
+      "best-practices",
+      "tools"
     ],
     "categories": [
-      "AI",
-      "Tools"
+      "ai"
     ],
     "translationKey": "ai-rules",
     "draft": false,
@@ -54,11 +53,11 @@
       "testing",
       "ai-coding",
       "artificial-intelligence",
-      "best-practices"
+      "best-practices",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/agentic-e2e-testing",
     "series": {
@@ -80,11 +79,11 @@
       "sdlc",
       "claude-code",
       "artificial-intelligence",
-      "best-practices"
+      "best-practices",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/ai-native-sdlc",
     "series": {
@@ -104,11 +103,11 @@
       "ASPECCT",
       "prompt-engineering",
       "best-practices",
-      "artificial-intelligence"
+      "artificial-intelligence",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/aspecct-metodologia-prompting",
     "series": {
@@ -130,11 +129,11 @@
       "internationalization",
       "best-practices",
       "artificial-intelligence",
-      "web-development"
+      "web-development",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/i18n",
     "series": {
@@ -155,11 +154,11 @@
     "tags": [
       "ai-coding",
       "artificial-intelligence",
-      "best-practices"
+      "best-practices",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/jev-model-for-code",
     "series": {
@@ -181,11 +180,11 @@
       "agent-experience",
       "frontend",
       "web-development",
-      "artificial-intelligence"
+      "artificial-intelligence",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/the-asteroid-hitting-frontend",
     "series": {
@@ -206,11 +205,11 @@
       "ai-coding",
       "code-quality",
       "artificial-intelligence",
-      "best-practices"
+      "best-practices",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/por-que-fallan-las-fabricas-de-software",
     "series": {
@@ -230,11 +229,11 @@
     "tags": [
       "css",
       "performance",
-      "wpo"
+      "wpo",
+      "best-practices"
     ],
     "categories": [
-      "css",
-      "best-practices"
+      "css"
     ],
     "translationKey": "css-load",
     "draft": false,
@@ -251,7 +250,7 @@
       "particle system"
     ],
     "categories": [
-      "experiment"
+      "experiments"
     ],
     "translationKey": "experiments/particle-system-01",
     "draft": false,
@@ -513,7 +512,7 @@
     "description": "A functional and maintainable pattern for conditionally displaying UI fragments without overusing logical or ternary operators.",
     "pubDate": "2025-07-28T00:00:00.000Z",
     "categories": [
-      "design patterns"
+      "design-patterns"
     ],
     "tags": [
       "Astro",
@@ -542,7 +541,7 @@
       "IIFE"
     ],
     "categories": [
-      "design patterns"
+      "design-patterns"
     ],
     "translationKey": "patterns/iife",
     "series": {
@@ -566,7 +565,7 @@
       "inherence"
     ],
     "categories": [
-      "design patterns"
+      "design-patterns"
     ],
     "translationKey": "patterns/mixins",
     "series": {
@@ -589,7 +588,7 @@
       "inheritance"
     ],
     "categories": [
-      "design patterns"
+      "design-patterns"
     ],
     "translationKey": "patterns/testing-protoype-inheritance",
     "series": {
@@ -633,8 +632,7 @@
       "best-practices"
     ],
     "categories": [
-      "wpo",
-      "best-practices"
+      "wpo"
     ],
     "translationKey": "web-performance/wpo",
     "draft": false,
@@ -652,11 +650,11 @@
       "herramientas",
       "automatización",
       "reglas",
-      "desarrollo"
+      "desarrollo",
+      "tools"
     ],
     "categories": [
-      "AI",
-      "Herramientas"
+      "ai"
     ],
     "translationKey": "ai-rules-cli",
     "draft": false,
@@ -675,11 +673,11 @@
       "taxonomía",
       "reglas",
       "desarrollo",
-      "buenas-prácticas"
+      "buenas-prácticas",
+      "tools"
     ],
     "categories": [
-      "AI",
-      "Herramientas"
+      "ai"
     ],
     "translationKey": "ai-rules",
     "draft": false,
@@ -733,11 +731,11 @@
     "tags": [
       "css",
       "performance",
-      "wpo"
+      "wpo",
+      "best-practices"
     ],
     "categories": [
-      "css",
-      "best-practices"
+      "css"
     ],
     "translationKey": "css-load",
     "draft": false,
@@ -754,7 +752,7 @@
       "particle system"
     ],
     "categories": [
-      "experiment"
+      "experiments"
     ],
     "translationKey": "experiments/particle-system-01",
     "draft": false,
@@ -945,11 +943,11 @@
       "ASPECCT",
       "prompt-engineering",
       "best-practices",
-      "artificial-intelligence"
+      "artificial-intelligence",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/aspecct-metodologia-prompting",
     "series": {
@@ -972,11 +970,11 @@
       "agent-experience",
       "frontend",
       "web-development",
-      "artificial-intelligence"
+      "artificial-intelligence",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/the-asteroid-hitting-frontend",
     "series": {
@@ -997,11 +995,11 @@
       "internacionalización",
       "mejores-practicas",
       "inteligencia-artificial",
-      "desarrollo-web"
+      "desarrollo-web",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/i18n",
     "series": {
@@ -1022,11 +1020,11 @@
     "tags": [
       "ai-coding",
       "artificial-intelligence",
-      "best-practices"
+      "best-practices",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/jev-model-for-code",
     "series": {
@@ -1047,11 +1045,11 @@
       "ai-coding",
       "code-quality",
       "artificial-intelligence",
-      "best-practices"
+      "best-practices",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/por-que-fallan-las-fabricas-de-software",
     "series": {
@@ -1074,11 +1072,11 @@
       "sdlc",
       "claude-code",
       "artificial-intelligence",
-      "best-practices"
+      "best-practices",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/ai-native-sdlc",
     "series": {
@@ -1099,11 +1097,11 @@
       "testing",
       "ai-coding",
       "artificial-intelligence",
-      "best-practices"
+      "best-practices",
+      "crafting"
     ],
     "categories": [
-      "AI",
-      "Crafting"
+      "ai"
     ],
     "translationKey": "ai-take-aways/agentic-e2e-testing",
     "series": {
@@ -1142,7 +1140,7 @@
       "IIFE"
     ],
     "categories": [
-      "design patterns"
+      "design-patterns"
     ],
     "translationKey": "patterns/iife",
     "series": {
@@ -1166,7 +1164,7 @@
       "inherence"
     ],
     "categories": [
-      "design patterns"
+      "design-patterns"
     ],
     "translationKey": "patterns/mixins",
     "series": {
@@ -1189,7 +1187,7 @@
       "inheritance"
     ],
     "categories": [
-      "design patterns"
+      "design-patterns"
     ],
     "translationKey": "patterns/testing-protoype-inheritance",
     "series": {
@@ -1207,7 +1205,7 @@
     "description": "Un patrón funcional y mantenible para condicionar fragmentos de UI sin abusar de operadores lógicos ni ternarios.",
     "pubDate": "2025-07-28T00:00:00.000Z",
     "categories": [
-      "design patterns"
+      "design-patterns"
     ],
     "tags": [
       "Astro",
@@ -1276,8 +1274,7 @@
       "best-practices"
     ],
     "categories": [
-      "wpo",
-      "best-practices"
+      "wpo"
     ],
     "translationKey": "web-performance/wpo",
     "draft": false,

@@ -1,6 +1,17 @@
 import { glob } from "astro/loaders";
 import { defineCollection, z } from "astro:content";
 
+// Lista cerrada (CONTEXT.md). El nombre visible sale de `category.<id>` en i18n.
+export const CATEGORIES = [
+  "javascript",
+  "css",
+  "functional",
+  "ai",
+  "design-patterns",
+  "wpo",
+  "experiments",
+] as const;
+
 const blog = defineCollection({
   // Load Markdown and MDX files in the `src/content/blog/` directory.
   loader: glob({ base: "./src/content/blog", pattern: "**/*.{md,mdx}" }),
@@ -13,7 +24,7 @@ const blog = defineCollection({
     updatedDate: z.coerce.date().optional(),
     heroImage: z.string().optional(),
     tags: z.array(z.string()),
-    categories: z.array(z.string()),
+    categories: z.array(z.enum(CATEGORIES)),
     draft: z.boolean().default(false),
     // Mismo valor en las dos versiones de un post: es lo que las empareja,
     // porque cada idioma tiene su propio slug. Sin él, el post no tiene

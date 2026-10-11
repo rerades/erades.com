@@ -28,7 +28,7 @@ describe("BlogFilters.astro", () => {
     test("debería mostrar todas las categorías disponibles", async () => {
       // Arrange
       const mockProps = {
-        categories: ["Technology", "Programming", "Design"],
+        categories: ["css", "functional", "ai"],
         selectedCategory: "Technology",
         sortBy: "date-desc",
         viewMode: "grid",
@@ -40,16 +40,16 @@ describe("BlogFilters.astro", () => {
       });
 
       // Assert
-      expect(result.innerHTML).toContain("Technology");
-      expect(result.innerHTML).toContain("Programming");
-      expect(result.innerHTML).toContain("Design");
+      expect(result.innerHTML).toContain("CSS");
+      expect(result.innerHTML).toContain("Programación funcional");
+      expect(result.innerHTML).toContain("IA");
     });
 
     test("debería marcar la categoría seleccionada como activa", async () => {
       // Arrange
       const mockProps = {
-        categories: ["Technology", "Programming"],
-        selectedCategory: "Programming",
+        categories: ["css", "javascript"],
+        selectedCategory: "javascript",
         sortBy: "date-desc",
         viewMode: "grid",
       };
@@ -62,7 +62,7 @@ describe("BlogFilters.astro", () => {
       // Assert
       const programmingLink = result.querySelector('a[aria-current="page"]');
       expect(programmingLink).toBeTruthy();
-      expect(programmingLink?.textContent?.trim()).toBe("Programming");
+      expect(programmingLink?.textContent?.trim()).toBe("JavaScript");
     });
   });
 

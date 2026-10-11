@@ -82,6 +82,15 @@
     "functional": "Programación funcional",
     "patterns": "Patrones de diseño"
   },
+  "category": {
+    "javascript": "JavaScript",
+    "css": "CSS",
+    "functional": "Programación funcional",
+    "ai": "IA",
+    "design-patterns": "Patrones de diseño",
+    "wpo": "WPO",
+    "experiments": "Experimentos"
+  },
   "about": {
     "title": "Sobre mí",
     "description": "Ingeniero con más de 20 años de experiencia, apasionado por el desarrollo front, la IA, las buenas prácticas y la optimización web.",

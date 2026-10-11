@@ -45,9 +45,9 @@ test.describe("Buscador", () => {
       textBefore.match(/Mostrando \d+ de (\d+) resultados[\s\S]*func/);
     const totalBefore = matchBefore ? parseInt(matchBefore[1], 10) : null;
 
-    // Hacer clic en la categoría 'design patterns'
+    // Hacer clic en la categoría 'design-patterns' (nombre visible desde i18n)
     const categoryLink = page
-      .getByRole("link", { name: "design patterns", exact: true })
+      .getByRole("link", { name: "Patrones de diseño", exact: true })
       .first();
     await categoryLink.click();
 

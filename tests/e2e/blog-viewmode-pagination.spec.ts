@@ -65,7 +65,7 @@ test.describe("Persistencia del modo de vista a través de la paginación", () =
     await page.waitForSelector('[aria-label="list-card"]');
 
     // Click a specific category chip if available and not already active
-    const categoryChip = page.locator('a:has-text("functional")').first();
+    const categoryChip = page.locator('a:has-text("Programación funcional")').first();
     if (await categoryChip.count()) {
       const isCurrent = await categoryChip.getAttribute("aria-current");
       if (isCurrent !== "page") {
