@@ -7,6 +7,10 @@ import { describe, expect, it } from "vitest";
 // producción: un post publicado sin pareja hace que el selector de idioma
 // caiga al cambio de prefijo (404), y un punto en el slug (#206) rompe la
 // ruta y el índice de búsqueda.
+//
+// El borrador es del artículo, no de la versión (CONTEXT.md): las dos versiones
+// salen juntas o ninguna. No hace falta un test propio: si una está en borrador
+// y la otra no, la publicada se queda sin pareja y falla el de abajo.
 
 const BLOG_DIR = join(process.cwd(), "src/content/blog");
 const LOCALES = ["es", "en"] as const;
@@ -63,7 +67,7 @@ describe("blog content", () => {
     expect(duplicated).toEqual([]);
   });
 
-  it("pairs every published post with a published translation", () => {
+  it("pairs every published post with a published translation (so a draft holds back the whole article)", () => {
     const unpaired = published
       .filter((p) => p.translationKey && !UNPAIRED_ALLOWED.has(p.translationKey))
       .filter(
