@@ -80,8 +80,7 @@
   },
   "series": {
     "functional": "Programación funcional",
-    "patterns": "Patrones de diseño",
-    "ai": "Desarrollo con IA"
+    "patterns": "Patrones de diseño"
   },
   "about": {
     "title": "Sobre mí",
