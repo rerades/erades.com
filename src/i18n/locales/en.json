@@ -82,6 +82,15 @@
     "functional": "Functional programming",
     "patterns": "Design patterns"
   },
+  "category": {
+    "javascript": "JavaScript",
+    "css": "CSS",
+    "functional": "Functional programming",
+    "ai": "AI",
+    "design-patterns": "Design patterns",
+    "wpo": "WPO",
+    "experiments": "Experiments"
+  },
   "about": {
     "title": "About me",
     "description": "Engineer with over 20 years of experience, passionate about front-end development, AI, best practices and web optimization.",

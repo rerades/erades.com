@@ -22,7 +22,7 @@ import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
 import { EAGER_LOAD_IMAGES_COUNT } from "../consts";
 import { resolveHeroImage } from "../utils/hero-image";
-import { tWithInterpolation } from "../i18n";
+import { t, tWithInterpolation } from "../i18n";
 import { readingTime } from "../utils/reading-time";
 
 interface Props {
@@ -82,10 +82,10 @@ const postTags = Array.isArray(post.tags || (post.data && post.data.tags))
               <span
                 class="inline-flex items-center px-2 py-0.5 rounded bg-secondary text-xs text-secondary-foreground font-medium whitespace-nowrap"
                 title={tWithInterpolation(uiLang, "post.viewCategory", {
-                  category,
+                  category: t(uiLang, `category.${category}`),
                 })}
               >
-                {category}
+                {t(uiLang, `category.${category}`)}
               </span>
             ))
           }

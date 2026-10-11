@@ -89,7 +89,7 @@ function getCategoryHrefLocal(cat: string): string {
               }
               tabindex={0}
             >
-              {category === "Todas" ? t(lang, "filters.all") : category}
+              {category === "Todas" ? t(lang, "filters.all") : t(lang, `category.${category}`)}
             </a>
           ))
         }

@@ -268,7 +268,7 @@ const recentTags = getRecentTags(postsWithStringDate, 10);
                     class="text-sm font-medium text-foreground"
                     aria-label={category}
                   >
-                    {category}
+                    {t(lang, `category.${category}`)}
                   </span>
                   <span class="text-xs text-muted-foreground ml-2">
                     ({categoryCounts[category]}{" "}

@@ -70,7 +70,7 @@ const heroImage = resolveHeroImage(get("heroImage"));
           >
             {
               Array.isArray(get("categories")) && get("categories").length > 0
-                ? get("categories")[0]
+                ? t(uiLang, `category.${get("categories")[0]}`)
                 : t(uiLang, "post.noCategory")
             }
           </span>

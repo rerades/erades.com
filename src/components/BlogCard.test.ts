@@ -12,7 +12,7 @@ describe("BlogCard", () => {
     excerpt: "Test post excerpt",
     pubDate: new Date("2023-01-01"),
     author: "Test Author",
-    categories: ["Test Category"],
+    categories: ["design-patterns"],
     tags: ["test", "blog"],
     heroImage: "/hero-software-factories.jpg",
   };
@@ -97,7 +97,7 @@ describe("BlogCard", () => {
       },
     });
 
-    const category = getByText(result, "Test Category");
+    const category = getByText(result, "Design patterns");
     expect(category).not.toBeNull();
   });
 
