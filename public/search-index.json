@@ -100,7 +100,7 @@
     "description": "Practical guide for writing effective prompts using the ASPECCT methodology, with template, real example and comparison with alternative frameworks.",
     "pubDate": "2025-08-10T00:00:00.000Z",
     "tags": [
-      "ASPECCT",
+      "aspecct",
       "prompt-engineering",
       "best-practices",
       "artificial-intelligence",
@@ -247,7 +247,7 @@
     "pubDate": "2019-01-11T00:00:00.000Z",
     "description": "Exploring particle system animation techniques using Canvas and JavaScript for creating dynamic visual effects",
     "tags": [
-      "particle system"
+      "particle-system"
     ],
     "categories": [
       "experiments"
@@ -265,10 +265,10 @@
     "pubDate": "2019-04-11",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying",
-      "Hindley-Milner"
+      "hindley-milner"
     ],
     "categories": [
       "functional"
@@ -290,8 +290,8 @@
     "pubDate": "2019-01-10",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying",
       "combinator"
     ],
@@ -315,8 +315,8 @@
     "pubDate": "2018-01-12",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying"
     ],
     "categories": [
@@ -339,8 +339,8 @@
     "pubDate": "2019-01-01",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying"
     ],
     "categories": [
@@ -363,8 +363,8 @@
     "pubDate": "2019-11-11",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying",
       "functors"
     ],
@@ -388,8 +388,8 @@
     "pubDate": "2019-11-11",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying",
       "functors"
     ],
@@ -413,8 +413,8 @@
     "pubDate": "2019-01-01",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying",
       "functors",
       "transducers"
@@ -477,7 +477,7 @@
     "pubDate": "2018-01-08",
     "tags": [
       "javascript",
-      "method chaining"
+      "method-chaining"
     ],
     "categories": [
       "javascript"
@@ -495,7 +495,7 @@
     "pubDate": "2018-01-12",
     "tags": [
       "javascript",
-      "object properties"
+      "object-properties"
     ],
     "categories": [
       "javascript"
@@ -515,10 +515,10 @@
       "design-patterns"
     ],
     "tags": [
-      "Astro",
-      "Functional UI",
-      "JSX",
-      "Components",
+      "astro",
+      "functional-ui",
+      "jsx",
+      "components",
       "patterns"
     ],
     "translationKey": "patterns/conditional-rendering-with-show.astro",
@@ -537,8 +537,8 @@
     "description": "Understanding Immediately Invoked Function Expressions (IIFE) in JavaScript and their use in preventing global scope pollution",
     "pubDate": "2018-01-14",
     "tags": [
-      "design patterns",
-      "IIFE"
+      "design-patterns",
+      "iife"
     ],
     "categories": [
       "design-patterns"
@@ -559,10 +559,10 @@
     "description": "Understanding mixins in JavaScript as a solution for multi-inheritance, including delegation, concatenative, and functional inheritance patterns",
     "pubDate": "2018-11-18",
     "tags": [
-      "design patterns",
+      "design-patterns",
       "mixins",
-      "functional mixins",
-      "inherence"
+      "functional-mixins",
+      "inheritance"
     ],
     "categories": [
       "design-patterns"
@@ -583,7 +583,7 @@
     "description": "Exploring prototype inheritance in JavaScript using the call method to inherit properties and methods between objects and functions",
     "pubDate": "2018-11-21",
     "tags": [
-      "design patterns",
+      "design-patterns",
       "prototype",
       "inheritance"
     ],
@@ -606,8 +606,8 @@
     "description": "Comparing traditional statement branching with micro-branching techniques in JavaScript for more maintainable and functional code",
     "pubDate": "2018-06-06",
     "tags": [
-      "statement brnaching",
-      "micro-branching strategies"
+      "statement-branching",
+      "micro-branching"
     ],
     "categories": [
       "javascript",
@@ -647,11 +647,10 @@
     "tags": [
       "ai-rules-cli",
       "cli",
-      "herramientas",
-      "automatización",
-      "reglas",
-      "desarrollo",
-      "tools"
+      "tools",
+      "automation",
+      "rules",
+      "development"
     ],
     "categories": [
       "ai"
@@ -669,11 +668,11 @@
     "pubDate": "2025-11-02T00:00:00.000Z",
     "tags": [
       "ai-rules",
-      "gobernanza",
-      "taxonomía",
-      "reglas",
-      "desarrollo",
-      "buenas-prácticas",
+      "governance",
+      "taxonomy",
+      "rules",
+      "development",
+      "best-practices",
       "tools"
     ],
     "categories": [
@@ -712,7 +711,7 @@
     "pubDate": "2018-01-08T00:00:00.000Z",
     "tags": [
       "javascript",
-      "method chaining"
+      "method-chaining"
     ],
     "categories": [
       "javascript"
@@ -749,7 +748,7 @@
     "pubDate": "2019-01-11T00:00:00.000Z",
     "description": "Explorando técnicas de animación de sistemas de partículas utilizando Canvas y JavaScript para crear efectos visuales dinámicos",
     "tags": [
-      "particle system"
+      "particle-system"
     ],
     "categories": [
       "experiments"
@@ -767,8 +766,8 @@
     "pubDate": "2019-01-10",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying",
       "combinator"
     ],
@@ -792,8 +791,8 @@
     "pubDate": "2019-01-01",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying"
     ],
     "categories": [
@@ -816,8 +815,8 @@
     "pubDate": "2019-11-11",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying",
       "functors"
     ],
@@ -841,8 +840,8 @@
     "pubDate": "2019-11-11",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying",
       "functors"
     ],
@@ -866,10 +865,10 @@
     "pubDate": "2019-04-11",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying",
-      "Hindley-Milner"
+      "hindley-milner"
     ],
     "categories": [
       "functional"
@@ -891,8 +890,8 @@
     "pubDate": "2018-01-12",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying"
     ],
     "categories": [
@@ -915,8 +914,8 @@
     "pubDate": "2019-01-01",
     "tags": [
       "declarative",
-      "Pure functions",
-      "Inmutable",
+      "pure-functions",
+      "immutable",
       "currying",
       "functors",
       "transducers"
@@ -940,7 +939,7 @@
     "description": "Guía práctica para redactar prompts efectivos usando la metodología ASPECCT, con plantilla, ejemplo real y comparación con marcos alternativos.",
     "pubDate": "2025-08-10T00:00:00.000Z",
     "tags": [
-      "ASPECCT",
+      "aspecct",
       "prompt-engineering",
       "best-practices",
       "artificial-intelligence",
@@ -992,10 +991,10 @@
     "pubDate": "2024-06-15T00:00:00.000Z",
     "tags": [
       "i18n",
-      "internacionalización",
-      "mejores-practicas",
-      "inteligencia-artificial",
-      "desarrollo-web",
+      "internationalization",
+      "best-practices",
+      "artificial-intelligence",
+      "web-development",
       "crafting"
     ],
     "categories": [
@@ -1136,8 +1135,8 @@
     "description": "Comprendiendo las Expresiones de Función Inmediatamente Invocadas (IIFE) en JavaScript y su uso en la prevención de la contaminación del ámbito global",
     "pubDate": "2018-01-14T00:00:00.000Z",
     "tags": [
-      "design patterns",
-      "IIFE"
+      "design-patterns",
+      "iife"
     ],
     "categories": [
       "design-patterns"
@@ -1158,10 +1157,10 @@
     "description": "Entendiendo los mixins en JavaScript como una solución para la multi-herencia, incluyendo los patrones de delegación, concatenación y herencia funcional",
     "pubDate": "2018-11-18T00:00:00.000Z",
     "tags": [
-      "design patterns",
+      "design-patterns",
       "mixins",
-      "functional mixins",
-      "inherence"
+      "functional-mixins",
+      "inheritance"
     ],
     "categories": [
       "design-patterns"
@@ -1182,7 +1181,7 @@
     "description": "Explorando la herencia de prototipos en JavaScript utilizando el método call para heredar propiedades y métodos entre objetos y funciones",
     "pubDate": "2018-11-21T00:00:00.000Z",
     "tags": [
-      "design patterns",
+      "design-patterns",
       "prototype",
       "inheritance"
     ],
@@ -1208,10 +1207,10 @@
       "design-patterns"
     ],
     "tags": [
-      "Astro",
-      "Functional UI",
-      "JSX",
-      "Components",
+      "astro",
+      "functional-ui",
+      "jsx",
+      "components",
       "patterns"
     ],
     "translationKey": "patterns/conditional-rendering-with-show.astro",
@@ -1231,7 +1230,7 @@
     "pubDate": "2018-01-12T00:00:00.000Z",
     "tags": [
       "javascript",
-      "object properties"
+      "object-properties"
     ],
     "categories": [
       "javascript"
@@ -1248,8 +1247,8 @@
     "description": "Comparando la bifurcación de declaraciones tradicionales con técnicas de micro-bifurcación en JavaScript para un código más mantenible y funcional",
     "pubDate": "2018-06-06T00:00:00.000Z",
     "tags": [
-      "statement branching",
-      "micro-branching strategies"
+      "statement-branching",
+      "micro-branching"
     ],
     "categories": [
       "javascript",

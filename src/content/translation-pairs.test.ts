@@ -2,6 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
 import { describe, expect, it } from "vitest";
+import { LEGACY_TAGS } from "../utils/legacy-tags";
 
 // Invariantes del contenido que Astro no comprueba y que ya han roto
 // producción: un post publicado sin pareja hace que el selector de idioma
@@ -23,6 +24,7 @@ interface Post {
   readonly locale: string;
   readonly draft: boolean;
   readonly translationKey: string | undefined;
+  readonly tags: readonly string[];
 }
 
 const posts: readonly Post[] = readdirSync(BLOG_DIR, { recursive: true })
@@ -35,6 +37,7 @@ const posts: readonly Post[] = readdirSync(BLOG_DIR, { recursive: true })
       locale: path.split(/[\\/]/)[0] ?? "",
       draft: data.draft === true,
       translationKey: data.translationKey,
+      tags: data.tags ?? [],
     };
   });
 
@@ -80,6 +83,33 @@ describe("blog content", () => {
       )
       .map((p) => p.path);
     expect(unpaired).toEqual([]);
+  });
+
+  // Tag: identificador neutro respecto al idioma (CONTEXT.md).
+  it("writes every tag as lowercase kebab-case", () => {
+    const bad = posts.flatMap((p) =>
+      p.tags.filter((tag) => !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(tag))
+    );
+    expect([...new Set(bad)]).toEqual([]);
+  });
+
+  it("redirects every legacy tag to a tag that exists", () => {
+    const current = new Set(published.flatMap((p) => p.tags));
+    const dangling = Object.values(LEGACY_TAGS).filter((t) => !current.has(t));
+    expect(dangling).toEqual([]);
+  });
+
+  it("gives both versions of an article the same tags", () => {
+    const differing = published
+      .filter((p) => p.locale === "es" && p.translationKey)
+      .filter((p) => {
+        const other = published.find(
+          (o) => o.locale === "en" && o.translationKey === p.translationKey
+        );
+        return other && [...p.tags].sort().join() !== [...other.tags].sort().join();
+      })
+      .map((p) => p.translationKey);
+    expect(differing).toEqual([]);
   });
 
   it("keeps the allow-list honest", () => {
