@@ -80,8 +80,7 @@
   },
   "series": {
     "functional": "Functional programming",
-    "patterns": "Design patterns",
-    "ai": "AI-driven development"
+    "patterns": "Design patterns"
   },
   "about": {
     "title": "About me",

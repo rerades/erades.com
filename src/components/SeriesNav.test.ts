@@ -40,7 +40,7 @@ describe("SeriesNav", () => {
   test("el primero de la serie no enlaza a un anterior", async () => {
     const result = await renderAstroComponent(SeriesNav, {
       props: {
-        series: { id: "ai", part: 1, total: 2, next: post("es/ia/b", "B") },
+        series: { id: "patterns", part: 1, total: 2, next: post("es/patrones/b", "B") },
         lang: "es",
       },
     });
