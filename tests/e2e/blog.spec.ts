@@ -301,14 +301,14 @@ test.describe("Blog", () => {
     await page.goto("/es/blog/page/2");
     await waitForPageReady(page);
 
-    const aiChip = page.getByRole("link", { name: "AI", exact: true }).first();
+    // Nombre visible desde i18n; en la URL va el identificador.
+    const aiChip = page.getByRole("link", { name: "IA", exact: true }).first();
     await aiChip.click();
 
-    await page.waitForURL(/[?&]category=AI(?:&|$)/);
+    await page.waitForURL(/[?&]category=ai(?:&|$)/);
     await waitForPageReady(page);
 
     const blogPosts = page.locator('[aria-label="grid-card"]');
     expect(await blogPosts.count()).toBeGreaterThan(0);
-    expect(page.url()).not.toMatch(/[?&]category=ai(?:&|$)/);
   });
 });
