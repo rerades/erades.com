@@ -4,6 +4,7 @@ import Layout from "../../../../layouts/BlogPost.astro";
 import BlogList from "../../../../components/BlogList.astro";
 import { filterPostsByTag } from "../tag-utils";
 import { sortPosts, SORT_BY_OPTIONS } from "../../../../utils/sort-utils";
+import { LEGACY_TAGS } from "../../../../utils/legacy-tags";
 
 const { lang: langParam, tag: tagParam, page: pageParam } = Astro.params;
 const lang = langParam === "en" ? "en" : "es";
@@ -12,6 +13,14 @@ const currentPage = Number(pageParam);
 
 if (!Number.isInteger(currentPage) || currentPage < 1) {
   return new Response(null, { status: 404 });
+}
+
+const renamed = LEGACY_TAGS[tag];
+if (renamed) {
+  return Astro.redirect(
+    `/${lang}/tags/${encodeURIComponent(renamed)}/${currentPage}/${Astro.url.search}`,
+    301
+  );
 }
 
 const allPosts = (await getCollection("blog")).filter(
