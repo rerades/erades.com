@@ -75,7 +75,11 @@ export default defineConfig({
     "/es/blog/lexical-and-dynamic-scope": "/es/blog/ambito-lexico-y-dinamico",
     "/es/blog/method-chaining-in-javascript": "/es/blog/encadenamiento-de-metodos-en-javascript",
     "/es/blog/object-atribute-properties": "/es/blog/propiedades-de-atributos-de-objetos",
+    // El fichero era `*.astro.mdx`. Astro recortaba el punto (`showastro`) y
+    // el índice de búsqueda conservaba el `.astro`. EN ya redirige las dos;
+    // ES solo tenía la del índice, así que la URL canónica 404eaba.
     "/es/blog/patterns/conditional-rendering-with-show.astro": "/es/blog/patrones/renderizado-condicional-explicito",
+    "/es/blog/patterns/conditional-rendering-with-showastro": "/es/blog/patrones/renderizado-condicional-explicito",
     "/es/blog/patterns/iife": "/es/blog/patrones/iife",
     "/es/blog/patterns/mixins": "/es/blog/patrones/mixins",
     "/es/blog/patterns/testing-protoype-inheritance": "/es/blog/patrones/probando-la-herencia-de-prototipos",
