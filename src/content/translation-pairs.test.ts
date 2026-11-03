@@ -99,6 +99,28 @@ describe("blog content", () => {
     expect(dangling).toEqual([]);
   });
 
+  // El glob loader minúsculas el id (`Hindley-Milner-notation.mdx` →
+  // `hindley-milner-notation`). Un 301 escrito con el case del fichero no
+  // cubre la URL que realmente se indexó, salvo cuando esa minúscula es ya
+  // el destino (la ruta canónica sigue viva).
+  it("pairs every mixed-case post redirect with its lowercase glob id", () => {
+    const src = readFileSync(join(process.cwd(), "astro.config.mjs"), "utf8");
+    const block = src.match(/redirects:\s*\{([\s\S]*?)\n  \},/);
+    expect(block).not.toBeNull();
+    const redirects = new Map(
+      [...(block?.[1] ?? "").matchAll(/"(\/[^"]+)"\s*:\s*"(\/[^"]+)"/g)].map(
+        (match) => [match[1] ?? "", match[2] ?? ""]
+      )
+    );
+    const missing = [...redirects.keys()]
+      .filter((from) => /[A-Z]/.test(from))
+      .filter((from) => {
+        const lower = from.toLowerCase();
+        return redirects.get(from) !== lower && !redirects.has(lower);
+      });
+    expect(missing).toEqual([]);
+  });
+
   it("gives both versions of an article the same tags", () => {
     const differing = published
       .filter((p) => p.locale === "es" && p.translationKey)
