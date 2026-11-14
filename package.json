@@ -38,7 +38,7 @@
     "@data-slot/dropdown-menu": "^1.1.1",
     "@lucide/astro": "1.54.0",
     "@tailwindcss/vite": "4.3.3",
-    "astro": "7.3.8",
+    "astro": "7.4.7",
     "astro-expressive-code": "0.44.2",
     "clsx": "2.1.1",
     "flexsearch": "0.8.212",
