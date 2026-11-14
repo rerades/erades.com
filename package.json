@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "7.0.8",
-    "@astrojs/node": "11.1.12",
+    "@astrojs/node": "11.1.13",
     "@astrojs/rss": "4.0.19",
     "@astrojs/sitemap": "3.7.4",
     "@data-slot/dialog": "^1.1.1",
