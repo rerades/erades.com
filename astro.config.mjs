@@ -68,7 +68,11 @@ export default defineConfig({
     "/es/blog/functional/combinators": "/es/blog/funcional/combinadores",
     "/es/blog/functional/functional-programming": "/es/blog/funcional/programacion-funcional",
     "/es/blog/functional/functors": "/es/blog/funcional/funtores",
+    // El fichero es `Hindley-Milner-notation.mdx`. El glob loader minúsculas el
+    // id, así que la URL canónica antes del rename era la minúscula; la
+    // mayúscula es el nombre en disco y también estaba enlazada.
     "/es/blog/functional/Hindley-Milner-notation": "/es/blog/funcional/notacion-hindley-milner",
+    "/es/blog/functional/hindley-milner-notation": "/es/blog/funcional/notacion-hindley-milner",
     "/es/blog/functional/memoize": "/es/blog/funcional/memoizar",
     "/es/blog/functional/transducers": "/es/blog/funcional/transductores",
     "/es/blog/global-variables-are-bad": "/es/blog/las-variables-globales-son-malas",
@@ -82,6 +86,7 @@ export default defineConfig({
     "/es/blog/statement-branching-vs-micro-branching": "/es/blog/ramificacion-por-sentencias-vs-micro-ramificacion",
     "/en/blog/ai-take-aways/aspecct-metodologia-prompting": "/en/blog/ai-take-aways/aspecct-prompting-methodology",
     "/en/blog/ai-take-aways/por-que-fallan-las-fabricas-de-software": "/en/blog/ai-take-aways/why-software-factories-fail",
+    "/en/blog/functional/Hindley-Milner-notation": "/en/blog/functional/hindley-milner-notation",
     // El fichero era `*.astro.mdx`. Astro recortaba el punto (`showastro`) y el
     // índice de búsqueda conservaba el `.astro`; las dos URLs 404ean tras el rename.
     "/en/blog/patterns/conditional-rendering-with-show.astro": "/en/blog/patterns/conditional-rendering-with-show",

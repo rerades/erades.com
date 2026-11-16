@@ -27,6 +27,31 @@ test("las URLs viejas del .astro.mdx redirigen al slug canónico", async ({
   }
 });
 
+test("las URLs viejas de Hindley-Milner redirigen al slug canónico", async ({
+  request,
+}) => {
+  // El glob minúsculas el id. Antes del rename ES la URL indexada era la
+  // minúscula; la mayúscula es el nombre del fichero y también 404eaba en EN.
+  for (const [pathname, canonical] of [
+    [
+      "/es/blog/functional/hindley-milner-notation/",
+      "/es/blog/funcional/notacion-hindley-milner",
+    ],
+    [
+      "/es/blog/functional/Hindley-Milner-notation/",
+      "/es/blog/funcional/notacion-hindley-milner",
+    ],
+    [
+      "/en/blog/functional/Hindley-Milner-notation/",
+      "/en/blog/functional/hindley-milner-notation",
+    ],
+  ] as const) {
+    const response = await request.get(pathname);
+    expect(response.status(), pathname).toBe(200);
+    expect(response.url()).toContain(canonical);
+  }
+});
+
 test("un resultado de búsqueda de ese post no 404ea", async ({ request }) => {
   const searchResponse = await request.get(
     "/api/search?q=Explicit%20Conditional%20Rendering"
