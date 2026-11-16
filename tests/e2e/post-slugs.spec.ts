@@ -14,16 +14,28 @@ test("las URLs viejas del .astro.mdx redirigen al slug canónico", async ({
 }) => {
   // El fichero se llamaba `conditional-rendering-with-show.astro.mdx`.
   // El índice de búsqueda enlazaba con el `.astro`; Astro servía `showastro`.
-  // Las dos tienen que llegar al post, no a un 404.
-  for (const pathname of [
-    "/en/blog/patterns/conditional-rendering-with-show.astro/",
-    "/en/blog/patterns/conditional-rendering-with-showastro/",
-  ]) {
+  // Las dos tienen que llegar al post, no a un 404. ES solo redirigía `.astro`.
+  for (const [pathname, canonical] of [
+    [
+      "/en/blog/patterns/conditional-rendering-with-show.astro/",
+      "/en/blog/patterns/conditional-rendering-with-show",
+    ],
+    [
+      "/en/blog/patterns/conditional-rendering-with-showastro/",
+      "/en/blog/patterns/conditional-rendering-with-show",
+    ],
+    [
+      "/es/blog/patterns/conditional-rendering-with-show.astro/",
+      "/es/blog/patrones/renderizado-condicional-explicito",
+    ],
+    [
+      "/es/blog/patterns/conditional-rendering-with-showastro/",
+      "/es/blog/patrones/renderizado-condicional-explicito",
+    ],
+  ] as const) {
     const response = await request.get(pathname);
     expect(response.status(), pathname).toBe(200);
-    expect(response.url()).toContain(
-      "/en/blog/patterns/conditional-rendering-with-show"
-    );
+    expect(response.url()).toContain(canonical);
   }
 });
 

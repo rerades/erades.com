@@ -99,6 +99,24 @@ describe("blog content", () => {
     expect(dangling).toEqual([]);
   });
 
+  // `*.astro.mdx` dejó dos URLs vivas: el glob recortaba el punto (`showastro`)
+  // y el índice de búsqueda conservaba `.astro`. Un 301 de solo una no cubre
+  // la que realmente se prerenderizó.
+  it("pairs every .astro leftover slug redirect with its showastro twin", () => {
+    const src = readFileSync(join(process.cwd(), "astro.config.mjs"), "utf8");
+    const block = src.match(/redirects:\s*\{([\s\S]*?)\n  \},/);
+    expect(block).not.toBeNull();
+    const redirects = new Set(
+      [...(block?.[1] ?? "").matchAll(/"(\/[^"]+)"\s*:/g)].map(
+        (match) => match[1] ?? ""
+      )
+    );
+    const missing = [...redirects]
+      .filter((from) => from.endsWith(".astro"))
+      .filter((from) => !redirects.has(from.replace(/\.astro$/, "astro")));
+    expect(missing).toEqual([]);
+  });
+
   it("gives both versions of an article the same tags", () => {
     const differing = published
       .filter((p) => p.locale === "es" && p.translationKey)
