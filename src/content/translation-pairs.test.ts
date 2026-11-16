@@ -99,6 +99,39 @@ describe("blog content", () => {
     expect(dangling).toEqual([]);
   });
 
+  // #189 moved `es/functional/*` to `es/funcional/*` and 301'd the old URLs.
+  // `monads` was the one published post left out, so the indexed Spanish URL
+  // 404s while functors/combinators/… still redirect.
+  it("301s the old English-folder path of every published Spanish funcional post", () => {
+    const src = readFileSync(join(process.cwd(), "astro.config.mjs"), "utf8");
+    const block = src.match(/redirects:\s*\{([\s\S]*?)\n  \},/);
+    expect(block).not.toBeNull();
+    const redirects = new Map(
+      [...(block?.[1] ?? "").matchAll(/"(\/[^"]+)"\s*:\s*"(\/[^"]+)"/g)].map(
+        (match) => [match[1] ?? "", match[2] ?? ""]
+      )
+    );
+    const missing = published
+      .filter((p) => p.locale === "es")
+      .map((p) => {
+        const slug = p.path.replace(/^es\//, "").replace(/\.mdx?$/, "");
+        return { slug, translationKey: p.translationKey };
+      })
+      .filter(
+        (p): p is { slug: string; translationKey: string } =>
+          p.slug.startsWith("funcional/") &&
+          typeof p.translationKey === "string" &&
+          p.translationKey !== p.slug
+      )
+      .filter((p) => {
+        const from = `/es/blog/${p.translationKey}`;
+        const to = `/es/blog/${p.slug}`;
+        return redirects.get(from) !== to;
+      })
+      .map((p) => p.translationKey);
+    expect(missing).toEqual([]);
+  });
+
   it("gives both versions of an article the same tags", () => {
     const differing = published
       .filter((p) => p.locale === "es" && p.translationKey)

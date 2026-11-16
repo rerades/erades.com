@@ -27,6 +27,16 @@ test("las URLs viejas del .astro.mdx redirigen al slug canónico", async ({
   }
 });
 
+test("la URL vieja de mónadas redirige al slug canónico", async ({
+  request,
+}) => {
+  // #189 301'd every `es/functional/*` sibling except this one. The Spanish
+  // article was indexed at the English-folder path until the rename.
+  const response = await request.get("/es/blog/functional/monads/");
+  expect(response.status()).toBe(200);
+  expect(response.url()).toContain("/es/blog/funcional/monadas");
+});
+
 test("un resultado de búsqueda de ese post no 404ea", async ({ request }) => {
   const searchResponse = await request.get(
     "/api/search?q=Explicit%20Conditional%20Rendering"

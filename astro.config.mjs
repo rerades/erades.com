@@ -70,6 +70,7 @@ export default defineConfig({
     "/es/blog/functional/functors": "/es/blog/funcional/funtores",
     "/es/blog/functional/Hindley-Milner-notation": "/es/blog/funcional/notacion-hindley-milner",
     "/es/blog/functional/memoize": "/es/blog/funcional/memoizar",
+    "/es/blog/functional/monads": "/es/blog/funcional/monadas",
     "/es/blog/functional/transducers": "/es/blog/funcional/transductores",
     "/es/blog/global-variables-are-bad": "/es/blog/las-variables-globales-son-malas",
     "/es/blog/lexical-and-dynamic-scope": "/es/blog/ambito-lexico-y-dinamico",
